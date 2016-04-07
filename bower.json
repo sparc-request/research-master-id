@@ -1,0 +1,19 @@
+{
+  "name": "research-master-id",
+  "homepage": "https://github.com/HSSC/research-master-id",
+  "authors": [
+    "Mark Lohr <markuslohr@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/assets/components",
+    "test",
+    "tests"
+  ]
+}
