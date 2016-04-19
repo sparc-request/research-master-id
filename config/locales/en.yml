@@ -20,4 +20,372 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  default_title: 'Work Fulfillment'
+
+  actions:
+    actions: "Actions"
+    add: "Add"
+    close: "Close"
+    delete: "Delete"
+    details: "Details"
+    edit: "Edit"
+    n_a: "N/A"
+    options: "Options"
+    remove: "Remove"
+    add: "Add"
+    actions: "Actions"
+    required: " * "
+    required_message: "Fields marked with an asterisk ( * ) are required to continue."
+    save: "Save"
+
+  appointment:
+    object: "Appointment"
+    add_service: "Add Service"
+    appointment_dropdown: "Please select a visit:"
+    completed: "Completed Visits"
+    completed_date: "Completed Date:"
+    completed_time: "Completed Time:"
+    complete_visit: "Complete Visit"
+    date_of_visit: "Date of Participant Visit"
+    edit_header: "Custom Visit"
+    name: "Visit Name"
+    notes: "Notes"
+    position: "Insert into Position *"
+    protocol_id: "Protocol ID"
+    reason: "Reason"
+    reset_visit: "Reset Visit"
+    srid: "SRID"
+    start_date: "Start Date:"
+    start_time: "Start Time:"
+    start_visit: "Start Visit"
+    visit_indications: "Visit Indications:"
+    visit_type: "Type of Visit:"
+    warning: "Please click 'Start Visit' and enter a start date to continue."
+
+  arm:
+    object: "Arm"
+    objects: "Arms"
+    change_arm: "Assign Arm"
+    created: "Arm Created"
+    deleted: "Arm Destroyed"
+    edit_arm: Edit Arm
+    flash_messages:
+      updated: "Arm Updated"
+    name: "Arm Name"
+    not_deleted: "Protocols must have at least one arm. This arm cannot be deleted until another one is added"
+    remove_arm: Remove Arm
+    selected_line_items: "Selected Services"
+    subject_count: "Subject Count"
+    visit_count: "Visit Count"
+
+  documents:
+    object: "Document"
+    documents: "Documents"
+    date: "Date Requested"
+    date_created: "Date Created"
+    date_time_formatter_ruby: "%D %r"
+    date_time_formatter_js:   "MM/DD/YYYY HH:mm:ss a"
+    edit_header: "Edit Report Title"
+    file: "Attached File"
+    flash_messages:
+      created: "Document Created"
+      no_file_chosen: "You must choose a file"
+      removed: "Document Removed"
+      updated: "Title updated"
+    fulfillment:
+      index_header: "Fulfillment Documents"
+      none: "This fulfillment has no documents."
+    lineitem:
+      index_header: "Line Item Documents"
+      none: "This line item has no documents"
+    new_header: "Add Document"
+    state: "Report Status"
+    title: "Title"
+    upload_button: "Upload Document"
+    viewed_at: "Date Viewed"
+
+  fulfillment:
+    object: "Fulfillment"
+    add_fulfillment: "Add Fulfillment"
+    components: "Fulfillment Components"
+    edit: "Edit Fulfillment"
+    flash_messages:
+      created: "Fulfillment Created"
+      updated: "Fulfillment Updated"
+    fulfillments: "Fulfillments"
+    fulfillment_date: "Fulfillment Date"
+    log_notes:
+      account_number: "Account Number changed to "
+      fulfilled_at: "Fulfillment Date changed to "
+      quantity: "Quantity changed to "
+      performer_id: "Performed By changed to "
+    no_components: "Fulfillment Has No Components"
+    performed_by: "Performed By"
+    qty_type: "Quantity Type"
+    quantity: "Quantity"
+    save_fulfillment: "Save Fulfillment"
+    view: "View Fulfillments"
+
+  line_item:
+    object: "Line Item"
+    account_number: "Account"
+    add_line_item_study: "Add Study Level Activity"
+    add_line_item_project: "Add Project Level Activity"
+    change_service: "Change Service"
+    components: "Components"
+    contact: "Contact"
+    create: "Create New Study Level Activity"
+    create_project: "Create New Project Level Activity"
+    delete_line_item: "Delete line item"
+    edit: "Edit Study Level Activity"
+    flash_messages:
+      created: "Study Level Activity Created"
+      deleted: "Study Level Activity Deleted"
+      not_deleted: "This Study Level Activity has Fulfillments. It cannot be deleted"
+      updated: "Study Level Activity Updated"
+    last_fulfillment: "Last Fulfillment"
+    log_notes:
+      quantity_requested: "Quantity Requested changed to "
+      service_id: "Service changed to "
+      started_at: "Started At changed to "
+    qty_req: "Requested"
+    qty_rem: "Remaining"
+    qty_type: "Type"
+    quantity: "Quantity"
+    service: "Service"
+    started: "Started"
+    save_li: "Save Study Level Activity"
+    save_li_project: "Save Project Level Activity"
+
+  navbar:
+    logged_in_msg: "Logged in as"
+    reports_link: 'All Reports'
+    tasks_link: 'All Tasks'
+
+  notes:
+    object: "Note"
+    action: "Action"
+    add_button: "Add Note"
+    appointment:
+      index_header: "Appointment Notes"
+      none: "This appointment has no notes."
+    comment: "Comment"
+    date: "Date"
+    followup: "Follow up"
+    fulfillment:
+      index_header: "Fulfillment Notes"
+      none: "This fulfillment has no notes."
+    identity: "User"
+    incomplete_header: "Reason for Incompletion"
+    lineitem:
+      edit: "Edit Line Item"
+      index_header: "Study Level Activity Notes"
+      none: "This line item has no notes"
+    new_header: "Add Note"
+    participant:
+      index_header: "Participant Notes"
+      none: "This participant has no notes."
+    procedure:
+      index_header: "Procedure Notes"
+      none: "This procedure has no notes."
+    reason: "Reason"
+
+  participant:
+    object: "Participant"
+    address: "Address"
+    arm: "Current Arm"
+    calendar: "Calendar"
+    city: "City"
+    details: "Participant Details"
+    dob: "Date of Birth"
+    ethnicity: "Ethnicity"
+    first_name: "First Name"
+    flash_messages:
+      arm_change: "Participant Successfully Changed Arms"
+      created: "Participant Created"
+      not_found: "Participant Not Found"
+      removed: "Participant Removed"
+      recruitment_source: "Recruitment Source has been updated"
+      updated: "Participant Updated"
+    full_name: "Participant Name"
+    gender: "Gender"
+    id: "ID"
+    list: "Participant List"
+    last_name: "Last Name"
+    middle_initial: "Middle Initial"
+    mrn: "MRN"
+    new_participant: "Create New Participant"
+    notes: "Notes"
+    participant_report: "Report"
+    phone: "Phone"
+    race: "Race"
+    recruitment_source: "Recruitment Source"
+    save_participant: "Save Participant"
+    state: "State"
+    stats: "Stats"
+    status: "Status"
+    tracker: "Participant Tracker"
+    zip: "Zip Code"
+
+  procedure:
+    object: "Procedure"
+    complete: "Complete All"
+    completed_date: "Completed Date"
+    edit_header: "Follow up"
+    followup: "Follow Up"
+    follow_up_date: "Follow up date"
+    fud: "Due Date"
+    incomplete: "Incomplete All"
+    notes: "Notes"
+    performed_by: "Performed By"
+    prog_core: "Program / Core"
+    remove: "Remove"
+    r_t: "R/T"
+    select_reason: "Select a Reason"
+    status: "Status"
+
+  protocol:
+    object: "Protocol"
+    admin_portal_link: "Admin Portal"
+    coordinators: "Coordinators"
+    end_date: "Study End Date"
+    flash_messages:
+      not_found: "Protocol Not Found"
+      unauthorized: "Authorization Failure"
+    id: "Protocol ID"
+    irb_approval_date: "IRB Approval Date"
+    irb_expiration_date: "IRB Expiration"
+    irb_number: "IRB #"
+    organizations: "Provider/Program/Core"
+    owner: "Owner"
+    principal_investigator: "Principal Investigator"
+    requester: "Service Requester"
+    short_title: "Short Title"
+    sparc_id: "SPARC ID"
+    srid: "SRID"
+    start_date: "Study Start Date"
+    status: "Status"
+    study_cost: "Total Study Costs"
+    study_schedule_report: "Export"
+    subsidy_amount: "Percent Subsidy"
+    subsidy_committed: "Subsidy Amount"
+    subsidy_expended: "Subsidy Expended"
+    study_schedule:
+      add_arm: "Add Arm"
+      add_service: "Add Service"
+      add_visit_group: "Add Visit Group"
+      change_service: "Change Service"
+      edit_arm: "Edit Arm"
+      edit_visit_group: "Edit Visit Group"
+      manage_arms: "Manage Arms"
+      manage_services: "Manage Services"
+      manage_visits: "Manage Visits"
+      quantity_requested: "Quantity Requested"
+      remove_arm: "Remove Arm"
+      remove_service: "Remove Service"
+      remove_visit_group: "Remove Visit Group"
+      study_level_activities: "Study Level Activities"
+    tabs:
+      participant_list: "Participant List"
+      participant_tracker: "Participant Tracker"
+      reports: "Reports"
+      study_level_activities: "Study Level Activities"
+      project_level_activities: "Project Level Activities"
+      study_schedule: "Study Schedule"
+      project_schedule: "Project Schedule"
+    udak_project_number: "UDAK Project #"
+    updates: "Updates"
+
+  reports:
+    all_protocols: "All Protocols"
+    auditing_report: "Auditing Report"
+    invoice_report: "Invoice Report"
+    end_date: "End Date"
+    incomplete_visit_report: "Incomplete Visit Report"
+    organization: "Organization(s)"
+    page_title: "All Reports"
+    participant: "Participant"
+    participant_report: "Participant Report"
+    project_summary_report: "Project Summary Report"
+    protocol: "Protocol"
+    protocols: "Protocol(s)"
+    request_report: "Request Report"
+    start_date: "Start Date"
+
+  services:
+    object: "Service"
+    objects: "Services"
+    add_services: "Add Services"
+    arm: "Select Arm(s)"
+    created: "Service(s) have been added to the chosen arms"
+    deleted: "Service(s) have been removed from the chosen arms"
+    name: "Selected Service"
+    remove_services: "Remove Services"
+    report: "Report"
+
+  sub_service_request:
+    statuses:
+      all: 'All'
+      ctrc_approved: 'Active'
+      administrative_review: 'Administrative Review'
+      approved: 'Approved'
+      awaiting_pi_approval: 'Awaiting Requester Response'
+      complete: 'Complete'
+      declined: 'Declined'
+      draft: 'Draft'
+      get_a_quote: 'Get a Cost Estimate'
+      invoiced: 'Invoiced'
+      ctrc_review: 'In Admin Review'
+      committee_review: 'In Committee Review'
+      fulfillment_queue: 'In Fulfillment Queue'
+      in_process: 'In Process'
+      on_hold: 'On Hold'
+      submitted: 'Submitted'
+      withdrawn: 'Withdrawn'
+
+  task:
+    object: "Task"
+    all_tasks: "Show All Tasks"
+    assignable_type: "Type"
+    assignee_name: "Assigned to"
+    completed: "Completed"
+    create_task: "Create Task"
+    due_at: "Due date"
+    flash_messages:
+      created: "Task Created"
+      incompleted: "The selected task(s) have been set to incomplete"
+      updated: "Task Updated"
+    identity_name: "Created by"
+    new_task: "Create New Task"
+    reschedule: "Reschedule"
+    show_complete: "Show Complete"
+
+  visit:
+    object: "Visit"
+    add_visit: "Add Visit"
+    check_all: "Check All"
+    check_column: "Check Column"
+    check_row: "Check Row"
+    custom: "Custom Visit"
+    edit_visit: "Edit Visit"
+    flash_messages:
+      updated: "Visit Updated"
+    no_arm: "Assign arm to create custom visits"
+    remove_visit: "Remove Visit"
+    uncheck_column: "Uncheck Column"
+    uncheck_row: "Uncheck Row"
+
+  visit_groups:
+    object: "Visit Group"
+    created: "Visit Created"
+    day: "Visit Day"
+    deleted: "Visit Destroyed"
+    flash_messages:
+      updated: "Visit Updated"
+    name: "Visit Name"
+    not_deleted: "Arms must have at least one visit. Add another visit before deleting this one"
+    position: "Insert into Position *"
+    window_after: "Window After"
+    window_before: "Window Before"
+    view_page_next: "View More"
+    view_page_previous: "View Previous"
