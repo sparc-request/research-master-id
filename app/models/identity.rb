@@ -4,8 +4,8 @@ class Identity < ActiveRecord::Base
   devise :database_authenticatable,
          :rememberable, :trackable
 
-  # def full_name
-  #   [first_name, last_name].join(' ')
-  # end
+  def full_name
+    [first_name, last_name].join(' ')
+  end
 
 end

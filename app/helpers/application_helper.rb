@@ -6,8 +6,6 @@ module ApplicationHelper
 
   def logged_in identity
     content_tag(:span, "#{t(:navbar)[:logged_in_msg]} #{current_identity.full_name} (#{current_identity.email})", class: "logged-in-as", "aria-hidden" => "true")
-    puts "*" * 20
-    puts current_identity
   end
 
   def flash_messages(opts = {})
