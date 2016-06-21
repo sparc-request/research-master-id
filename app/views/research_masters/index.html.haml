@@ -5,21 +5,7 @@
     = link_to 'Create New', new_research_master_path,
       class: 'btn btn-primary btn-block',
       remote: true
-%div{ class: 'modal fade', id: 'newResearchMasterModal', tabindex: '-1' }
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button{ class: 'close', data: { dismiss: 'modal' } }
-          %span
-            &times;
-        %h4.modal-title
-          New Research Master Record
-      .modal-body
-      .modal-footer
-        %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
-          Close
-        %button{ class: 'btn btn-default' }
-          Save changes
+= render "new_research_master_modal"
 .bootstrap-table-dropdown-overflow
   %table{ data: { toggle: 'table', search: 'true', show_columns: 'true',
     show_refresh: 'true', show_toggle: 'true',
