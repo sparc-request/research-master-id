@@ -11,7 +11,6 @@ class ResearchMastersController < ApplicationController
   def new
     @research_master = ResearchMaster.new
     respond_to do |format|
-      format.html
       format.js
     end
   end
