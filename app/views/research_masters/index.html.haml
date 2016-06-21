@@ -1,2 +1,7 @@
 .bootstrap-table-dropdown-overflow
-  %table
+  %table{ data: { toggle: 'table', search: 'true', show_columns: true,
+  show_refresh: true, show_toggle: true, url: research_masters_path(format: :json) } }
+    %thead
+      %tr
+        %th{ data: { field: 'short_title' } }
+
