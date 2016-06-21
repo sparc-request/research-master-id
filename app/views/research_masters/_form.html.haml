@@ -1,0 +1,22 @@
+= form_for @research_master, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = f.label :pi_name, 'PI Name', class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.text_field :pi_name, class: 'form-control', placeholder: 'PI Name'
+  .form-group
+    = f.label :department, class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.text_field :department, class: 'form-control', placeholder: 'Department'
+  .form-group
+    = f.label :long_title, 'Long Title', class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.text_field :long_title, class: 'form-control', placeholder: 'Long Title'
+  .form-group
+    = f.label :short_title, 'Short Title', class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.text_field :short_title, class: 'form-control', placeholder: 'Short Title'
+  .form-group
+    = f.label :funding_source, 'Funding Source', class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.text_field :funding_source, class: 'form-control', placeholder: 'Funding Source'
+%br
