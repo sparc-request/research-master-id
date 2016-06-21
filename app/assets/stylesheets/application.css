@@ -12,5 +12,6 @@
  *
  *= require_self
  *= require bootstrap/dist/css/bootstrap.min
+ *= require bootstrap-table/dist/bootstrap-table.min
  *= require main
  */
