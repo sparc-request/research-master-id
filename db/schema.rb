@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621145432) do
+ActiveRecord::Schema.define(version: 20160621154006) do
+
+  create_table "research_masters", force: :cascade do |t|
+    t.string   "pi_name",        limit: 255
+    t.string   "department",     limit: 255
+    t.string   "long_title",     limit: 255
+    t.string   "short_title",    limit: 255
+    t.string   "funding_source", limit: 255
+    t.integer  "user_id",        limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "research_masters", ["user_id"], name: "index_research_masters_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
@@ -31,4 +44,5 @@ ActiveRecord::Schema.define(version: 20160621145432) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "research_masters", "users"
 end
