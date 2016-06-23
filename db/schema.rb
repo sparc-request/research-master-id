@@ -11,7 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621154006) do
+ActiveRecord::Schema.define(version: 20160623144701) do
+
+  create_table "identities", force: :cascade do |t|
+    t.string   "email",               limit: 255, default: "", null: false
+    t.string   "encrypted_password",  limit: 255, default: "", null: false
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",       limit: 4,   default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",  limit: 255
+    t.string   "last_sign_in_ip",     limit: 255
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+  end
+
+  add_index "identities", ["email"], name: "index_identities_on_email", unique: true, using: :btree
+
+  create_table "protocols", force: :cascade do |t|
+    t.string   "short_title",    limit: 255
+    t.string   "long_title",     limit: 255
+    t.string   "funding_source", limit: 255
+    t.string   "funding_status", limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "research_masters", force: :cascade do |t|
     t.string   "pi_name",        limit: 255
