@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-  devise_for :identities
-  root 'welcome#index'
+  devise_for :users
+  root 'research_masters#index'
+
+  resources :research_masters
 end

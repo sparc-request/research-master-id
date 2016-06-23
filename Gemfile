@@ -11,6 +11,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'haml-rails', '~> 0.9'
 gem 'devise'
+gem 'faker'
+gem 'launchy'
 
 
 
@@ -22,7 +24,10 @@ end
 
 group :development do
   gem 'web-console', '~> 2.0'
-
+  gem 'capistrano'
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails'
+  gem 'capistrano-passenger'
   gem 'spring'
 end
 

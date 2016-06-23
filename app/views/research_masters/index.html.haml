@@ -1,0 +1,25 @@
+%h1.text-center
+  Your Research Master Records
+.row
+  .col-md-4.col-md-offset-4
+    = link_to 'Create New', new_research_master_path,
+      class: 'btn btn-primary btn-block',
+      remote: true
+= render "new_research_master_modal"
+.bootstrap-table-dropdown-overflow
+  %table{ data: { toggle: 'table', search: 'true', show_columns: 'true',
+    show_refresh: 'true', show_toggle: 'true',
+    url: research_masters_path(format: :json) } }
+    %thead
+      %tr
+        %th{ data: { field: 'pi_name' } }
+          PI Name
+        %th{ data: { field: 'department' } }
+          Department
+        %th{ data: { field: 'long_title' } }
+          Long Title
+        %th{ data: { field: 'short_title' } }
+          Short Title
+        %th{ data: { field: 'funding_source' } }
+          Funding Source
+
