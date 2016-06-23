@@ -13,6 +13,7 @@ gem 'haml-rails', '~> 0.9'
 gem 'devise'
 gem 'faker'
 gem 'launchy'
+gem 'ar-octopus'
 
 
 
