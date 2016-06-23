@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20160623144701) do
 
   create_table "protocols", force: :cascade do |t|
     t.string   "short_title",    limit: 255
-    t.string   "long_title",     limit: 255
+    t.string   "title",          limit: 255
     t.string   "funding_source", limit: 255
     t.string   "funding_status", limit: 255
     t.datetime "created_at",                 null: false
