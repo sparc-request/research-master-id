@@ -14,7 +14,7 @@ gem 'devise'
 gem 'faker'
 gem 'launchy'
 gem 'ar-octopus'
-
+gem 'pry'
 
 
 group :development, :test do
