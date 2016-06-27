@@ -7,8 +7,6 @@ RSpec.describe Identity, type: :model do
   context 'primary pi list' do
 
     it "should return a full list of identities that are primary_pi's" do
-      Identity.delete_all
-      ProjectRole.delete_all
       identity1 = create(:identity, first_name: 'Will', last_name: 'Holt')
       create(:project_role, identity: identity1, role: 'primary-pi')
       identity2 = create(:identity, first_name: 'Jason', last_name: 'Leonard')
@@ -20,8 +18,6 @@ RSpec.describe Identity, type: :model do
     end
 
     it "should not return any identities that are not primary_pi's" do
-      Identity.delete_all
-      ProjectRole.delete_all
       identity1 = create(:identity, first_name: 'Will', last_name: 'Holt')
       create(:project_role, identity: identity1, role: 'primary-pi')
       identity2 = create(:identity, first_name: 'Jason', last_name: 'Leonard')
