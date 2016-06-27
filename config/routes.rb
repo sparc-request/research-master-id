@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root 'research_masters#index'
 
   resources :research_masters
+
+  resources :pi_names, only: [:index]
 end

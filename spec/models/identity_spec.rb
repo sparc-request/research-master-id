@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Identity, type: :model do
+RSpec.describe Identity, type: :model, truncation: true do
 
   it { is_expected.to have_many(:project_roles) }
 

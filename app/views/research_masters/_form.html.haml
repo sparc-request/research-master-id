@@ -2,7 +2,7 @@
   .form-group
     = f.label :pi_name, 'PI Name', class: 'col-sm-2 control-label'
     .col-sm-10
-      = f.text_field :pi_name, class: 'form-control', placeholder: 'PI Name'
+      = f.text_field :pi_name, class: 'form-control'
   .form-group
     = f.label :department, class: 'col-sm-2 control-label'
     .col-sm-10
@@ -18,5 +18,15 @@
   .form-group
     = f.label :funding_source, 'Funding Source', class: 'col-sm-2 control-label'
     .col-sm-10
-      = f.text_field :funding_source, class: 'form-control', placeholder: 'Funding Source'
-%br
+      .radio
+        = f.label :funding_source do
+          = f.radio_button :funding_source, 'Internal'
+          Internal
+      .radio
+        = f.label :funding_source do
+          = f.radio_button :funding_source, 'External'
+          External
+  .modal-footer
+    %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+      Close
+    = f.submit 'Submit', class: 'btn btn-default'

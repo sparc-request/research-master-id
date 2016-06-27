@@ -13,5 +13,6 @@
  *= require_self
  *= require bootstrap/dist/css/bootstrap.min
  *= require bootstrap-table/dist/bootstrap-table.min
+ *= require EasyAutocomplete/dist/easy-autocomplete.min
  *= require main
  */
