@@ -20,6 +20,15 @@ RSpec.configure do |config|
       end
   end
 
+  config.before(:each, truncation: true) do
+    DatabaseCleaner.strategy = :truncation
+    models = ActiveRecord::Base.descendants.select { |model| model.respond_to?(:sparc_record?) }
+    models.
+      each do |model|
+        DatabaseCleaner[:active_record, model: model].strategy = :truncation
+      end
+  end
+
   # For js: true tests use the truncation strategy
   config.before(:each, js: true) do |example|
     DatabaseCleaner.strategy = :truncation
