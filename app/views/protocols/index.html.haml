@@ -1,33 +1,47 @@
-= search_form_for @q do |f|
-  = f.label :short_title_cont
-  = f.search_field :short_title_cont
-  = f.label :title_cont
-  = f.search_field :title_cont
-  = f.label :sparc_id
-  = f.search_field :id
-  = f.submit
-%table.table.table-striped
-  %thead
-    %tr
-      %th
-        ID
-      %th
-        PI Name
-      %th
-        Department
-      %th
-        Long Title
-      %th
-        Short Title
-      %th
-        Funding Source
-    %tbody
-      - @protocols.each do |protocol|
-        %tr
-          %td= protocol.id
-          %td Juan Castillo
-          %td You moms department
-          %td= protocol.title
-          %td= protocol.short_title
-          %td Vlad Putin
+- binding.pry
+.panel.panel-primary
+  .panel-heading
+    Search for Protocols
+  .panel-body
+    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
+      .form-group
+        = f.label :id, 'Search by ID', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :id, class: 'form-control', placeholder: 'Search by ID'
+      .form-group
+        = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
+      .form-group
+        = f.label :title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :title_cont, class: 'form-control', placeholder: 'Search by Long Title'
+      .form-group
+        .col-md-offset-2.col-md-10
+          = f.submit class: 'btn btn-primary'
+  %table.table.table-striped.table-bordered.table-hover
+    %thead
+      %tr
+        %th
+          ID
+        %th
+          PI Name
+        %th
+          Department
+        %th
+          Long Title
+        %th
+          Short Title
+        %th
+          Funding Source
+      %tbody
+        - @protocols.each do |protocol|
+          %tr
+            %td= protocol.id
+            %td Juan Castillo
+            %td You moms department
+            %td= protocol.title
+            %td= protocol.short_title
+            %td
+              = protocol.funding_source
 
