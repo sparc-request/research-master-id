@@ -12,7 +12,7 @@ RSpec.configure do |config|
 
   # Set default strategy to transaction
   config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
     models = ActiveRecord::Base.descendants.select { |model| model.respond_to?(:sparc_record?) }
     models.
       each do |model|
