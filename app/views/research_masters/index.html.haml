@@ -1,11 +1,7 @@
 %h1.text-center
   Your Research Master Records
 .row
-  .col-md-6
-    = link_to 'Create New', new_research_master_path,
-      class: 'btn btn-primary btn-block', remote: true,
-      id: 'create_new'
-  .col-md-6
+  .col-md-4.col-md-offset-4
     = link_to 'Look Up', '#', class: 'btn btn-primary btn-block'
 = render "new_research_master_modal"
 .bootstrap-table-dropdown-overflow
