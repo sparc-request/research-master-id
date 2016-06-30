@@ -3,8 +3,8 @@
 .row
   .col-md-6
     = link_to 'Create New', new_research_master_path,
-      class: 'btn btn-primary btn-block',
-      remote: true
+      class: 'btn btn-primary btn-block', remote: true,
+      id: 'create_new'
   .col-md-6
     = link_to 'Look Up', '#', class: 'btn btn-primary btn-block'
 = render "new_research_master_modal"
