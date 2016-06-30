@@ -3,13 +3,7 @@ class ProtocolsController < ApplicationController
     @q = Protocol.ransack(params[:q])
     @protocols = @q.result(distinct: true)
     respond_to do |format|
-      format.html
-      format.json { render json: @protocols }
+      format.html      
     end
-  end
-
-  def search
-    index
-    render action: 'index'
   end
 end
