@@ -15,6 +15,7 @@ gem 'faker'
 gem 'launchy'
 gem 'ar-octopus'
 gem 'pry'
+gem 'ransack'
 
 
 group :development, :test do

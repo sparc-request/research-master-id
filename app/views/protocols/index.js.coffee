@@ -1,0 +1,1 @@
+$('#protocols-table').bootstrapTable('refresh')

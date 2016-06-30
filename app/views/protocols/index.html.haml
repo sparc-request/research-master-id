@@ -1,0 +1,26 @@
+= search_form_for(@q, format: :json) do |f|
+  = f.label :short_title_cont
+  = f.search_field :short_title_cont
+  = f.label :title_cont
+  = f.search_field :title_cont
+  = f.label :sparc_id
+  = f.search_field :id
+  = f.submit
+.bootstrap-table-dropdown-overflow
+  %table{ id: 'protocols-table', data: { toggle: 'table', search: 'true', show_columns: 'true',
+  show_refresh: 'true', show_toggle: 'true',
+  url: protocols_path(format: :json) } }
+    %thead
+      %tr
+        %th{ data: { field: 'id' } }
+          ID
+        %th{ data: { field: 'pi_name' } }
+          PI Name
+        %th{ data: { field: 'department' } }
+          Department
+        %th{ data: { field: 'long_title' } }
+          Long Title
+        %th{ data: { field: 'short_title' } }
+          Short Title
+        %th{ data: { field: 'funding_source' } }
+          Funding Source
