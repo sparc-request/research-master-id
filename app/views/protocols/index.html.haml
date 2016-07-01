@@ -4,9 +4,9 @@
   .panel-body
     = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
       .form-group
-        = f.label :id, 'Search by ID', class: 'col-md-2 control-label'
+        = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
         .col-md-10
-          = f.search_field :id, class: 'form-control', placeholder: 'Search by ID'
+          = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
       .form-group
         = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
         .col-md-10
@@ -22,17 +22,17 @@
     %thead
       %tr
         %th
-          ID
+          = sort_link(@q, :id, "ID")
         %th
           PI Name
         %th
           Department
         %th
-          Long Title
+          = sort_link(@q, :title, "Long Title")
         %th
-          Short Title
+          = sort_link(@q, :short_title, "Short Title")
         %th
-          Funding Source
+          = sort_link(@q, :funding_source, "Funding Source")
       %tbody
         - @protocols.each do |protocol|
           %tr
