@@ -6,6 +6,6 @@ feature 'User clicks look up button', js:true do
 
     click_link 'Look Up'
 
-    expect(current_path).to eq search_path
+    expect(current_path).to eq protocols_path
   end
 end
