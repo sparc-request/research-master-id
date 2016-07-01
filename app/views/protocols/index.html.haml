@@ -37,8 +37,10 @@
         - @protocols.each do |protocol|
           %tr
             %td= protocol.id
-            %td Juan Castillo
-            %td You moms department
+            %td
+              = protocol.primary_principal_investigator.try(:full_name)
+            %td
+              = protocol.primary_principal_investigator.try(:department).try(:titleize)
             %td= protocol.title
             %td= protocol.short_title
             %td
