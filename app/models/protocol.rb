@@ -6,7 +6,7 @@ class Protocol < ActiveRecord::Base
   has_many :project_roles
 
   def primary_principal_investigator
-    primary_pi_project_role.try(:identity)
+    primary_pi_project_role.identity
   end
 
   def primary_pi_project_role
