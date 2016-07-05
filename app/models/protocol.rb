@@ -12,4 +12,10 @@ class Protocol < ActiveRecord::Base
   def primary_pi_project_role
     project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
+
+  private
+
+  def self.ransackable_scopes
+    %i(primary_principal_investigator)
+  end
 end
