@@ -18,9 +18,15 @@
       .form-group
         .col-md-offset-2.col-md-10
           = f.submit class: 'btn btn-primary'
-  %table.table.table-striped.table-bordered.table-hover
+  = render "research_masters/new_research_master_modal"
+  .row
+    .col-md-6.col-md-offset-3
+      = link_to 'Associate Records', new_research_master_path, class: 'btn btn-primary associated-record', remote: true
+  %table.table.table-striped.table-bordered.table-hover#protocol-table
     %thead
       %tr
+        %th
+          Select
         %th
           = sort_link(@q, :id, "ID")
         %th
@@ -36,6 +42,9 @@
       %tbody
         - @protocols.each do |protocol|
           %tr
+            %td
+              .sparc-protocols
+                = check_box_tag "protocol_#{protocol.id}", protocol.id
             %td= protocol.id
             %td
               = protocol.primary_principal_investigator.try(:full_name)

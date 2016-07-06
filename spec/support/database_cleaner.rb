@@ -58,14 +58,5 @@ RSpec.configure do |config|
         DatabaseCleaner[:active_record, model: model].start
       end
   end
-
-  # Clean data post-test
-  config.append_after(:each) do
-    DatabaseCleaner.clean
-    models = ActiveRecord::Base.descendants.select { |model| model.respond_to?(:sparc_record?) }
-    models.
-      each do |model|
-        DatabaseCleaner[:active_record, model: model].clean
-      end
-  end
 end
+

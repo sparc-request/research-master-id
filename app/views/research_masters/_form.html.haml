@@ -28,6 +28,10 @@
         = f.label :funding_source do
           = f.radio_button :funding_source, 'External'
           External
+  = f.fields_for :associated_record do |ar|
+    = ar.hidden_field :sparc_id, value: params[:sparc_id]
+    -#= ar.hidden_field :coeus_id, value: params[:coeus_id]
+    -#= ar.hidden_field :eirb_id, value: params[:eirb_id]
   .modal-footer
     %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
       Close
