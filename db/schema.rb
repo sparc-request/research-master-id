@@ -24,15 +24,6 @@ ActiveRecord::Schema.define(version: 20160706143219) do
 
   add_index "associated_records", ["research_master_id"], name: "index_associated_records_on_research_master_id", using: :btree
 
-  create_table "protocols", force: :cascade do |t|
-    t.string   "short_title",    limit: 255
-    t.string   "title",          limit: 255
-    t.string   "funding_source", limit: 255
-    t.string   "funding_status", limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
   create_table "research_masters", force: :cascade do |t|
     t.string   "pi_name",        limit: 255
     t.string   "department",     limit: 255
