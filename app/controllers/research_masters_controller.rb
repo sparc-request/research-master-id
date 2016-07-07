@@ -1,10 +1,10 @@
 class ResearchMastersController < ApplicationController
 
   def index
-    @research_masters = current_user.research_masters
+    @q = ResearchMaster.ransack(params[:q])
+    @research_masters = @q.result(distinct: true)
     respond_to do |format|
       format.html
-      format.json { render json: @research_masters }
     end
   end
 
