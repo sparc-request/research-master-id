@@ -1,23 +1,65 @@
-%h1.text-center
-  Your Research Master Records
-.row
-  .col-md-4.col-md-offset-4
-    = link_to 'Look Up', protocols_path, class: 'btn btn-primary btn-block'
-= render "new_research_master_modal"
-.bootstrap-table-dropdown-overflow
-  %table{ data: { toggle: 'table', search: 'true', show_columns: 'true',
-    show_refresh: 'true', show_toggle: 'true',
-    url: research_masters_path(format: :json) } }
-    %thead
-      %tr
-        %th{ data: { field: 'pi_name' } }
-          PI Name
-        %th{ data: { field: 'department' } }
-          Department
-        %th{ data: { field: 'long_title' } }
-          Long Title
-        %th{ data: { field: 'short_title' } }
-          Short Title
-        %th{ data: { field: 'funding_source' } }
-          Funding Source
-
+.panel.panel-primary
+  .panel-heading
+    Search for Research Master Records
+  .panel-body
+    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
+      .form-group
+        = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
+      .form-group
+        = f.label :pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :pi_name_cont, class: 'form-control', placeholder: 'Search by PI Name'
+      .form-group
+        = f.label :department_cont, 'Search by Department', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :department_cont, class: 'form-control', placeholder: 'Search by Department'
+      .form-group
+        = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
+      .form-group
+        = f.label :long_title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Search by Long Title'
+      .form-group
+        = f.label :funding_source_cont, 'Search by Funding Source', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :funding_source_cont, class: 'form-control', placeholder: 'Search by Funding Source'
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          = f.submit class: 'btn btn-success'
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          = link_to 'Look Up Protocols', protocols_path, class: 'btn btn-primary'
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          %th
+            ID
+          %th
+            PI Name
+          %th
+            Department
+          %th
+            Long Title
+          %th
+            Short Title
+          %th
+            Funding Source
+        %tbody
+          - @research_masters.each do |research_master|
+            %tr
+              %td
+                = research_master.id
+              %td
+                = research_master.pi_name
+              %td
+                = research_master.department
+              %td
+                = research_master.long_title
+              %td
+                = research_master.short_title
+              %td
+                = research_master.funding_source
