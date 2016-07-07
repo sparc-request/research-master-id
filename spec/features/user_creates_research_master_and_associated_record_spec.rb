@@ -10,8 +10,6 @@ feature 'User creates research master and associated record', js: true do
     create(:project_role, role: 'primary-pi', identity: identity_two, protocol_id: protocol_two )
     create_and_sign_in_user
 
-    click_link 'Look Up'
-
     check "protocol_#{protocol_one.id}"
     check "protocol_#{protocol_two.id}"
 
