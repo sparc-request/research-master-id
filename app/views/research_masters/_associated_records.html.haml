@@ -1,0 +1,36 @@
+.panel.panel-primary
+  .panel-heading
+    Associated Records
+  .panel-body
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %th
+          Type
+        %th
+          ID
+        %th
+          PI Name
+        %th
+          Department
+        %th
+          Long Title
+        %th
+          Short Title
+        %th
+          Funding Source
+        %tbody
+          %tr
+            %td
+              SPARC
+            %td
+              = @sparc_protocol.id
+            %td
+              = @sparc_protocol.primary_principal_investigator.try(:full_name)
+            %td
+              = @sparc_protocol.primary_principal_investigator.try(:department).try(:titleize)
+            %td
+              = @sparc_protocol.title
+            %td
+              = @sparc_protocol.short_title
+            %td
+              = @sparc_protocol.funding_source

@@ -50,7 +50,7 @@
             Funding Source
         %tbody
           - @research_masters.each do |research_master|
-            %tr
+            %tr{class: 'research-master-record', data: { id: research_master.id} }
               %td
                 = research_master.id
               %td
@@ -63,3 +63,16 @@
                 = research_master.short_title
               %td
                 = research_master.funding_source
+%div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        %button{ class: 'close', data: { dismiss: 'modal' } }
+          %span
+            &times;
+        %h4.modal-title
+          Associated Protocols
+      .modal-body
+      .modal-footer
+        %button{class: 'btn btn-default', data: { dismiss: 'modal' } } 
+          Close
