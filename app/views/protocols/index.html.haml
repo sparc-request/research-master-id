@@ -21,7 +21,7 @@
   = render "research_masters/new_research_master_modal"
   .row
     .col-xs-2.col-xs-offset-1
-      = link_to 'Associate Records', new_research_master_path, class: 'btn btn-primary associated-record', remote: true
+      = link_to 'Associate Records', new_research_master_path, class: 'btn btn-primary associated-record disabled', remote: true
     .col-xs-2.col-xs-offset-5
       = link_to 'View/Search Research Master Records', research_masters_path, class: 'btn btn-primary'
   %table.table.table-striped.table-bordered.table-hover#protocol-table
