@@ -8,6 +8,15 @@ class ResearchMastersController < ApplicationController
     end
   end
 
+  def show
+    @research_master = ResearchMaster.find(params[:id])
+    @associated_record = @research_master.associated_record
+    @sparc_protocol = Protocol.find(@associated_record.sparc_id)
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def new
     @research_master = ResearchMaster.new
     @research_master.build_associated_record
