@@ -9,9 +9,9 @@ class ResearchMastersController < ApplicationController
   end
 
   def show
-    @research_master = ResearchMaster.find(params[:id])
-    @associated_record = @research_master.associated_record
-    @sparc_protocol = Protocol.find(@associated_record.sparc_id)
+    research_master = ResearchMaster.find(params[:id])
+    associated_record = research_master.associated_record
+    @sparc_protocol = Protocol.find(associated_record.sparc_id)
     respond_to do |format|
       format.js
     end
