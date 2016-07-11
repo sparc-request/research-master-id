@@ -11,6 +11,6 @@ $ ->
     sparc_id = $(this).val()
     sparc_protocol_count = $('.sparc-protocols input:checkbox:checked').length
     if sparc_protocol_count > 1
-      alert('You can not associate more than one record of the same type.')
+      swal('Error', 'You can not associate more than one record of the same type.', 'error')
       $("#protocol_#{sparc_id}").prop('checked', false)
 
