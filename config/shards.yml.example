@@ -10,6 +10,14 @@ octopus:
       adapter: mysql2
       username: root
       database: sparc-request_development
+    eirb:
+      adapter: sqlserver
+      host: 128.23.183.156
+      port: 1433
+      username: eIRBExtract
+      password: get2eIRB1nfo
+      database: TEST
+      tds_version: 8.0
   test: # configured for travis-ci
     sparc:
       adapter: mysql2
