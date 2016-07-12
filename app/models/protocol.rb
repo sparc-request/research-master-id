@@ -14,11 +14,8 @@ class Protocol < ActiveRecord::Base
   end
 
   def type
-    type = ''
     if table_name_prefix.include?('sparc')
-      type = 'Sparc'
+      return 'Sparc'
     end
-
-    type
   end
 end
