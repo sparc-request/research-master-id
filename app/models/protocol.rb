@@ -12,4 +12,13 @@ class Protocol < ActiveRecord::Base
   def primary_pi_project_role
     project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
+
+  def type
+    type = ''
+    if table_name_prefix.include?('sparc')
+      type = 'Sparc'
+    end
+
+    type
+  end
 end
