@@ -16,6 +16,8 @@ gem 'launchy'
 gem 'ar-octopus'
 gem 'pry'
 gem 'ransack'
+gem 'tiny_tds'
+gem 'activerecord-sqlserver-adapter', '~> 4.2.0'
 
 
 group :development, :test do
