@@ -1,6 +1,5 @@
 class Protocol < ActiveRecord::Base
   self.inheritance_column = nil # ignore STI
-  include SparcShard
 
   has_many :research_masters
   has_many :project_roles
