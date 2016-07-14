@@ -2,22 +2,14 @@
   .panel-heading
     Search for Protocols
   .panel-body
-    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
+    %form#search-protocols
       .form-group
-        = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
+        = label_tag :id, nil, class: 'col-md-2 control-label'
         .col-md-10
-          = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
-      .form-group
-        = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
-      .form-group
-        = f.label :title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :title_cont, class: 'form-control', placeholder: 'Search by Long Title'
+          = text_field_tag :protocol_id, nil, class: 'form-control'
       .form-group
         .col-sm-offset-2.col-sm-10
-          = f.submit class: 'btn btn-success'
+          = link_to 'Search', '#', class: 'btn btn-success', id: 'search'
       .row
         .col-md-6
           .text-center
@@ -31,7 +23,7 @@
         %th
           Select
         %th
-          = sort_link(@q, :id, "ID")
+          ID
         %th
           Type
         %th
@@ -39,11 +31,11 @@
         %th
           Department
         %th
-          = sort_link(@q, :title, "Long Title")
+          Long Title
         %th
-          = sort_link(@q, :short_title, "Short Title")
+          Short Title
         %th
-          = sort_link(@q, :funding_source, "Funding Source")
+          Funding Source
       %tbody
         - @protocols.each do |key, value|
           %tr
