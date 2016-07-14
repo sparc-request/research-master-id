@@ -3,7 +3,11 @@ class ProtocolsController < ApplicationController
     associated_ids = AssociatedRecord.associated_protocol_ids
     protocols = HTTParty.get('http://localhost:3000/protocols')
     gon.protocols = protocols.reject { |k, v| associated_ids.include?(k['id']) }
-    @protocols = gon.protocols
+    if params[:search]
+      @protocols = params[:data]
+    else
+      @protocols = gon.protocols
+    end
     respond_to do |format|
       format.html
     end
