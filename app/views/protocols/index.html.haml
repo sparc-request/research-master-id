@@ -45,19 +45,23 @@
         %th
           = sort_link(@q, :funding_source, "Funding Source")
       %tbody
-        - @protocols.each do |protocol|
+        - @protocols.each do |key, value|
           %tr
             %td
               .sparc-protocols
-                = check_box_tag "protocol_#{protocol.id}", protocol.id
-            %td= protocol.id
-            %td= protocol.type
+                = check_box_tag "protocol_#{key['id']}", key['id']
             %td
-              = protocol.primary_principal_investigator.try(:full_name)
+              = key['id']
             %td
-              = protocol.primary_principal_investigator.try(:department).try(:titleize)
-            %td= protocol.title
-            %td= protocol.short_title
+              = key['type']
             %td
-              = protocol.funding_source
+              = key['pi_name']
+            %td
+              = key['department']
+            %td
+              = key['title']
+            %td
+              = key['short_title']
+            %td
+              = key['funding_source']
 = render "research_masters/new_research_master_modal"

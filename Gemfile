@@ -15,6 +15,7 @@ gem 'faker'
 gem 'launchy'
 gem 'pry'
 gem 'ransack'
+gem 'httparty', '~> 0.13.7'
 
 group :development, :test do
   gem 'byebug'
