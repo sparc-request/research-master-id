@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160706143219) do
+ActiveRecord::Schema.define(version: 20160715175520) do
 
   create_table "associated_records", force: :cascade do |t|
     t.integer  "research_master_id", limit: 4
@@ -23,6 +23,25 @@ ActiveRecord::Schema.define(version: 20160706143219) do
   end
 
   add_index "associated_records", ["research_master_id"], name: "index_associated_records_on_research_master_id", using: :btree
+
+  create_table "primary_pis", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.integer  "protocol_id", limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "primary_pis", ["protocol_id"], name: "index_primary_pis_on_protocol_id", using: :btree
+
+  create_table "protocols", force: :cascade do |t|
+    t.string   "type",       limit: 255
+    t.text     "long_title", limit: 65535
+    t.integer  "sparc_id",   limit: 4
+    t.integer  "coeus_id",   limit: 4
+    t.string   "eirb_id",    limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "research_masters", force: :cascade do |t|
     t.string   "pi_name",        limit: 255
@@ -56,5 +75,6 @@ ActiveRecord::Schema.define(version: 20160706143219) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   add_foreign_key "associated_records", "research_masters"
+  add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_masters", "users"
 end
