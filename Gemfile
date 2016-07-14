@@ -16,6 +16,7 @@ gem 'launchy'
 gem 'pry'
 gem 'ransack'
 gem 'httparty', '~> 0.13.7'
+gem 'gon', '~> 6.0', '>= 6.0.1'
 
 group :development, :test do
   gem 'byebug'
