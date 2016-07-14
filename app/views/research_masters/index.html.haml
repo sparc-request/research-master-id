@@ -49,6 +49,8 @@
             Short Title
           %th
             Funding Source
+          %th
+            Delete Association
         %tbody
           - @research_masters.each do |research_master|
             %tr{class: 'research-master-record', data: { id: research_master.id} }
@@ -64,6 +66,9 @@
                 = research_master.short_title
               %td
                 = research_master.funding_source
+              %td.remove_association
+                %button.btn.btn-danger.delete{type: 'button'}
+                  %span.glyphicon.glyphicon-remove{ data: { id: research_master.id } }
 %div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content
