@@ -2,14 +2,30 @@
   .panel-heading
     Search for Protocols
   .panel-body
-    %form#search-protocols
+    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
       .form-group
-        = label_tag :id, nil, class: 'col-md-2 control-label'
+        = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
         .col-md-10
-          = text_field_tag :protocol_id, nil, class: 'form-control'
+          = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
+      .form-group
+        = f.label :type_cont, 'Search by Type', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :type_cont, class: 'form-control', placeholder: 'Search by Type'
+      .form-group
+        = f.label :pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :pi_name_cont, class: 'form-control', placeholder: 'Search by PI Name'
+      .form-group
+        = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
+      .form-group
+        = f.label :long_title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
+        .col-md-10
+          = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Search by Long Title'
       .form-group
         .col-sm-offset-2.col-sm-10
-          = link_to 'Search', '#', class: 'btn btn-success', id: 'search'
+          = f.submit class: 'btn btn-success'
       .row
         .col-md-6
           .text-center
@@ -17,47 +33,47 @@
         .col-md-6
           .text-center
             = link_to 'View/Search Research Master Records', research_masters_path, class: 'btn btn-primary btn-block'
-  %table.table.table-striped.table-bordered.table-hover#protocol-table
-    %thead
-      %tr
-        %th
-          Select
-        %th
-          ID
-        %th
-          Type
-        %th
-          PI Name
-        %th
-          Department
-        %th
-          Long Title
-        %th
-          Short Title
-        %th
-          Funding Source
-      %tbody
-        - @protocols.each do |key, value|
-          %tr
-            %td
-              - if key['type'] == 'SPARC'
+  - if params[:q]
+    %table.table.table-striped.table-bordered.table-hover#protocol-table
+      %thead
+        %tr
+          %th
+            Select
+          %th
+            = sort_link(@q, :id, "ID")
+          %th
+            = sort_link(@q, :type, "Type")
+          %th
+            = sort_link(@q, :pi_name, "PI Name")
+          %th
+            = sort_link(@q, :department, "Department")
+          %th
+            = sort_link(@q, :title, "Long Title")
+          %th
+            = sort_link(@q, :short_title, "Short Title")
+          %th
+            = sort_link(@q, :funding_source, "Funding Source")
+        %tbody
+          - @protocols.each do |protocol|
+            %tr
+              %td
                 .sparc-protocols
-                  = check_box_tag "protocol_#{key['id']}", key['id']
-              - elsif key['type'] == 'EIRB'
-                .eirb-protocols
-                  = check_box_tag "protocol_#{key['title']}", key['title']
-            %td
-              = key['id']
-            %td
-              = key['type']
-            %td
-              = key['pi_name']
-            %td
-              = key['department']
-            %td
-              = key['title']
-            %td
-              = key['short_title']
-            %td
-              = key['funding_source']
+                  = check_box_tag "protocol_#{protocol.id}", protocol.id
+              %td
+                = protocol.id
+              %td
+                = protocol.type
+              %td
+                = protocol.primary_pi.name
+              %td
+                = protocol.primary_pi.department
+              %td
+                = protocol.long_title
+              %td
+                = protocol.short_title
+              -#%td
+                = protocol.funding_source
+  - else
+    %h1.text-center
+      You haven't searched for any Protocols
 = render "research_masters/new_research_master_modal"
