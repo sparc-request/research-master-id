@@ -36,6 +36,7 @@ class ResearchMastersController < ApplicationController
   end
 
   def destroy
+    @research_master = ResearchMaster.find(params[:id])
     @research_master.destroy
   end
 
