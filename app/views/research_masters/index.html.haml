@@ -53,7 +53,7 @@
             Delete Association
         %tbody
           - @research_masters.each do |research_master|
-            %tr
+            %tr{ id: "research_master_#{research_master.id}" }
               %td.research-master{ data: { id: research_master.id } }
                 = research_master.id
               %td.research-master{ data: { id: research_master.id } }
