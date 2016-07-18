@@ -17,6 +17,7 @@ $ ->
       confirmButtonText: 'Delete'
       closeOnConfirm: false
       closeOnCancel: true
+      showLoaderOnConfirm: true
     }, (confirmed) ->
       if confirmed
         $.ajax
