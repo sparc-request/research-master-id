@@ -2,32 +2,38 @@
   .panel-heading
     Associated Records
   .panel-body
-    %table.table.table-striped.table-bordered.table-hover
-      %thead
-        %th
-          Type
-        %th
-          ID
-        %th
-          PI Name
-        %th
-          Title
-        %tbody
-          %tr
-            %td
-              SPARC
-            %td
-              = @sparc_protocol.sparc_id
-            %td
-              = @sparc_protocol.primary_pi.name
-            %td
-              = @sparc_protocol.long_title
-          %tr
-            %td
-              EIRB
-            %td
-              = @eirb_protocol.eirb_id
-            %td
-              = @eirb_protocol.primary_pi.name
-            %td
-              = @eirb_protocol.long_title
+    - if @sparc_protocol.nil? && @eirb_protocol.nil?
+      %h1.text-center
+        No Associated Protocols
+    - else
+      %table.table.table-striped.table-bordered.table-hover
+        %thead
+          %th
+            Type
+          %th
+            ID
+          %th
+            PI Name
+          %th
+            Title
+          %tbody
+            - unless @sparc_protocol.nil?
+              %tr
+                %td
+                  SPARC
+                %td
+                  = @sparc_protocol.sparc_id
+                %td
+                  = @sparc_protocol.primary_pi.name
+                %td
+                  = @sparc_protocol.long_title
+            - unless @eirb_protocol.nil?
+              %tr
+                %td
+                  EIRB
+                %td
+                  = @eirb_protocol.eirb_id
+                %td
+                  = @eirb_protocol.primary_pi.name
+                %td
+                  = @eirb_protocol.long_title

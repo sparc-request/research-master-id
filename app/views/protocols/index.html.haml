@@ -15,10 +15,13 @@
         .col-sm-offset-2.col-sm-10
           = f.submit class: 'btn btn-success'
       .row
-        .col-md-6
+        .col-md-4
           .text-center
-            = link_to 'Associate Records', new_research_master_path, class: 'btn btn-primary btn-block associated-record disabled', remote: true
-        .col-md-6
+            = link_to 'Associate Protocols', new_research_master_path, class: 'btn btn-primary btn-block associated-record disabled', remote: true
+        .col-md-4
+          .text-center
+            = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
+        .col-md-4
           .text-center
             = link_to 'View/Search Research Master Records', research_masters_path, class: 'btn btn-primary btn-block'
   - if params[:q]
