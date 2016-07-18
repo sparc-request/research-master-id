@@ -10,5 +10,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pi_names, only: [:index]
+  resources :primary_pis, only: [:index]
 end

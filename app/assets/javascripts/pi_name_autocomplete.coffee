@@ -1,8 +1,8 @@
 $ ->
   $('#newResearchMasterModal').on 'shown.bs.modal', ->
     options =
-      url: '/pi_names.json'
-      getValue: 'full_name'
+      url: '/primary_pis.json'
+      getValue: 'name'
       list:
         match:
           enabled: true

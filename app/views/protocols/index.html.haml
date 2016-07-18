@@ -37,8 +37,12 @@
           - @protocols.each do |protocol|
             %tr
               %td
-                .sparc-protocols
-                  = check_box_tag "protocol_#{protocol.id}", protocol.id
+                - if protocol.type == 'SPARC'
+                  .sparc-protocols
+                    = check_box_tag "protocol_#{protocol.id}", protocol.id
+                - elsif protocol.type == 'EIRB'
+                  .eirb-protocols
+                    = check_box_tag "protocol_#{protocol.id}", protocol.id
               %td
                 = protocol.type
               %td
