@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20160715175520) do
     t.integer  "research_master_id", limit: 4
     t.integer  "sparc_id",           limit: 4
     t.integer  "coeus_id",           limit: 4
-    t.integer  "eirb",               limit: 4
+    t.integer  "eirb_id",            limit: 4
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
   end

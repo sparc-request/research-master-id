@@ -5,11 +5,26 @@ $ ->
       type: 'GET'
       url: "/research_masters/#{id}"
 
-  $(document).on 'click', 'button.delete', ->
+  $(document).on 'click', 'button.delete', (e) ->
+    e.preventDefault()
     research_master_id = $(this).data('id')
-    if confirm('Are you sure you want to delete this association?')
-      $.ajax
-        type: 'delete'
-        url: "/research_masters/#{research_master_id}"
+    swal {
+      title: 'Delete Association'
+      text: 'You will not be able to undo this'
+      type: 'warning'
+      showCancelButton: true
+      confirmButtonColor: '#DD6B55'
+      confirmButtonText: 'Delete'
+      closeOnConfirm: false
+      closeOnCancel: true
+      showLoaderOnConfirm: true
+    }, (confirmed) ->
+      if confirmed
+        $.ajax
+          type: 'delete'
+          url: "/research_masters/#{research_master_id}"
+          success: ->
+            $("#research_master_#{research_master_id}").remove()
+            swal 'Deleted', 'Research Master record has been deleted', 'success'
 
 

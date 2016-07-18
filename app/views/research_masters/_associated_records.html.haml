@@ -11,26 +11,23 @@
         %th
           PI Name
         %th
-          Department
-        %th
-          Long Title
-        %th
-          Short Title
-        %th
-          Funding Source
+          Title
         %tbody
           %tr
             %td
               SPARC
             %td
-              = @sparc_protocol.id
+              = @sparc_protocol.sparc_id
             %td
-              = @sparc_protocol.primary_principal_investigator.try(:full_name)
+              = @sparc_protocol.primary_pi.name
             %td
-              = @sparc_protocol.primary_principal_investigator.try(:department).try(:titleize)
+              = @sparc_protocol.long_title
+          %tr
             %td
-              = @sparc_protocol.title
+              EIRB
             %td
-              = @sparc_protocol.short_title
+              = @eirb_protocol.eirb_id
             %td
-              = @sparc_protocol.funding_source
+              = @eirb_protocol.primary_pi.name
+            %td
+              = @eirb_protocol.long_title

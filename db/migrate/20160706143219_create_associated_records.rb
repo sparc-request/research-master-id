@@ -4,7 +4,7 @@ class CreateAssociatedRecords < ActiveRecord::Migration
       t.references :research_master, index: true, foreign_key: true
       t.integer :sparc_id
       t.integer :coeus_id
-      t.integer :eirb
+      t.integer :eirb_id
 
       t.timestamps null: false
     end
