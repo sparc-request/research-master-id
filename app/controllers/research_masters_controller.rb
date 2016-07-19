@@ -29,10 +29,12 @@ class ResearchMastersController < ApplicationController
   def create
     @research_master = ResearchMaster.new(research_master_params)
     @research_master.user = current_user
-    if @research_master.save
-      redirect_to protocols_path
-    else
-      @errors = @research_master.errors
+    respond_to do |format|
+      if @research_master.save
+        format.js
+      else
+        format.js { render :new }
+      end
     end
   end
 
