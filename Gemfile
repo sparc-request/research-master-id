@@ -17,6 +17,7 @@ gem 'pry'
 gem 'ransack'
 gem 'httparty', '~> 0.13.7'
 gem 'client_side_validations'
+gem 'bootstrap-sass', '~> 3.3.6'
 
 
 group :development, :test do
