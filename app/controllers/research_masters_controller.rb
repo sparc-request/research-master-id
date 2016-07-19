@@ -32,7 +32,7 @@ class ResearchMastersController < ApplicationController
     if @research_master.save
       redirect_to protocols_path
     else
-      render :new
+      @errors = @research_master.errors
     end
   end
 
