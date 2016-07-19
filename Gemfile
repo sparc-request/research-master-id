@@ -16,6 +16,8 @@ gem 'launchy'
 gem 'pry'
 gem 'ransack'
 gem 'httparty', '~> 0.13.7'
+gem 'client_side_validations'
+
 
 group :development, :test do
   gem 'byebug'
