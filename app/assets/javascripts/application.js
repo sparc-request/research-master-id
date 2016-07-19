@@ -15,4 +15,5 @@
 //= require bootstrap/dist/js/bootstrap.min
 //= require EasyAutocomplete/dist/jquery.easy-autocomplete.min
 //= require sweetalert.min
+//= require rails.validations
 //= require_tree .

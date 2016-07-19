@@ -1,5 +1,4 @@
-= form_for @research_master, html: { class: 'form-horizontal' } do |f|
-  = hidden_field_tag :identity_id
+= form_for @research_master, validate: true, html: { class: 'form-horizontal' }, remote: true do |f|
   .form-group
     = f.label :pi_name, 'PI Name', class: 'col-sm-2 control-label'
     .col-sm-10
