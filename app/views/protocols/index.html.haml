@@ -34,7 +34,21 @@
           %th
             = sort_link(@q, :title, "Title")
         %tbody
-          = render 'protocol_table'
+          - @protocols.each do |protocol|
+            %tr
+              %td
+                - if protocol.type == 'SPARC'
+                  .sparc-protocols
+                    = check_box_tag "protocol_#{protocol.id}", protocol.id
+                - elsif protocol.type == 'EIRB'
+                  .eirb-protocols
+                    = check_box_tag "protocol_#{protocol.id}", protocol.id
+              %td
+                = protocol.type
+              %td
+                = protocol.primary_pi.name
+              %td
+                = protocol.long_title
   - else
     %h1.text-center
       You haven't searched for any Protocols
