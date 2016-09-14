@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  root 'protocols#index'
+  root 'research_masters#index'
 
   resources :research_masters
 

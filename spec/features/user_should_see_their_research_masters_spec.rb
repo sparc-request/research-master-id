@@ -6,8 +6,6 @@ feature 'User should see their research masters', js:true do
 
     research_master = create(:research_master, user: User.first)
 
-    click_link "View/Search Research Master Records"
-
     expect(page).to have_content research_master.short_title
   end
 end
