@@ -3,7 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server 'bmic-dev-staging.obis.musc.edu', user: 'wih205', roles: %w{app db web}
+server 'bmic-dev-staging.obis.musc.edu', user: 'deploy', roles: %w{app db web}
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
@@ -30,6 +30,8 @@ server 'bmic-dev-staging.obis.musc.edu', user: 'wih205', roles: %w{app db web}
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
+
+set :tmp_dir, "/home/deploy/tmp"
 set :deploy_to, '/var/www/rails/research_master_id'
 set :branch, 'testing'
 set :rails_env, 'production'
