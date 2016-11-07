@@ -3,18 +3,20 @@
     Search for Research Master Records
   .panel-body
     = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
-      .form-group
-        = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
+      .optional-search-field{ class: 'hidden'}
+        .form-group
+          = f.label :id_eq, 'Search by ID', class: 'col-md-2 control-label'
+          .col-md-10
+            = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by ID'
       .form-group
         = f.label :pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
         .col-md-10
           = f.search_field :pi_name_cont, class: 'form-control', placeholder: 'Search by PI Name'
-      .form-group
-        = f.label :department_cont, 'Search by Department', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :department_cont, class: 'form-control', placeholder: 'Search by Department'
+      .optional-search-field{ class: 'hidden'}
+        .form-group
+          = f.label :department_cont, 'Search by Department', class: 'col-md-2 control-label'
+          .col-md-10
+            = f.search_field :department_cont, class: 'form-control', placeholder: 'Search by Department'
       .form-group
         = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
         .col-md-10
@@ -23,10 +25,11 @@
         = f.label :long_title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
         .col-md-10
           = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Search by Long Title'
-      .form-group
-        = f.label :funding_source_cont, 'Search by Funding Source', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :funding_source_cont, class: 'form-control', placeholder: 'Search by Funding Source'
+      .optional-search-field{ class: 'hidden'}
+        .form-group
+          = f.label :funding_source_cont, 'Search by Funding Source', class: 'col-md-2 control-label'
+          .col-md-10
+            = f.search_field :funding_source_cont, class: 'form-control', placeholder: 'Search by Funding Source'
       .form-group
         .col-sm-offset-2.col-sm-10
           = f.submit class: 'btn btn-success'
