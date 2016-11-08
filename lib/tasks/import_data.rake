@@ -21,9 +21,8 @@ task import_data: :environment do
     elsif key['type'] == 'EIRB'
       protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
-                                 eirb_id: key['pro_number'])
-      PrimaryPi.find_or_create_by(name: key['pi_name'],
-                       protocol: protocol)
+                                 eirb_id: key['pro_number'].tr('Pro', ''))
+      PrimaryPi.find_or_create_by(name: key['pi_name'],protocol: protocol)
     end
   end
 end

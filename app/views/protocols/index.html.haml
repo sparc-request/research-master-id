@@ -8,7 +8,7 @@
         .col-md-10
           = f.search_field :sparc_id_eq, class: 'form-control', placeholder: 'Sparc ID'
       .form-group
-        = f.label :eirb_id_cont, 'Search by eIRB ID', class: 'col-md-2 control-label'
+        = f.label :eirb_id_cont, 'Search by eIRB Pro #', class: 'col-md-2 control-label'
         .col-md-10
           = f.search_field :eirb_id_cont, class: 'form-control', placeholder: 'eIRB ID' 
       .form-group
@@ -43,6 +43,8 @@
           %th
             = sort_link(@q, :protocol_id, "Protocol ID")
           %th
+            = sort_link(@q, :eirb_id, "Pro #")
+          %th
             = sort_link(@q, :pi_name, "PI Name")
           %th
             = sort_link(@q, :title, "Title")
@@ -61,7 +63,8 @@
               %td
                 - if protocol.type == 'SPARC'
                   = protocol.sparc_id
-                - elsif protocol.type == 'EIRB'
+              %td
+                - if protocol.type == 'EIRB'
                   = protocol.eirb_id
               %td
                 = protocol.primary_pi.name

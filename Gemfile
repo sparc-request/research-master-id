@@ -19,6 +19,8 @@ gem 'httparty', '~> 0.13.7'
 gem 'client_side_validations'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'whenever', '~> 0.9.7'
+gem 'net-ldap', '~> 0.15.0'
+
 
 group :development, :test do
   gem 'byebug'
