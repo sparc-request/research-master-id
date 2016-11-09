@@ -33,6 +33,12 @@
       .form-group
         .col-sm-offset-2.col-sm-10
           = f.submit class: 'btn btn-success'
+      .container
+        .row
+          .col-sm-4
+            = label_tag :show_more, 'Show More'
+            .show_more
+              = check_box_tag :show_more, 'Show more...', false, id: 'show_more'
       .row
         .col-md-6.col-md-offset-3
           = link_to 'Look Up Protocols', protocols_path, class: 'btn btn-primary btn-block'
