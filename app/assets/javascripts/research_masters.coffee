@@ -29,6 +29,5 @@ $ ->
 
   $(document).on 'click', '#show_more', ->
     $('#optional-search-fields').toggle()
-    console.log $('#optional-search-fields')
 
 
