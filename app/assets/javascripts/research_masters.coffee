@@ -27,4 +27,8 @@ $ ->
             $("#research_master_#{research_master_id}").remove()
             swal 'Deleted', 'Research Master record has been deleted', 'success'
 
+  $(document).on 'click', '#show_more', ->
+    $('#optional-search-fields').toggle()
+    console.log $('#optional-search-fields')
+
 
