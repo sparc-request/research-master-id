@@ -4,8 +4,8 @@
       Log in
     = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
       .form-group
-        = f.label :email
-        = f.text_field :email, autofocus: true, class: "form-control"
+        = f.label :login, 'NetID'
+        = f.text_field :login, autofocus: true, class: "form-control"
       .form-group
         = f.label :password
         = f.password_field :password, autocomplete: "off", class: "form-control"
@@ -15,4 +15,3 @@
           = f.label :remember_me
       .form-group
         = f.submit "Log in", class: "btn btn-primary sign-in"
-    = render "devise/shared/links"

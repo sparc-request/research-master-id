@@ -13,17 +13,16 @@ task import_data: :environment do
 
   protocols.each do |key, value|
     if key['type'] == 'SPARC'
-      protocol = Protocol.create(type: key['type'],
+      protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
                                  sparc_id: key['id'])
-      PrimaryPi.create(name: key['pi_name'],
+      PrimaryPi.find_or_create_by(name: key['pi_name'],
                        protocol: protocol)
     elsif key['type'] == 'EIRB'
-      protocol = Protocol.create(type: key['type'],
+      protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
-                                 eirb_id: key['pro_number'])
-      PrimaryPi.create(name: key['pi_name'],
-                       protocol: protocol)
+                                 eirb_id: key['pro_number'].tr('Pro', ''))
+      PrimaryPi.find_or_create_by(name: key['pi_name'],protocol: protocol)
     end
   end
 end
