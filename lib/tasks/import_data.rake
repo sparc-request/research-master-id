@@ -15,7 +15,9 @@ task import_data: :environment do
     if key['type'] == 'SPARC'
       protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
-                                 sparc_id: key['id'])
+                                 sparc_id: key['id'],
+                                 eirb_id: key['pro_number']
+                                )
       PrimaryPi.find_or_create_by(name: key['pi_name'],
                        protocol: protocol)
     elsif key['type'] == 'EIRB'
