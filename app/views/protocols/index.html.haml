@@ -66,10 +66,10 @@
               %td
                 = protocol.eirb_id
               %td
-                - unless protocol.primary_pi.name.nil?
+                - unless protocol.primary_pi.nil?
                   = protocol.primary_pi.name
                 - else
-                  'N/A'
+                  N/A
               %td
                 = protocol.long_title
   - else
