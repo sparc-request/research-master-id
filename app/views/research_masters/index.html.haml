@@ -38,17 +38,17 @@
       %thead
         %tr
           %th
-            ID
+            = sort_link(@q, :id, 'ID')
           %th
-            PI Name
+            = sort_link(@q, :pi_name, 'PI Name')
           %th
-            Department
+            = sort_link(@q, :department, 'Department')
           %th
-            Long Title
+            = sort_link(@q, :long_title, 'Long Title')
           %th
-            Short Title
+            = sort_link(@q, :short_title, 'Short Title')
           %th
-            Funding Source
+            = sort_link(@q, :funding_source, 'Funding Source')
           %th
             Delete Association
         %tbody
