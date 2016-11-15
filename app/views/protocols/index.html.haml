@@ -64,10 +64,12 @@
                 - if protocol.type == 'SPARC'
                   = protocol.sparc_id
               %td
-                - if protocol.type == 'EIRB'
-                  = protocol.eirb_id
+                = protocol.eirb_id
               %td
-                = protocol.primary_pi.name
+                - unless protocol.primary_pi.nil?
+                  = protocol.primary_pi.name
+                - else
+                  N/A
               %td
                 = protocol.long_title
   - else

@@ -15,14 +15,20 @@ task import_data: :environment do
     if key['type'] == 'SPARC'
       protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
-                                 sparc_id: key['id'])
-      PrimaryPi.find_or_create_by(name: key['pi_name'],
+                                 sparc_id: key['id'],
+                                 eirb_id: key['pro_number']
+                                )
+      unless key['pi_name'].nil?
+        PrimaryPi.find_or_create_by(name: key['pi_name'],
                        protocol: protocol)
+      end
     elsif key['type'] == 'EIRB'
       protocol = Protocol.find_or_create_by(type: key['type'],
                                  long_title: key['title'],
                                  eirb_id: key['pro_number'].tr('Pro', ''))
-      PrimaryPi.find_or_create_by(name: key['pi_name'],protocol: protocol)
+      unless key['pi_name'].nil?
+        PrimaryPi.find_or_create_by(name: key['pi_name'], protocol: protocol)
+      end
     end
   end
 end
