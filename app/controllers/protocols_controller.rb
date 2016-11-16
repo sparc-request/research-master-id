@@ -1,4 +1,6 @@
 class ProtocolsController < ApplicationController
+  layout 'main'
+
   def index
     associated_ids = AssociatedRecord.associated_protocol_ids
     @q = Protocol.includes(:primary_pi).ransack(params[:q])

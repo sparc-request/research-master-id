@@ -1,0 +1,20 @@
+- content_for :content do
+  #wrapper
+    #sidebar-wrapper
+      %ul.sidebar-nav
+        %li.sidebar-brand
+          = link_to 'Research Master ID', root_path
+        %li
+          = link_to 'Protocols', protocols_path
+        %li
+          = link_to 'Research Masters', research_masters_path
+    #page-content-wrapper
+      .row
+        .col-lg-12
+          %a{ href: 'javascript:void(0);', class: 'btn btn-default btn-sm',
+          id: 'menu-toggle' }
+            %span.glyphicon.glyphicon-menu-hamburger
+          %br
+          %br
+          = yield
+= render template: 'layouts/application'

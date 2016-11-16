@@ -1,4 +1,5 @@
 class ResearchMastersController < ApplicationController
+  layout 'main'
 
   def index
     @q = ResearchMaster.ransack(params[:q])
