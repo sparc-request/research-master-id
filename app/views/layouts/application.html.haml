@@ -9,10 +9,6 @@
     = javascript_include_tag 'application'
     = csrf_meta_tags
   %body
-    .container-fluid
-      .row.header
-        = render "shared/header"
-      .row
-        .col-md-12
-          - flash_messages
-      = yield
+    = render 'shared/navbar'
+    - flash_messages
+    = content_for?(:content) ? yield(:content) : yield

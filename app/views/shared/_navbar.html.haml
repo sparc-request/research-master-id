@@ -1,0 +1,31 @@
+%nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      = link_to 'SCTR', 'http://sctr.musc.edu', class: 'navbar-brand'
+      = link_to 'MUSC', 'http://www.musc.edu', class: 'navbar-brand'
+      %button{ class: 'navbar-toggle collapsed',
+      data: { toggle: 'collapse', target: '#navbar' } }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      .visible-xs.visible-sm
+        = link_to 'RMID', root_path, class: 'navbar-brand'
+    .collapse.navbar-collapse#navbar
+      %ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          %p.navbar-text
+            = "Signed in as #{current_user.email}"
+        %li
+          - if user_signed_in?
+            = link_to destroy_user_session_path, method: :delete do
+              Log out
+              %i.glyphicon.glyphicon-log-out
+          - else
+            = link_to new_user_session_path do
+              Log in
+              %i.glyphicon.glyphicon-log-in
+        %li
+          = link_to root_path do
+            Return to Home
+            %i.glyphicon.glyphicon-home
