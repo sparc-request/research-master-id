@@ -45,17 +45,19 @@
       %thead
         %tr
           %th
-            RMID
+            = sort_link(@q, :id, 'RMID')
           %th
-            PI Name
+            = sort_link(@q, :pi_name, 'PI Name')
           %th
-            Department
+            = sort_link(@q, :department, 'Department')
           %th
-            Long Title
+            = sort_link(@q, :long_title, 'Long Title')
           %th
-            Short Title
+            = sort_link(@q, :short_title, 'Short Title')
           %th
-            Funding Source
+            = sort_link(@q, :funding_source, 'Funding Source')
+          %th
+            Edit
           %th
             Delete Association
         %tbody
@@ -74,8 +76,14 @@
               %td.research-master{ data: { id: research_master.id } }
                 = research_master.funding_source
               %td
+                %button.btn.btn-warning{type: 'button', data: { id: research_master.id } }
+                  %span.glyphicon.glyphicon-edit
+              %td
                 %button.btn.btn-danger.delete{type: 'button', data: { id: research_master.id } }
                   %span.glyphicon.glyphicon-remove
+    .col-md-6.col-md-offset-3
+      .text-center
+        = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
 %div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content
@@ -89,3 +97,4 @@
       .modal-footer
         %button{class: 'btn btn-default', data: { dismiss: 'modal' } } 
           Close
+= render "research_masters/new_research_master_modal"
