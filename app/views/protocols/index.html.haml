@@ -28,9 +28,6 @@
             = link_to 'Associate Protocols', new_research_master_path, class: 'btn btn-primary btn-block associated-record disabled', remote: true
         .col-md-4
           .text-center
-            = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
-        .col-md-4
-          .text-center
             = link_to 'View/Search Research Master Records', research_masters_path, class: 'btn btn-primary btn-block'
   - if params[:q]
     %table.table.table-striped.table-bordered.table-hover#protocol-table
@@ -75,4 +72,3 @@
   - else
     %h1.text-center
       You haven't searched for any Protocols
-= render "research_masters/new_research_master_modal"
