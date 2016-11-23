@@ -2,7 +2,7 @@ task import_data: :environment do
 
   get_protocols = HTTParty.get('https://api-sparc.musc.edu/protocols')
   protocols_array = JSON.parse(get_protocols.body)
-  get_eirb_studies = HTTParty.get('https://api-eirb.musc.edu/studies.json')
+  get_eirb_studies = HTTParty.get('https://api-eirb.musc.edu/studies.json?musc_studies=true')
   eirb_studies_array = JSON.parse(get_eirb_studies.body)
 
   protocols_hash = Hash[protocols_array.each_slice(2).to_a]
