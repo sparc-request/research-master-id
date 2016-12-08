@@ -9,7 +9,7 @@ RSpec.describe AssociatedRecord, type: :model do
       protocol1 = create(:protocol)
       protocol2 = create(:protocol)
       research_master1 = create(:research_master)
-      research_master2 = create(:research_master)
+      research_master2 = create(:research_master, pi_name: 'brady')
       create(:associated_record, research_master_id: research_master1, sparc_id: protocol1.id)
       create(:associated_record, research_master_id: research_master2, sparc_id: protocol2.id)
 
