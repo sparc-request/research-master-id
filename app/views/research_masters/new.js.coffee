@@ -1,7 +1,5 @@
 $('#newResearchMasterModal').modal('show')
 $('#newResearchMasterModal .modal-body').html("<%= j render 'form' %>")
-$('#newResearchMasterModal').on 'shown.bs.modal', ->
-  $('form#new_research_master').enableClientSideValidations()
 
 $('#newResearchMasterModal').on 'change', ->
     options =
