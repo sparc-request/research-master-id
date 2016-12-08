@@ -96,28 +96,27 @@
 
 @media(min-width:768px) {
     #wrapper {
-        padding-left: 250px;
+        padding-right: 0;
     }
 
     #wrapper.toggled {
-        padding-left: 0;
+        padding-right: 250px;
     }
 
     #sidebar-wrapper {
-        width: 250px;
-    }
-
-    #wrapper.toggled #sidebar-wrapper {
         width: 0;
     }
 
+    #wrapper.toggled #sidebar-wrapper {
+        width: 250px;
+    }
+
     #page-content-wrapper {
-        padding: 20px;
         position: relative;
     }
 
     #wrapper.toggled #page-content-wrapper {
-        position: relative;
-        margin-right: 0;
+        position: absolute;
+        margin-right: -250px;
     }
 }
