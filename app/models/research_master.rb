@@ -4,5 +4,20 @@ class ResearchMaster < ActiveRecord::Base
 
   validates :pi_name, :department, :long_title, :short_title, presence: true
 
+  validates :pi_name,
+    uniqueness: { scope: [:department, :long_title],
+    message: 'There is an existing Research Master record with the same
+    Department and Long Title' }
+
+  validates :department,
+    uniqueness: { scope: [:pi_name, :long_title],
+    message: 'There is an existing Research Master record with the same PI Name
+    and Long Title' }
+
+  validates :long_title,
+    uniqueness: { scope: [:pi_name, :department],
+    message: 'There is an existing Research Master record with the same PI Name
+    and Department' }
+
   accepts_nested_attributes_for :associated_record
 end

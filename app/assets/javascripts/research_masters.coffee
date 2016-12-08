@@ -1,5 +1,5 @@
 $ ->
-  $('.research-master').on 'click', ->
+  $(document).on 'click', '.research-master', ->
     id = $(this).data('id')
     $.ajax
       type: 'GET'

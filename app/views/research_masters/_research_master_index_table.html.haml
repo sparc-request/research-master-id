@@ -1,0 +1,20 @@
+- research_masters.each do |research_master|
+  %tr{ id: "research_master_#{research_master.id}" }
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.id
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.pi_name
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.department
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.long_title
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.short_title
+    %td.research-master{ data: { id: research_master.id } }
+      = research_master.funding_source
+    %td
+      %button.btn.btn-warning{type: 'button', data: { id: research_master.id } }
+        %span.glyphicon.glyphicon-edit
+    %td
+      %button.btn.btn-danger.delete{type: 'button', data: { id: research_master.id } }
+        %span.glyphicon.glyphicon-remove

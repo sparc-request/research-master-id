@@ -32,13 +32,15 @@ class ResearchMastersController < ApplicationController
   end
 
   def create
+    @q = ResearchMaster.ransack(params[:q])
+    @research_masters = @q.result(distinct: true)
     @research_master = ResearchMaster.new(research_master_params)
     @research_master.user = current_user
     respond_to do |format|
       if @research_master.save
         format.js
       else
-        format.js { render :new }
+        format.json { render json: { error: @research_master.errors }, status: 400 }
       end
     end
   end
