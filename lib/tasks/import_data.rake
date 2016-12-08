@@ -19,7 +19,7 @@ task import_data: :environment do
                                  eirb_id: key['pro_number']
                                 )
       unless key['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: key['pi_name'],
+        PrimaryPi.find_or_create_by(name: key['pi_name'], department: key['pi_department'].humanize.titleize,
                        protocol: protocol)
       end
     elsif key['type'] == 'EIRB'
