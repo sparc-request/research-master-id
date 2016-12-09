@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160715175520) do
+ActiveRecord::Schema.define(version: 20161208203934) do
 
   create_table "associated_records", force: :cascade do |t|
     t.integer  "research_master_id", limit: 4
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20160715175520) do
 
   create_table "primary_pis", force: :cascade do |t|
     t.string   "name",        limit: 255
+    t.string   "department",  limit: 255
     t.integer  "protocol_id", limit: 4
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
