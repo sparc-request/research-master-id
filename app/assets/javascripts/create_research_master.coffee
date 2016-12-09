@@ -1,5 +1,6 @@
 $ ->
   $(document).on 'click', '.submit-rm', (e) ->
+    e.preventDefault()
     values = {}
     $.each $('.research-master-form').serializeArray(), (i, field) ->
       values[field.name] = field.value
