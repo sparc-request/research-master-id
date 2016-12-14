@@ -17,7 +17,9 @@ task import_data: :environment do
   eirb_studies.each do |study|
     eirb_study = Protocol.create(type: study['type'],
                             long_title: study['title'],
-                            eirb_id: study['pro_number']
+                            eirb_id: study['pro_number'],
+                            eirb_institution_id: study['institution_id'],
+                            eirb_state: study['state']
                            )
     unless study['pi_name'].nil?
       PrimaryPi.create(name: study['pi_name'], protocol: eirb_study)
