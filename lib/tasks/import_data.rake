@@ -1,34 +1,26 @@
 task import_data: :environment do
 
-  get_protocols = HTTParty.get('https://api-sparc.musc.edu/protocols')
-  protocols_array = JSON.parse(get_protocols.body)
-  get_eirb_studies = HTTParty.get('https://api-eirb.musc.edu/studies.json?musc_studies=true')
-  eirb_studies_array = JSON.parse(get_eirb_studies.body)
+  protocols = HTTParty.get('https://api-sparc.musc.edu/protocols', headers: {'Content-Type' => 'application/json'})
+  eirb_studies = HTTParty.get('https://api-eirb.musc.edu/studies.json?musc_studies=true', headers: {'Content-Type' => 'application/json'})
 
-  protocols_hash = Hash[protocols_array.each_slice(2).to_a]
-
-  eirb_hash = Hash[eirb_studies_array.each_slice(2).to_a]
-
-  protocols = protocols_hash.merge(eirb_hash)
-
-  protocols.each do |key, value|
-    if key['type'] == 'SPARC'
-      protocol = Protocol.find_or_create_by(type: key['type'],
-                                 long_title: key['title'],
-                                 sparc_id: key['id'],
-                                 eirb_id: key['pro_number']
-                                )
-      unless key['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: key['pi_name'], department: key['pi_department'].humanize.titleize,
-                       protocol: protocol)
-      end
-    elsif key['type'] == 'EIRB'
-      protocol = Protocol.find_or_create_by(type: key['type'],
-                                 long_title: key['title'],
-                                 eirb_id: key['pro_number'].tr('Pro', ''))
-      unless key['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: key['pi_name'], protocol: protocol)
-      end
+  protocols.each do |protocol|
+    sparc_protocol = Protocol.create(type: protocol['type'],
+                               long_title: protocol['title'],
+                               sparc_id: protocol['id'],
+                               eirb_id: protocol['pro_number']
+                              )
+    unless protocol['pi_name'].nil?
+      PrimaryPi.create(name: protocol['pi_name'], department: protocol['pi_department'].humanize.titleize,
+                       protocol: sparc_protocol)
+    end
+  end
+  eirb_studies.each do |study|
+    eirb_study = Protocol.create(type: study['type'],
+                            long_title: study['title'],
+                            eirb_id: study['pro_number']
+                           )
+    unless study['pi_name'].nil?
+      PrimaryPi.create(name: study['pi_name'], protocol: eirb_study)
     end
   end
 end
