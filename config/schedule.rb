@@ -1,3 +1,3 @@
 every 4.hours, at: '5:30 am' do
-  rake 'import_data'
+  rake 'update_data'
 end
