@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161208203934) do
+ActiveRecord::Schema.define(version: 20161214193302) do
 
   create_table "associated_records", force: :cascade do |t|
     t.integer  "research_master_id", limit: 4
@@ -35,13 +35,15 @@ ActiveRecord::Schema.define(version: 20161208203934) do
   add_index "primary_pis", ["protocol_id"], name: "index_primary_pis_on_protocol_id", using: :btree
 
   create_table "protocols", force: :cascade do |t|
-    t.string   "type",       limit: 255
-    t.text     "long_title", limit: 65535
-    t.integer  "sparc_id",   limit: 4
-    t.integer  "coeus_id",   limit: 4
-    t.string   "eirb_id",    limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "type",                limit: 255
+    t.text     "long_title",          limit: 65535
+    t.integer  "sparc_id",            limit: 4
+    t.integer  "coeus_id",            limit: 4
+    t.string   "eirb_id",             limit: 255
+    t.string   "eirb_institution_id", limit: 255
+    t.string   "eirb_state",          limit: 255
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   create_table "research_masters", force: :cascade do |t|
