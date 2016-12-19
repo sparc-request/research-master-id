@@ -32,7 +32,6 @@ server 'bmic-rmid-v.mdc.musc.edu', user: 'wih205', roles: %w{app db web}
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
-set :tmp_dir, '/home/deploy/tmp'
 set :deploy_to, '/var/www/rails/research_master_id'
 set :branch, 'production'
 set :rails_env, 'production'
