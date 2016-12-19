@@ -3,6 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
+server 'bmic-rmid-v.mdc.musc.edu', user: 'wih205', roles: %w{app db web}
 # server 'example.com', user: 'deploy', roles: %w{app db web}, my_property: :my_value
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
@@ -31,6 +32,12 @@
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
+set :tmp_dir, '/home/deploy/tmp'
+set :deploy_to, '/var/www/rails/research_master_id'
+set :branch, 'production'
+set :rails_env, 'production'
+set :rvm_ruby_version, '2.3.3@research_master_id --create'
+set :passenger_restart_with_touch, true
 
 
 # Custom SSH Options
