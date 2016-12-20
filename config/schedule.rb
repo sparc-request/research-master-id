@@ -1,3 +1,3 @@
-every 4.hours, at: '5:30 am' do
+every 4.hours, :roles => [:app] do
   rake 'update_data'
 end
