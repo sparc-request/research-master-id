@@ -98,6 +98,7 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    dotenv (2.1.1)
     erubis (2.7.0)
     execjs (2.6.0)
     factory_girl (4.5.0)
@@ -278,6 +279,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   database_cleaner
   devise
+  dotenv
   factory_girl_rails (~> 4.5.0)
   faker
   haml-rails (~> 0.9)
@@ -300,4 +302,4 @@ DEPENDENCIES
   whenever (~> 0.9.7)
 
 BUNDLED WITH
-   1.12.5
+   1.13.6

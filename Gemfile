@@ -19,6 +19,7 @@ gem 'httparty', '~> 0.13.7'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'whenever', '~> 0.9.7'
 gem 'net-ldap', '~> 0.15.0'
+gem 'dotenv'
 
 
 group :development, :test do
