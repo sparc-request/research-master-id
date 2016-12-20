@@ -1,7 +1,7 @@
 task update_data: :environment do
 
-  protocols = HTTParty.get('https://api-sparc.musc.edu/protocols', headers: {'Content-Type' => 'application/json'})
-  eirb_studies = HTTParty.get('https://api-eirb.musc.edu/studies.json?musc_studies=true', headers: {'Content-Type' => 'application/json'})
+  protocols = HTTParty.get('http://sparc_api/protocols', headers: {'Content-Type' => 'application/json'})
+  eirb_studies = HTTParty.get('http://eirb_api/studies.json?musc_studies=true', headers: {'Content-Type' => 'application/json'})
 
   protocols.each do |protocol|
     sparc_protocol = Protocol.find_or_create_by(type: protocol['type'],
