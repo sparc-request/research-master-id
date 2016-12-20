@@ -1,8 +1,11 @@
 %nav.navbar.navbar-default.navbar-fixed-top
   .container-fluid
     .navbar-header
-      = link_to 'SCTR', 'http://sctr.musc.edu', class: 'navbar-brand'
-      = link_to 'MUSC', 'http://www.musc.edu', class: 'navbar-brand'
+      = link_to 'SCTR', 'http://sctr.musc.edu', class: 'navbar-brand', target: '_blank'
+      = link_to 'MUSC', 'http://www.musc.edu', class: 'navbar-brand', target: '_blank'
+      = link_to 'SPARC', 'http://sparc.musc.edu', class: 'navbar-brand', target: '_blank'
+      = link_to 'eIRB', 'http://eirb.healthsciencessc.org', class: 'navbar-brand', target: '_blank'
+      = link_to 'ePDS', 'http://erma.musc.edu/cgi-bin/grants_pi/admin/index.cgi', class: 'navbar-brand', target: '_blank'
       %button{ class: 'navbar-toggle collapsed',
       data: { toggle: 'collapse', target: '#navbar' } }
         %span.sr-only Toggle navigation
