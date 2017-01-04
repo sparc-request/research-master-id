@@ -11,7 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214193302) do
+ActiveRecord::Schema.define(version: 20170104194041) do
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string   "access_token", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "associated_records", force: :cascade do |t|
     t.integer  "research_master_id", limit: 4

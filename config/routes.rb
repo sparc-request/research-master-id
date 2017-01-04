@@ -4,6 +4,10 @@ Rails.application.routes.draw do
 
   resources :research_masters
 
+  namespace :api do
+    resources :research_masters, only: [:index]
+  end
+
   resources :protocols do
     collection do
       match 'search' => 'protocols#search', via: [:get, :post], as: :search
