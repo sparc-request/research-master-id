@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :research_masters
 
   namespace :api do
-    resources :research_masters, only: [:index]
+    resources :research_masters, only: [:index, :show]
   end
 
   resources :protocols do

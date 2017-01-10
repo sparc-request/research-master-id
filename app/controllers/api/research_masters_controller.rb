@@ -9,6 +9,13 @@ class Api::ResearchMastersController < ApplicationController
     end
   end
 
+  def show
+    @research_master = ResearchMaster.find(params[:id])
+    respond_to do |format|
+      format.json { render json: @research_master }
+    end
+  end
+
   private
 
   def restrict_access
