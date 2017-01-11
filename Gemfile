@@ -20,6 +20,7 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'whenever', '~> 0.9.7'
 gem 'net-ldap', '~> 0.15.0'
 gem 'dotenv'
+gem 'rack-cors', :require => 'rack/cors'
 
 
 group :development, :test do

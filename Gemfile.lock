@@ -164,6 +164,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.6.5)
+    rack-cors (0.4.0)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.7.1)
@@ -290,6 +291,7 @@ DEPENDENCIES
   mysql2 (>= 0.3.13, < 0.5)
   net-ldap (~> 0.15.0)
   pry
+  rack-cors
   rails (= 4.2.7.1)
   ransack
   rspec-rails (~> 3.0)
