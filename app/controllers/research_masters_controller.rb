@@ -1,9 +1,8 @@
 class ResearchMastersController < ApplicationController
   layout 'main'
+  before_action :find_rm_records, only: [:index, :create, :update]
 
   def index
-    @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result(distinct: true)
     respond_to do |format|
       format.html
     end
@@ -31,9 +30,26 @@ class ResearchMastersController < ApplicationController
     end
   end
 
+  def edit
+    @research_master = ResearchMaster.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def update
+    @research_master = ResearchMaster.find(params[:id])
+    @research_master.update_attributes(research_master_params)
+    respond_to do |format|
+      if @research_master.save
+        format.js
+      else
+        format.json { render json: { error: @research_master.errors }, status: 400 }
+      end
+    end
+  end
+
   def create
-    @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result(distinct: true)
     @research_master = ResearchMaster.new(research_master_params)
     @research_master.user = current_user
     respond_to do |format|
@@ -51,6 +67,11 @@ class ResearchMastersController < ApplicationController
   end
 
   private
+
+  def find_rm_records
+    @q = ResearchMaster.ransack(params[:q])
+    @research_masters = @q.result(distinct: true)
+  end
 
   def research_master_params
     params.require(:research_master).permit!

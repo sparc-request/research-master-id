@@ -13,11 +13,11 @@
     %td.research-master{ data: { id: research_master.id } }
       = research_master.funding_source
     %td
-      %button.btn.btn-warning{type: 'button', data: { id: research_master.id } }
+      = link_to edit_research_master_path(research_master), class: [('btn btn-warning'), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?)], remote: true do
         %span.glyphicon.glyphicon-edit
     %td
       .btn-group
-        %button.btn.btn-danger{type: 'button', class: (research_master.associated_record.present? ? 'dropdown-toggle' : 'research-master-delete'), data: { id: research_master.id, toggle: 'dropdown' } }
+        = link_to 'javascript:void(0)', class: [('btn btn-danger'), (research_master.associated_record.present? ? 'dropdown-toggle' : 'research-master-delete'), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?)], data: { id: research_master.id } do
           %span.glyphicon.glyphicon-remove
           - if research_master.associated_record.present?
             %span.caret
