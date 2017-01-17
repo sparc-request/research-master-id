@@ -31,12 +31,10 @@
       .form-group
         .col-sm-offset-2.col-sm-10
           = f.submit class: 'btn btn-success'
-      .container
-        .row
-          .col-sm-4
-            = label_tag :show_more, 'Show More'
-            .show_more
-              = check_box_tag :show_more, 0, false, id: 'show_more'
+      .form-group
+        = label_tag :show_more, 'Show More', class: 'col-md-2 control-label'
+        .col-md-1
+          = check_box_tag :show_more, 0, false, id: 'show_more', class: 'form-control checkbox-inline'
     %br
     %table.table.table-striped.table-bordered.table-hover
       %thead
