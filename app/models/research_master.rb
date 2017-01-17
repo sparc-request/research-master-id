@@ -19,5 +19,7 @@ class ResearchMaster < ActiveRecord::Base
     message: 'There is an existing Research Master record with the same PI Name
     and Department' }
 
-  accepts_nested_attributes_for :associated_record
+  accepts_nested_attributes_for :associated_record, allow_destroy: true,
+    reject_if: proc { |att| att[:sparc_id].blank? && att[:eirb_id].blank? }
+
 end

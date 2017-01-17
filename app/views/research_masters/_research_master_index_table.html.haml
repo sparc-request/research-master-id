@@ -16,5 +16,14 @@
       %button.btn.btn-warning{type: 'button', data: { id: research_master.id } }
         %span.glyphicon.glyphicon-edit
     %td
-      %button.btn.btn-danger.delete{type: 'button', data: { id: research_master.id } }
-        %span.glyphicon.glyphicon-remove
+      .btn-group
+        %button.btn.btn-danger{type: 'button', class: (research_master.associated_record.present? ? 'dropdown-toggle' : 'research-master-delete'), data: { id: research_master.id, toggle: 'dropdown' } }
+          %span.glyphicon.glyphicon-remove
+          - if research_master.associated_record.present?
+            %span.caret
+        - if research_master.associated_record.present?
+          %ul.dropdown-menu.pull-right
+            %li
+              = link_to 'Delete Association Only', 'javascript:void(0);', class: 'association-delete', data: { rm_id: research_master.id, association_id: research_master.associated_record.id }
+            %li
+              = link_to 'Delete', 'javascript:void(0);', class: 'research-master-delete', data: { id: research_master.id }
