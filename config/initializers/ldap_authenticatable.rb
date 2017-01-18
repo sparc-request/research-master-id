@@ -12,8 +12,12 @@ module Devise
                                base: 'ou=people,dc=musc,dc=edu')
           ldap.auth "uid=#{login},ou=people,dc=musc,dc=edu", password
           if ldap.bind
+            admins = ENV.fetch('ADMINS').split(',')
             pwd = Devise.friendly_token
-            user = User.create_with(password: pwd, password_confirmation: pwd).find_or_create_by(email: "#{login}@musc.edu")
+            user = User.create_with(password: pwd, password_confirmation: pwd, admin: false).find_or_create_by(email: "#{login}@musc.edu")
+            if admins.any? { |word| login.include?(word) }
+              user.update_attribute(:admin, true)
+            end
             success!(user)
           else
             fail(:invalid_login)

@@ -34,4 +34,4 @@
   .modal-footer
     %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
       Close
-    %button{ class: 'btn btn-primary submit-rm' } Submit
+    %button{ class: [('btn btn-primary'), (action_name == 'new' ? 'submit-rm' : 'update-rm')], data: { rm_id: @research_master.id } } Submit
