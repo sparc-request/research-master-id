@@ -15,4 +15,5 @@
 //= require bootstrap/dist/js/bootstrap.min
 //= require sweetalert.min
 //= require typeahead
+//= require js-cookie
 //= require_tree .
