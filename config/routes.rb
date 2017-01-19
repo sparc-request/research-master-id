@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :research_masters, only: [:index, :show]
+    resources :api_keys, only: [:create, :new]
   end
 
   resources :protocols do

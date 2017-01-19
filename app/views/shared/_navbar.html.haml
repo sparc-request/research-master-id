@@ -19,6 +19,11 @@
         - if user_signed_in?
           %p.navbar-text
             = "Signed in as #{current_user.email}"
+          - if current_user.developer?
+            %li
+              = link_to new_api_api_key_path do
+                API
+                %i.glyphicon.glyphicon-flash
         %li
           - if user_signed_in?
             = link_to destroy_user_session_path, method: :delete do
