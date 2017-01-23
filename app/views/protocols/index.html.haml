@@ -2,26 +2,47 @@
   .panel-heading
     Search for Protocols
   .panel-body
-    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
-      .form-group
-        = f.label :sparc_id_eq, 'Search by Sparc ID', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :sparc_id_eq, class: 'form-control', placeholder: 'Sparc ID'
-      .form-group
-        = f.label :eirb_id_cont, 'Search by eIRB Pro #', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :eirb_id_cont, class: 'form-control', placeholder: 'eIRB ID' 
-      .form-group
-        = f.label :primary_pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :primary_pi_name_cont, class: 'form-control', placeholder: 'PI Name'
-      .form-group
-        = f.label :long_title_cont, 'Search by Title', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Title'
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          = f.submit class: 'btn btn-success'
+    .row
+      .col-md-10
+        = search_form_for(@q, html: { class: 'form-horizontal clear-form' }) do |f|
+          .form-group
+            = f.label :sparc_id_eq, 'Search by Sparc ID', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :sparc_id_eq, class: 'form-control', placeholder: 'Sparc ID'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            = f.label :eirb_id_cont, 'Search by eIRB Pro #', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :eirb_id_cont, class: 'form-control', placeholder: 'eIRB ID' 
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            = f.label :primary_pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :primary_pi_name_cont, class: 'form-control', placeholder: 'PI Name'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            = f.label :long_title_cont, 'Search by Title', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Title'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              = f.submit class: 'btn btn-success'
+      .col-md-2
+        %button.btn.btn-default.clear-all
+          Clear Search Form
       .row
         .col-md-4
           .text-center

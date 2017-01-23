@@ -2,39 +2,68 @@
   .panel-heading
     Search for Research Master Records
   .panel-body
-    = search_form_for(@q, html: { class: 'form-horizontal' }) do |f|
-      .form-group
-        = f.label :pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :pi_name_cont, class: 'form-control', placeholder: 'Search by PI Name'
-      .form-group
-        = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
-      .form-group
-        = f.label :long_title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
-        .col-md-10
-          = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Search by Long Title'
-      #optional-search-fields{ style: 'display:none;' }
-        .form-group
-          = f.label :funding_source_cont, 'Search by Funding Source', class: 'col-md-2 control-label'
-          .col-md-10
-            = f.search_field :funding_source_cont, class: 'form-control', placeholder: 'Search by Funding Source'
-        .form-group
-          = f.label :id_eq, 'Search by RMID', class: 'col-md-2 control-label'
-          .col-md-10
-            = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by RMID'
-        .form-group
-          = f.label :department_cont, 'Search by Department', class: 'col-md-2 control-label'
-          .col-md-10
-            = f.search_field :department_cont, class: 'form-control', placeholder: 'Search by Department'
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          = f.submit class: 'btn btn-success'
-      .form-group
-        = label_tag :show_more, 'Show More', class: 'col-md-2 control-label'
-        .col-md-1
-          = check_box_tag :show_more, 0, false, id: 'show_more', class: 'form-control checkbox-inline'
+    .row
+      .col-md-10
+        = search_form_for(@q, html: { class: 'form-horizontal clear-form' }) do |f|
+          .form-group
+            = f.label :pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :pi_name_cont, class: 'form-control', placeholder: 'Search by PI Name'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            = f.label :short_title_cont, 'Search by Short Title', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :short_title_cont, class: 'form-control', placeholder: 'Search by Short Title'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            = f.label :long_title_cont, 'Search by Long Title', class: 'col-md-2 control-label'
+            .col-md-10
+              .input-group
+                = f.search_field :long_title_cont, class: 'form-control', placeholder: 'Search by Long Title'
+                .input-group-btn
+                  %button.btn.btn-danger.clear-selection
+                    %i.glyphicon.glyphicon-remove-circle
+          #optional-search-fields{ style: 'display:none;' }
+            .form-group
+              = f.label :funding_source_cont, 'Search by Funding Source', class: 'col-md-2 control-label'
+              .col-md-10
+                .input-group
+                  = f.search_field :funding_source_cont, class: 'form-control', placeholder: 'Search by Funding Source'
+                  .input-group-btn
+                    %button.btn.btn-danger.clear-selection
+                      %i.glyphicon.glyphicon-remove-circle
+            .form-group
+              = f.label :id_eq, 'Search by RMID', class: 'col-md-2 control-label'
+              .col-md-10
+                .input-group
+                  = f.search_field :id_eq, class: 'form-control', placeholder: 'Search by RMID'
+                  .input-group-btn
+                    %button.btn.btn-danger.clear-selection
+                      %i.glyphicon.glyphicon-remove-circle
+            .form-group
+              = f.label :department_cont, 'Search by Department', class: 'col-md-2 control-label'
+              .col-md-10
+                .input-group
+                  = f.search_field :department_cont, class: 'form-control', placeholder: 'Search by Department'
+                  .input-group-btn
+                    %button.btn.btn-danger.clear-selection
+                      %i.glyphicon.glyphicon-remove-circle
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              = f.submit class: 'btn btn-success'
+          .form-group
+            = label_tag :show_more, 'Show More', class: 'col-md-2 control-label'
+            .col-md-1
+              = check_box_tag :show_more, 0, false, id: 'show_more', class: 'form-control checkbox-inline'
+      .col-md-2
+        %button.btn.btn-default.clear-all
+          Clear Search Form
     %br
     %table.table.table-striped.table-bordered.table-hover
       %thead
