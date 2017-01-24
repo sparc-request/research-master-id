@@ -16,4 +16,5 @@
 //= require sweetalert.min
 //= require typeahead
 //= require js-cookie
+//= require clipboard.min
 //= require_tree .

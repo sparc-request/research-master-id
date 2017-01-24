@@ -1,0 +1,20 @@
+%h1.text-center
+  Need an API key for Research Master ID? Click the button below
+.text-center
+  = link_to 'Generate API Key', api_api_keys_path, class: 'btn btn-primary btn-lg', remote: true, method: :post
+
+.modal.fade#apiKeyModal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: { dismiss: 'modal' } }
+          %span &times;
+        %h4.modal-title API Key
+      .modal-body
+        .input-group.input-group-lg
+          = text_field_tag 'api_key', nil, class: 'form-control'
+          %span.input-group-btn
+            %button.btn.btn-primary.copy-key{ data: { clipboard_target: '#api_key' } }
+              %span.glyphicon.glyphicon-copy
+      .modal-footer
+        %button.btn.btn-default{ data: { dismiss: 'modal' } } Close
