@@ -20,4 +20,14 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  research_masters:
+    index:
+      instructions:
+        header: "General Instructions"
+        step1:
+          label: "Step 1:"
+          text: "Search for existing Research Master records. It is strongly recommended that multiple search methods are used. If a RMID is found, use the available fields to verify that this is the same study and then document the RMID# for future reference; If no RMID is found, continue to Step 2."
+        step2:
+          label: "Step 2:"
+          text: "When you are certain the study does not have an existing RMID number, click on the “Create a Research Master ID” button at the bottom of the page to create a new record. Upon successful creation, please retain the RMID for use in other systems."
+        additional_information: "For additional information, please refer to the Research Toolkit. For questions or support, please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu."
