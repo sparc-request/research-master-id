@@ -2,16 +2,16 @@
   .col-lg-12
     .page-header
       %h4
-        = "General Instructions"
-  .col-lg-12.instruction
+        = t(:instructions)[:header]
+  .col-lg-12.form-group
     .col-sm-1.row
-      = t(:research_masters)[:index][:instructions][:step1][:label]
+      = t(:instructions)[:step1][:label]
     .col-sm-11
-      = t(:research_masters)[:index][:instructions][:step1][:text]
-  .col-lg-12.instruction
+      = t(:instructions)[:step1][:text]
+  .col-lg-12.form-group
     .col-sm-1.row
-      = t(:research_masters)[:index][:instructions][:step2][:label]
+      = t(:instructions)[:step2][:label]
     .col-sm-11
-      = t(:research_masters)[:index][:instructions][:step2][:text]
-  .col-lg-12.instruction
-    = t(:research_masters)[:index][:instructions][:additional_information]
+      = t(:instructions)[:step2][:text]
+  .col-lg-12.form-group
+    = t(:instructions)[:additional_information]
