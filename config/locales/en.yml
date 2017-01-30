@@ -20,4 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  about_rmid:
+    header: "About RMID"
+    text1: "A Research Master ID (<strong>RMID</strong>) is a unique numeric identifier that links a research study across multiple MUSC research systems. The purpose of the RMID is to allow for accurate identification of research studies, improve tracking and reporting of institutional research metrics and data accuracy."
+    text2: "RMID is required for submitting new studies in eIRB, ePDS, and SPARCRequest, and will expand to other systems on campus. The RMID requires 5 basic elements for each research study: principal investigator, department, study long title, study short title and funding source. These elements will also be used to validate the associations."
+    text3: "It is essential that each research study obtain only 1 RMID. Therefore, it is important that all search options are exhausted prior to creating a new RMID. Use the instructed steps to search the RMID system to ensure that the study has not already been registered by someone other than you."
+
+  actions:
+    close: "Close"
