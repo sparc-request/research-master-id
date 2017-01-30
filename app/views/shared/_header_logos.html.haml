@@ -1,0 +1,12 @@
+.col-lg-12#header-logos
+  .col-md-3
+    %a{ href: t(:header_logos)[:org_link], target: '_blank' }
+      = image_tag 'musc_logo', alt: raw(t(:header_logos)[:org_text]), class: 'org-logo'
+  .col-md-6
+    %a.rmid-logo{ href: t(:header_logos)[:rmid_link], target: '_blank' }
+      %h1.text-center
+        = t(:header_logos)[:rmid_text]
+  .col-md-3
+    %a.vp-logo{ href: t(:header_logos)[:vp_link], target: '_blank' }
+      %h3.text-center
+        = raw(t(:header_logos)[:vp_text])
