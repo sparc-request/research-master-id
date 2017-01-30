@@ -20,4 +20,47 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  research_masters:
+    index:
+      search_fields:
+        pi_name: "Search by PI Name"
+        short_title: "Search by Short Title"
+        long_title: "Search by Long Title"
+        funding_source: "Search by Funding Source"
+        rmid: "Search by RMID"
+        department: "Search by Department"
+      search_placeholders:
+        pi_name: "Search by PI Name"
+        short_title: "Search by Short Title"
+        long_title: "Search by Long Title"
+        funding_source: "Search by Funding Source"
+        rmid: "Search by RMID"
+        department: "Search by Department"
+      search_tooltips:
+        pi_name: "Search by Principal Investigator (PI) name will return all studies associated with the designated PI"
+        short_title: "Search by key words or short title of the study"
+        long_title: "Search by a portion of the study title"
+        funding_source: "Search by Internal or External funding source"
+        rmid: "Search by an existing RMID and associated study information"
+        department: "Search by the department based on the appointment of the Principal Investigator of the study"
+      show_more:
+        label: "Show More"
+        tooltip: "To include more search fields"
+    new:
+      fields:
+        pi_name: "PI Name"
+        department: "Department"
+        long_title: "Long Title"
+        short_title: "Short Title"
+        funding_source: "Funding Source"
+      placeholders:
+        pi_name: "Search for PI Name"
+        department: "Department"
+        long_title: "Long Title"
+        short_title: "Short Title"
+      tooltips:
+        pi_name: "Enter the name of the Principal Investigator (PI) of the research study. If the PI is unknown, enter the name of the proposed PI"
+        department: "The department of the PI is populated once the Principal Investigator is selected based on the past records. If it is empty, begin entering the name of the department and select it from the list"
+        long_title: "Enter the Long Title of the study as it should appear in eIRB or other systems. Maximum length of the long title is 255 characters"
+        short_title: "Enter the Short Title of the study as it should appear in eIRB or other systems"
+        funding_source: "Select if the study is internally or externally funded"
