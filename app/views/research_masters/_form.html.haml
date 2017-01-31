@@ -1,23 +1,22 @@
 = form_for @research_master, html: { class: 'form-horizontal research-master-form' }, remote: true do |f|
   .form-group
-    = f.label :pi_name, 'PI Name', class: 'col-sm-2 control-label'
+    = f.label :pi_name, t(:research_masters)[:new][:fields][:pi_name], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]
     .col-sm-10
-      = f.text_field :pi_name, class: 'form-control',
-        placeholder: 'Search for PI Name'
+      = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
   .form-group
-    = f.label :department, class: 'col-sm-2 control-label'
+    = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
     .col-sm-10
-      = f.text_field :department, class: 'form-control', placeholder: 'Department'
+      = f.text_field :department, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:department]
   .form-group
-    = f.label :long_title, 'Long Title', class: 'col-sm-2 control-label'
+    = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
     .col-sm-10
-      = f.text_field :long_title, class: 'form-control', placeholder: 'Long Title'
+      = f.text_field :long_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:long_title]
   .form-group
-    = f.label :short_title, 'Short Title', class: 'col-sm-2 control-label'
+    = f.label :short_title, t(:research_masters)[:new][:fields][:short_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:short_title]
     .col-sm-10
-      = f.text_field :short_title, class: 'form-control', placeholder: 'Short Title'
+      = f.text_field :short_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:short_title]
   .form-group
-    = f.label :funding_source, 'Funding Source', class: 'col-sm-2 control-label'
+    = f.label :funding_source, t(:research_masters)[:new][:fields][:funding_source], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:funding_source]
     .col-sm-10
       .radio
         = f.label :funding_source do
