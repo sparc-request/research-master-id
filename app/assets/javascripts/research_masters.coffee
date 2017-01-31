@@ -5,6 +5,8 @@ removeCookie = (name) ->
   Cookies.remove(name)
 
 $ ->
+  $("[data-toggle='tooltip']").tooltip()
+  
   if Cookies.get('showMoreCookie') == '1'
     $('#optional-search-fields').show()
     $('#show_more').attr('checked', 'checked')
