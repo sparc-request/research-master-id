@@ -54,6 +54,16 @@ class ResearchMastersController < ApplicationController
     @research_master.user = current_user
     respond_to do |format|
       if @research_master.save
+        rm_pi = create_rm_pi(params[:pi_name],
+                             params[:pi_email],
+                             params[:pi_department],
+                             @research_master
+                            )
+        rm_notifier = ResearchMasterNotifier.new(rm_pi,
+                                                 @research_master.user.email,
+                                                 @research_master
+                                                )
+        rm_notifier.send_mail
         format.js
       else
         format.json { render json: { error: @research_master.errors }, status: 400 }
@@ -74,6 +84,17 @@ class ResearchMastersController < ApplicationController
   def find_rm_records
     @q = ResearchMaster.ransack(params[:q])
     @research_masters = @q.result(distinct: true)
+  end
+
+  def create_rm_pi(name, email, department, rm_id)
+    if name.present? && email.present?
+      ResearchMasterPi.create(
+        name: name,
+        email: email,
+        department: department,
+        research_master: rm_id
+      )
+    end
   end
 
   def research_master_params

@@ -33,6 +33,8 @@ module ResearchMasterId
     config.active_record.raise_in_transactional_callbacks = true
     config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
 
+    config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
+
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
         origins '*'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170123162923) do
+ActiveRecord::Schema.define(version: 20170203163205) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token", limit: 255
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20170123162923) do
 
   create_table "primary_pis", force: :cascade do |t|
     t.string   "name",        limit: 255
+    t.string   "email",       limit: 255
     t.string   "department",  limit: 255
     t.integer  "protocol_id", limit: 4
     t.datetime "created_at",              null: false
@@ -52,6 +53,15 @@ ActiveRecord::Schema.define(version: 20170123162923) do
     t.datetime "updated_at",                        null: false
   end
 
+  create_table "research_master_pis", force: :cascade do |t|
+    t.string  "name",               limit: 255
+    t.string  "email",              limit: 255
+    t.string  "department",         limit: 255
+    t.integer "research_master_id", limit: 4
+  end
+
+  add_index "research_master_pis", ["research_master_id"], name: "index_research_master_pis_on_research_master_id", using: :btree
+
   create_table "research_masters", force: :cascade do |t|
     t.string   "pi_name",        limit: 255
     t.string   "department",     limit: 255
@@ -67,6 +77,7 @@ ActiveRecord::Schema.define(version: 20170123162923) do
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "name",                   limit: 255
     t.boolean  "admin"
     t.boolean  "developer"
     t.string   "encrypted_password",     limit: 255, default: "", null: false
@@ -87,5 +98,6 @@ ActiveRecord::Schema.define(version: 20170123162923) do
 
   add_foreign_key "associated_records", "research_masters"
   add_foreign_key "primary_pis", "protocols"
+  add_foreign_key "research_master_pis", "research_masters"
   add_foreign_key "research_masters", "users"
 end

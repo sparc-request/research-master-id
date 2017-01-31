@@ -1,6 +1,7 @@
 class ResearchMaster < ActiveRecord::Base
   belongs_to :user
   has_one :associated_record, dependent: :destroy
+  has_one :research_master_pi, dependent: :destroy
 
   validates :pi_name, :department, :long_title, :short_title, presence: true
   validates_length_of :long_title, maximum: 255
@@ -23,5 +24,4 @@ class ResearchMaster < ActiveRecord::Base
 
   accepts_nested_attributes_for :associated_record, allow_destroy: true,
     reject_if: proc { |att| att[:sparc_id].blank? && att[:eirb_id].blank? }
-
 end

@@ -61,5 +61,15 @@ describe LdapSearch do
       expect(result).to include ['Jerry Hardee', 'hardeeje@musc.edu']
     end
   end
+
+  describe '#name_query' do
+    it 'should return my name' do
+      ldap_search = LdapSearch.new
+
+      result = ldap_search.name_query('wih205')
+
+      expect(result).to eq 'William Holt'
+    end
+  end
 end
 

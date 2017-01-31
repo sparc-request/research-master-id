@@ -31,6 +31,7 @@ $ ->
           asyncResults(data)
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
-      $('#research_master_department').val(selection.department)
+      $('#pi_name').val(selection.name)
+      $('#pi_email').val(selection.email)
 
 

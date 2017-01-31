@@ -1,0 +1,58 @@
+:css
+  table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+  }
+
+  td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+
+%p
+  A research master record has been successfully created. Please review and/or
+  edit the record
+  = link_to 'here', @url, target: '_blank'
+  if needed.
+%table
+  %tr
+    %th
+      RMID
+    %th
+      = @rm_id.id
+  %tr
+    %th
+      PI Name
+    %th
+      = @rm_pi.name
+  %tr
+    %th
+      PI Department
+    %th
+      = @rm_id.department
+  %tr
+    %th
+      Short Title
+    %th
+      = @rm_id.short_title
+  %tr
+    %th
+      Long Title
+    %th
+      = @rm_id.long_title
+  %tr
+    %th
+      Funding Source
+    %th
+      = @rm_id.funding_source
+  %tr
+    %th
+      Creator
+    %th
+      = @rm_id.user.name
+%p
+  Please contact the SUCCESS Center at (843) 792-8300 or
+  = mail_to 'success@musc.edu'
+  with any questions you may have.
