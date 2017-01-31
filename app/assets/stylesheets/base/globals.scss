@@ -1,5 +1,33 @@
+#header-logos {
+  top: 0px;
+  position: fixed;
+  z-index: 1031;
+  background: white;
+
+  .org-logo, .rmid-lgoo, .vp-logo {
+    height: 110px;
+  }
+
+  .rmid-logo {
+    h1 {
+      margin: 35px 0px;
+    }
+  }
+
+  .rmid-logo:hover, .vp-logo:hover{
+    text-decoration: none;
+  }
+
+  .vp-logo {
+    h3 {
+      margin-top: 28px;
+      margin-bottom: 29px;
+    }
+  }
+}
+
 body {
-  padding-top: 50px;
+  padding-top: 160px;
 }
 
 .alert {
