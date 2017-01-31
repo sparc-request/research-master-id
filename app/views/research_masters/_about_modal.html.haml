@@ -1,0 +1,19 @@
+.modal.fade#about-modal{ tabindex: '-1' }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: { dismiss: 'modal' } }
+          %span &times;
+        %h4.modal-title.text-center
+          = t(:about_rmid)[:header]
+      .modal-body
+        .col-sm-12.form-group.row
+          = raw(t(:about_rmid)[:text1])
+        .col-sm-12.form-group.row
+          = t(:about_rmid)[:text2]
+        .col-sm-12.form-group.row
+          = t(:about_rmid)[:text3] 
+      .modal-footer
+        .center-block
+          %button.btn.btn-primary{ data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
