@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :research_masters do
     resources :associated_records, only: [:destroy]
   end
+  match 'about' => 'research_masters#about', via: [:get], as: :about
 
   namespace :api do
     resources :research_masters, only: [:index, :show]

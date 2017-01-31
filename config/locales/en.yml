@@ -20,6 +20,15 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  about_rmid:
+    header: "About RMID"
+    text1: "A Research Master ID (<strong>RMID</strong>) is a unique numeric identifier that links a research study across multiple MUSC research systems. The purpose of the RMID is to allow for accurate identification of research studies, improve tracking and reporting of institutional research metrics and data accuracy."
+    text2: "RMID is required for submitting new studies in eIRB, ePDS, and SPARCRequest, and will expand to other systems on campus. The RMID requires 5 basic elements for each research study: principal investigator, department, study long title, study short title and funding source. These elements will also be used to validate the associations."
+    text3: "It is essential that each research study obtain only 1 RMID. Therefore, it is important that all search options are exhausted prior to creating a new RMID. Use the instructed steps to search the RMID system to ensure that the study has not already been registered by someone other than you."
+
+  actions:
+    close: "Close"
+
   header_logos:
     org_text: "Organization<br/>Logo"
     org_link: "https://www.musc.edu/"
@@ -27,6 +36,16 @@ en:
     rmid_link: "https://rmid.musc.edu/"
     vp_text: "Office of the Vice<br/>President for Research"
     vp_link: "https://academicdepartments.musc.edu/research/index.html"
+
+  instructions:
+    header: "General Instructions"
+    step1:
+      label: "Step 1:"
+      text: "Search for existing Research Master records. It is strongly recommended that multiple search methods are used. If a RMID is found, use the available fields to verify that this is the same study and then document the RMID# for future reference; If no RMID is found, continue to Step 2."
+    step2:
+      label: "Step 2:"
+      text: "When you are certain the study does not have an existing RMID number, click on the “Create a Research Master ID” button at the bottom of the page to create a new record. Upon successful creation, please retain the RMID for use in other systems."
+    additional_information: "For additional information, please refer to the Research Toolkit. For questions or support, please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu."
 
   research_masters:
     index:
