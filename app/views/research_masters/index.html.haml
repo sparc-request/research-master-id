@@ -7,7 +7,7 @@
       .col-md-10
         = search_form_for(@q, html: { class: 'form-horizontal clear-form' }) do |f|
           .form-group
-            = f.label :pi_name_cont, t(:research_masters)[:index][:search_fields][:pi_name], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_fields][:pi_name]
+            = f.label :pi_name_cont, t(:research_masters)[:index][:search_fields][:pi_name], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:pi_name]
             .col-md-10
               .input-group
                 = f.search_field :pi_name_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:pi_name]
