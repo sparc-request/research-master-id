@@ -3,7 +3,7 @@
     %a{ href: t(:header_logos)[:org_link], target: '_blank' }
       = image_tag 'musc_logo.jpg', alt: raw(t(:header_logos)[:org_text]), class: 'org-logo'
   .col-md-6
-    %a.rmid-logo{ href: ENV.fetch('RMID_LINK'), target: '_blank' }
+    %a.rmid-logo{ href: ENV.fetch('RMID_LINK') }
       %h1.text-center
         = t(:header_logos)[:rmid_text]
   .col-md-3

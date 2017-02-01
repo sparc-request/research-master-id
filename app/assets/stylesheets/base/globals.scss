@@ -14,7 +14,8 @@
     }
   }
 
-  .rmid-logo:hover, .vp-logo:hover{
+  .rmid-logo:hover, .vp-logo:hover,
+  .rmid-logo:focus, .vp-logo:focus {
     text-decoration: none;
   }
 
