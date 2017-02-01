@@ -1,38 +1,34 @@
 $ ->
-  primary_pis = new Bloodhound(
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name', 'department')
-    queryTokenizer: Bloodhound.tokenizers.whitespace
-    prefetch: '/primary_pis.json'
-    remote:
-      url: '/primary_pis.json'
-  )
   $('#q_pi_name_cont').typeahead {
-    minLength: 1
+    minLength: 4
     highlight: true
     hint: true
   },
-    name: 'primary-pis'
     display: 'name'
-    source: primary_pis
+    source: (query, syncResults, asyncResults) ->
+      $.get "/directories.json?name=#{$('#q_pi_name_cont').val()}", (data) ->
+        asyncResults(data)
 
   $('#q_primary_pi_name_cont').typeahead {
-    minLength: 1
+    minLength: 4
     highlight: true
     hint: true
   },
-    name: 'primary-pis'
     display: 'name'
-    source: primary_pis
+    source: (query, syncResults, asyncResults) ->
+      $.get "/directories.json?name=#{$('#q_primary_pi_name_cont').val()}", (data) ->
+        asyncResults(data)
 
   $('#newResearchMasterModal').on 'shown.bs.modal', ->
     $('#research_master_pi_name').typeahead {
-      minLength: 1
+      minLength: 4
       highlight: true
       hint: true
     },
-      name: 'primary-pis'
       display: 'name'
-      source: primary_pis
+      source: (query, syncResults, asyncResults) ->
+        $.get "/directories.json?name=#{$('#research_master_pi_name').val()}", (data) ->
+          asyncResults(data)
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
       $('#research_master_department').val(selection.department)
