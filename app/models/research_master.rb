@@ -3,6 +3,8 @@ class ResearchMaster < ActiveRecord::Base
   has_one :associated_record, dependent: :destroy
 
   validates :pi_name, :department, :long_title, :short_title, presence: true
+  validates_length_of :long_title, maximum: 255
+  validates_length_of :short_title, maximum: 255
 
   validates :pi_name,
     uniqueness: { scope: [:department, :long_title],

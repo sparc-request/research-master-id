@@ -5,6 +5,9 @@ RSpec.describe ResearchMaster, type: :model do
 
   it { is_expected.to have_one(:associated_record) }
 
+  it { is_expected.to validate_length_of(:long_title).is_at_most(255) }
+  it { is_expected.to validate_length_of(:short_title).is_at_most(255) }
+
   it 'should validate on uniqueness of pi_name, department and long title' do
     create(:research_master,
           pi_name: 'pi',
