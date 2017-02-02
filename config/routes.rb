@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     resources :api_keys, only: [:create, :new]
   end
 
+  resource :directories, only: [:show]
+
   resources :protocols do
     collection do
       match 'search' => 'protocols#search', via: [:get, :post], as: :search
