@@ -5,6 +5,8 @@ RSpec.describe ResearchMaster, type: :model do
 
   it { is_expected.to have_one(:associated_record) }
 
+  it { is_expected.to have_one(:research_master_pi) }
+
   it { is_expected.to validate_length_of(:long_title).is_at_most(255) }
   it { is_expected.to validate_length_of(:short_title).is_at_most(255) }
 

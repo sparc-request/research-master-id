@@ -3,3 +3,4 @@ EIRB_API=http://eirb_api
 ADMINS="sal20,lmf5,sih3,weh6,kyh201,bem24,kal200,sampsonr,wih205"
 DEVELOPERS="kyg200"
 RMID_LINK=https://rmid.musc.edu
+ENVIRONMENT='staging'

@@ -17,6 +17,13 @@ class LdapSearch
     names
   end
 
+  def name_query(uid)
+    ldap = connect_to_ldap
+    ldap.search(:base => ldap.base, :filter => filter_query('uid', uid)) do |entry|
+      return entry[:cn].first
+    end
+  end
+
   private
 
   def connect_to_ldap
