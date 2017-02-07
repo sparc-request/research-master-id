@@ -76,9 +76,6 @@ class ResearchMastersController < ApplicationController
     @research_master.destroy
   end
 
-  def about
-  end
-  
   private
 
   def find_rm_records
