@@ -10,12 +10,14 @@ class ResearchMastersController < ApplicationController
 
   def show
     research_master = ResearchMaster.find(params[:id])
-    associated_record = research_master.associated_record
-    if associated_record.sparc_id?
-      @sparc_protocol = Protocol.find(associated_record.sparc_id)
-    end
-    if associated_record.eirb_id?
-      @eirb_protocol = Protocol.find(associated_record.eirb_id)
+    if research_master.associated_record.present?
+      associated_record = research_master.associated_record
+      if associated_record.sparc_id?
+        @sparc_protocol = Protocol.find(associated_record.sparc_id)
+      end
+      if associated_record.eirb_id?
+        @eirb_protocol = Protocol.find(associated_record.eirb_id)
+      end
     end
     respond_to do |format|
       format.js
