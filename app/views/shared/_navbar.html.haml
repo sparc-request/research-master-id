@@ -1,9 +1,9 @@
 %nav.navbar.navbar-default.navbar-fixed-top{ style: 'top: 110px !important;' }
   .container-fluid
     .navbar-header
-      = link_to 'SPARC', 'http://sparc.musc.edu', class: 'navbar-brand', target: '_blank'
-      = link_to 'eIRB', 'http://eirb.healthsciencessc.org', class: 'navbar-brand', target: '_blank'
-      = link_to 'ePDS', 'http://erma.musc.edu/cgi-bin/grants_pi/admin/index.cgi', class: 'navbar-brand', target: '_blank'
+      = link_to 'SPARC', ENV.fetch('SPARC_URL'), class: 'navbar-brand', target: '_blank'
+      = link_to 'eIRB', ENV.fetch('EIRB_URL'), class: 'navbar-brand', target: '_blank'
+      = link_to 'ePDS', ENV.fetch('EPDS_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'About RMID', 'http://www.musc.edu/rmid',
         class: 'navbar-brand', target: '_blank'
       %button{ class: 'navbar-toggle collapsed',
