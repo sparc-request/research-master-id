@@ -16,4 +16,5 @@ RSpec.describe AssociatedRecord, type: :model do
       expect(AssociatedRecord.associated_protocol_ids).to eq([protocol1.id, protocol2.id])
     end
   end
+
 end

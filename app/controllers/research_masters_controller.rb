@@ -56,6 +56,9 @@ class ResearchMastersController < ApplicationController
     @research_master.user = current_user
     respond_to do |format|
       if @research_master.save
+        if @research_master.associated_record.present?
+          @research_master.associated_record.update_rm
+        end
         rm_pi = create_rm_pi(params[:pi_name],
                              params[:pi_email],
                              params[:pi_department],
@@ -95,6 +98,7 @@ class ResearchMastersController < ApplicationController
       )
     end
   end
+
 
   def research_master_params
     params.require(:research_master).permit!

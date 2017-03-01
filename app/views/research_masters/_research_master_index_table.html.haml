@@ -7,13 +7,23 @@
     %td.research-master{ data: { id: research_master.id } }
       = research_master.department
     %td.research-master{ data: { id: research_master.id } }
-      = research_master.long_title
+      - if research_master.eirb_validated?
+        %h6.text-success
+          Updated to corresponding eIRB Protocol Title
+        = research_master.long_title
+      - else
+        = research_master.long_title
     %td.research-master{ data: { id: research_master.id } }
-      = research_master.short_title
+      - if research_master.eirb_validated?
+        %h6.text-success
+          Updated to corresponding eIRB Protocol Short Title
+        = research_master.short_title
+      - else
+        = research_master.short_title
     %td.research-master{ data: { id: research_master.id } }
       = research_master.funding_source
     %td
-      = link_to edit_research_master_path(research_master), class: [('btn btn-warning'), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?)], remote: true do
+      = link_to edit_research_master_path(research_master), class: [('btn btn-warning'), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?), ('disabled' if research_master.eirb_validated?)], remote: true do
         %span.glyphicon.glyphicon-edit
     %td
       .btn-group
