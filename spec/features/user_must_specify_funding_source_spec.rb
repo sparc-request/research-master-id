@@ -10,7 +10,7 @@ feature 'User must specify funding source', js: true do
     fill_in 'research_master_long_title', with: 'Long'
     fill_in 'research_master_short_title', with: 'short'
 
-    find('.submit-rm').click
+    click_button 'Submit'
 
     expect(page).to have_content "Can't be blank"
   end
@@ -24,7 +24,7 @@ feature 'User must specify funding source', js: true do
     fill_in 'research_master_short_title', with: 'short'
     choose 'research_master_funding_source_internal'
 
-    find('.submit-rm').click
+    click_button 'Submit'
 
     expect(page).not_to have_content "Can't be blank"
   end

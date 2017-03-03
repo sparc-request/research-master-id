@@ -17,12 +17,11 @@ describe DirectoriesController, type: :controller do
       user = create(:user)
       sign_in user
 
-      get :show, format: :json, name: 'William Holt'
+      get :show, format: :json, name: 'Holt'
       body = JSON.parse(response.body)
 
-
-      expect(body.first['email']).to eq 'holtw@musc.edu'
-      expect(body.first['name']).to eq 'William Holt'
+      expect(body.first['email']).to eq 'holtd@musc.edu'
+      expect(body.first['name']).to eq 'David Holt'
     end
   end
 end
