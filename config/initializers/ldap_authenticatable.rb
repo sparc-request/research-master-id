@@ -16,7 +16,7 @@ module Devise
             admins = ENV.fetch('ADMINS').split(',')
             devs = ENV.fetch('DEVELOPERS').split(',')
             pwd = Devise.friendly_token
-            user = User.create_with(password: pwd, password_confirmation: pwd, admin: false).find_or_create_by(email: ldap_search.email_query(login), name: ldap_search.name_query(login))
+            user = User.create_with(password: pwd, password_confirmation: pwd, admin: false).find_or_create_by(email: ldap_search.email_query(login))
             if admins.any? { |word| login.include?(word) }
               user.update_attribute(:admin, true)
             end
