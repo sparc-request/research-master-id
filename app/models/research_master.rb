@@ -26,6 +26,12 @@ class ResearchMaster < ActiveRecord::Base
     message: 'There is an existing Research Master record with the same PI Name
     and Department' }
 
+  validates_format_of :long_title, with: /^[a-zA-Z\d\s]*$/, 
+    message: 'Special characters are not allowed in the Long Title'
+
+  validates_format_of :short_title, with: /^[a-zA-Z\d\s]*$/,
+    message: 'Special characters are not allowed in the Short Title'
+
   accepts_nested_attributes_for :associated_record, allow_destroy: true,
     reject_if: proc { |att| att[:sparc_id].blank? && att[:eirb_id].blank? }
 end
