@@ -22,6 +22,7 @@ gem 'whenever', '~> 0.9.7'
 gem 'net-ldap', '~> 0.15.0'
 gem 'dotenv'
 gem 'rack-cors', :require => 'rack/cors'
+gem 'sprockets', '3.6.3'
 
 
 group :development, :test do
