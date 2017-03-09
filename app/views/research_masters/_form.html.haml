@@ -1,39 +1,47 @@
 = form_for @research_master, html: { class: 'form-horizontal research-master-form' }, remote: true do |f|
-  = hidden_field_tag 'pi_name', nil
-  = hidden_field_tag 'pi_email', nil
-  = hidden_field_tag 'pi_department', nil
-  .form-group
-    = f.label :pi_name, t(:research_masters)[:new][:fields][:pi_name], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]
-    .col-sm-10
-      = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
-  .form-group
-    = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
-    .col-sm-10
-      = f.text_field :department, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:department]
-  .form-group
-    = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
-    .col-sm-10
-      = f.text_field :long_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:long_title]
-  .form-group
-    = f.label :short_title, t(:research_masters)[:new][:fields][:short_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:short_title]
-    .col-sm-10
-      = f.text_field :short_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:short_title]
-  .form-group
-    = f.label :funding_source, t(:research_masters)[:new][:fields][:funding_source], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:funding_source]
-    .col-sm-10
-      .radio
-        = f.label :funding_source do
-          = f.radio_button :funding_source, 'Internal'
-          Internal
-      .radio
-        = f.label :funding_source do
-          = f.radio_button :funding_source, 'External'
-          External
-  = f.fields_for :associated_record do |ar|
-    = ar.hidden_field :sparc_id, value: params[:sparc_id]
-    = ar.hidden_field :eirb_id, value: params[:eirb_id]
-    -#= ar.hidden_field :coeus_id, value: params[:coeus_id]
-  .modal-footer
-    %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
-      Close
-    %button{ class: [('btn btn-primary'), (action_name == 'new' ? 'submit-rm' : 'update-rm')], data: { rm_id: @research_master.id } } Submit
+  .modal-content
+    .modal-header
+      %button{ class: 'close', data: { dismiss: 'modal' } }
+        %span
+          &times;
+      %h4.modal-title
+        New Research Master Record
+    .modal-body
+      = hidden_field_tag 'pi_name', nil
+      = hidden_field_tag 'pi_email', nil
+      = hidden_field_tag 'pi_department', nil
+      .form-group
+        = f.label :pi_name, t(:research_masters)[:new][:fields][:pi_name], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]
+        .col-sm-10
+          = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
+      .form-group
+        = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
+        .col-sm-10
+          = f.text_field :department, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:department]
+      .form-group
+        = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
+        .col-sm-10
+          = f.text_field :long_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:long_title]
+      .form-group
+        = f.label :short_title, t(:research_masters)[:new][:fields][:short_title], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:short_title]
+        .col-sm-10
+          = f.text_field :short_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:short_title]
+      .form-group
+        = f.label :funding_source, t(:research_masters)[:new][:fields][:funding_source], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:funding_source]
+        .col-sm-10
+          .radio
+            = f.label :funding_source do
+              = f.radio_button :funding_source, 'Internal'
+              Internal
+          .radio
+            = f.label :funding_source do
+              = f.radio_button :funding_source, 'External'
+              External
+      = f.fields_for :associated_record do |ar|
+        = ar.hidden_field :sparc_id, value: params[:sparc_id]
+        = ar.hidden_field :eirb_id, value: params[:eirb_id]
+        -#= ar.hidden_field :coeus_id, value: params[:coeus_id]
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+        Close
+      = f.submit 'Submit', class: 'btn btn-primary'

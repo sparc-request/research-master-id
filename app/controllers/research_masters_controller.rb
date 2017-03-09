@@ -1,5 +1,6 @@
 class ResearchMastersController < ApplicationController
   layout 'main'
+  protect_from_forgery except: [:show, :new, :edit]
   before_action :find_rm_records, only: [:index, :create, :update]
 
   def index

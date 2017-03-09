@@ -14,9 +14,9 @@ describe LdapSearch do
     it 'should return Jays email' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.email_query('jjh200')
+      result = ldap_search.email_query('anc63')
 
-      expect(result).to eq 'hardeeje@musc.edu'
+      expect(result).to eq 'catesa@musc.edu'
     end
 
     it 'should fail if invalid uid' do
@@ -32,7 +32,7 @@ describe LdapSearch do
     it 'should return my name' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.info_query('will')
+      result = ldap_search.info_query('holt')
 
       expect(result).to include ['William Holt', 'holtw@musc.edu']
     end
@@ -40,7 +40,7 @@ describe LdapSearch do
     it 'should return my email' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.info_query('will')
+      result = ldap_search.info_query('holt')
 
       expect(result).to include ['William Holt', 'holtw@musc.edu']
     end
@@ -48,7 +48,7 @@ describe LdapSearch do
     it 'should not return my name' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.info_query('jer')
+      result = ldap_search.info_query('cates')
 
       expect(result).not_to include ['William Holt', 'holtw@musc.edu']
     end
@@ -56,9 +56,9 @@ describe LdapSearch do
     it 'should return Jays name' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.info_query('jer')
+      result = ldap_search.info_query('cates')
 
-      expect(result).to include ['Jerry Hardee', 'hardeeje@musc.edu']
+      expect(result).to include ['Andrew Cates', 'catesa@musc.edu']
     end
   end
 

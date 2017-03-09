@@ -17,4 +17,34 @@ RSpec.describe AssociatedRecord, type: :model do
     end
   end
 
+  describe '#update_rm' do
+    it 'should update rm' do
+      rm = create(:research_master)
+      eirb_protocol = create(:protocol,
+                             type: 'EIRB',
+                             eirb_state: 'Approved',
+                             short_title: 'ooga',
+                             long_title: 'booga'
+                            )
+      ar = create(:associated_record, eirb_id: eirb_protocol.id, research_master: rm)
+      ar.update_rm
+
+      expect(rm.short_title).to eq eirb_protocol.short_title
+      expect(rm.long_title).to eq eirb_protocol.long_title
+      expect(rm.eirb_validated).to eq true
+    end
+
+    context 'eirb_id nil' do
+      it 'should not update rm' do
+        rm = create(:research_master)
+        ar = create(:associated_record, eirb_id: nil, research_master: rm)
+        ar.update_rm
+
+        expect(rm.short_title).to eq rm.short_title
+        expect(rm.long_title).to eq rm.long_title
+        expect(rm.eirb_validated).to eq false
+      end
+    end
+  end
 end
+
