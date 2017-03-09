@@ -91,5 +91,57 @@ feature 'User edits rm', js: true do
 
     expect(page).to have_css("a.edit-#{rm.id}.disabled")
   end
+
+  scenario 'render form errors' do
+    create_and_sign_in_user
+    user = User.first
+    rm = create(:research_master, user: user)
+
+    find("a.edit-#{rm.id}").click
+    fill_in 'research_master_pi_name', with: ''
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
+
+  scenario 'render form errors' do
+    create_and_sign_in_user
+    user = User.first
+    rm = create(:research_master, user: user)
+
+    find("a.edit-#{rm.id}").click
+    fill_in 'research_master_department', with: ''
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
+
+  scenario 'render form errors' do
+    create_and_sign_in_user
+    user = User.first
+    rm = create(:research_master, user: user)
+
+    find("a.edit-#{rm.id}").click
+    fill_in 'research_master_long_title', with: ''
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
+
+  scenario 'render form errors' do
+    create_and_sign_in_user
+    user = User.first
+    rm = create(:research_master, user: user)
+
+    find("a.edit-#{rm.id}").click
+    fill_in 'research_master_short_title', with: ''
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
 end
 
