@@ -21,6 +21,5 @@ task replace_special_characters: :environment do
       puts 'in the short title'
       master.update_attribute(:short_title, new_title)
     end
-    
   end
 end
