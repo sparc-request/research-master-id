@@ -6,7 +6,7 @@ task replace_special_characters: :environment do
   puts 'for special characters...'
   masters.each do |master|
 
-    new_title = master.long_title.gsub(/[^a-zA-Z0-9\-.\s]/, ' ')
+    new_title = master.long_title.gsub(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
 
     if new_title != master.long_title
       puts "Research master with an id of #{master.id} has a special character"
@@ -14,7 +14,7 @@ task replace_special_characters: :environment do
       master.update_attribute(:long_title, new_title)
     end
     
-    new_title = master.short_title.gsub(/[^a-zA-Z0-9\-.\s]/, ' ')
+    new_title = master.short_title.gsub(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
 
     if new_title != master.short_title
       puts "Research master with an id of #{master.id} has a special character"
