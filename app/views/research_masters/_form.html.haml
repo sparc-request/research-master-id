@@ -13,7 +13,11 @@
       .form-group
         = f.label :pi_name, t(:research_masters)[:new][:fields][:pi_name], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]
         .col-sm-10
-          = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
+          .input-group
+            = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
+            %span.input-group-btn
+              = link_to 'Reset', 'javascript:void(0);',
+                class: 'btn btn-default reset-pi-name'
       .form-group
         = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-sm-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
         .col-sm-10
@@ -44,4 +48,4 @@
     .modal-footer
       %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
         Close
-      = f.submit 'Submit', class: 'btn btn-primary'
+      = f.submit 'Submit', class: 'btn btn-primary submit-rm-record'
