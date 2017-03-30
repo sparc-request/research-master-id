@@ -34,7 +34,23 @@ task update_data: :environment do
     end
   end
   eirb_studies.each do |study|
-    unless Protocol.exists?(eirb_id: study['pro_number'])
+    if Protocol.exists?(eirb_id: study['pro_number'])
+      protocol = Protocol.find_by(eirb_id: study['pro_number'])
+      protocol.update_attribute(:short_title, study['short_title'])
+    elsif Protocol.exists?(eirb_id: study['pro_number'])
+      if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
+        eirb_study = Protocol.create(type: study['type'],
+                                     short_title: study['short_title'],
+                                     long_title: study['title'],
+                                     eirb_id: study['pro_number'],
+                                     eirb_institution_id: study['institution_id'],
+                                     eirb_state: study['state']
+                                    )
+      end
+      unless study['pi_name'].nil?
+        PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
+      end
+    else
       eirb_study = Protocol.create(type: study['type'],
                                    short_title: study['short_title'],
                                    long_title: study['title'],
@@ -45,9 +61,6 @@ task update_data: :environment do
       unless study['pi_name'].nil?
         PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
       end
-    else
-      protocol = Protocol.find_by(eirb_id: study['pro_number'])
-      protocol.update_attribute(:short_title, study['short_title'])
     end
     unless study['research_master_id'].nil?
       validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated', 'Withdrawn']
@@ -55,7 +68,9 @@ task update_data: :environment do
         ar = AssociatedRecord.find_or_create_by(
           research_master_id: study['research_master_id']
         )
-        ar.update_attribute(:eirb_id, Protocol.find_by(eirb_id: study['pro_number']).id)
+        if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
+          ar.update_attribute(:eirb_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+        end
         if validated_states.include?(study['state'])
           rm = ResearchMaster.find(study['research_master_id'])
           rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
