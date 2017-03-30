@@ -39,10 +39,3 @@ $ ->
         $.get "/directories.json?name=#{$('#research_master_pi_name').val()}", (data) ->
           asyncResults(data)
 
-
-    $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
-      $(this).typeahead('val', selection.name)
-      $('#pi_name').val(selection.name)
-      $('#pi_email').val(selection.email)
-
-
