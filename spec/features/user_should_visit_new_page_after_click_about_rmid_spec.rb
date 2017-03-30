@@ -9,7 +9,7 @@ feature 'User should visit new page after clicking About RMID', js: true do
 
     page.driver.browser.window_focus page.windows.last.handle
 
-    expect(URI.parse(current_url).to_s).to eq 'https://www.musc.edu/rmid'
+    expect(URI.parse(current_url).to_s).to eq 'http://horseshoe.musc.edu/research/rmid'
   end
 end
 
