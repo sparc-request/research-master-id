@@ -13,7 +13,7 @@ task update_data: :environment do
                                        short_title: protocol['short_title'],
                                        long_title: protocol['title'],
                                        sparc_id: protocol['id'],
-                                       eirb_id: protocol['pro_number']
+                                       sparc_pro_number: protocol['pro_number']
                                       )
       unless protocol['pi_name'].nil?
         PrimaryPi.find_or_create_by(name: protocol['pi_name'],
