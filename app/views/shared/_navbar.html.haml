@@ -4,7 +4,7 @@
       = link_to 'SPARC', ENV.fetch('SPARC_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'eIRB', ENV.fetch('EIRB_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'ePDS', ENV.fetch('EPDS_URL'), class: 'navbar-brand', target: '_blank'
-      = link_to 'About RMID', 'http://www.musc.edu/rmid',
+      = link_to 'About RMID', ENV.fetch('ABOUT_URL'),
         class: 'navbar-brand', target: '_blank'
       %button{ class: 'navbar-toggle collapsed',
       data: { toggle: 'collapse', target: '#navbar' } }
