@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170301151153) do
+ActiveRecord::Schema.define(version: 20170330153439) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token", limit: 255
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20170301151153) do
     t.string   "eirb_id",             limit: 255
     t.string   "eirb_institution_id", limit: 255
     t.string   "eirb_state",          limit: 255
+    t.string   "sparc_pro_number",    limit: 255
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
   end
