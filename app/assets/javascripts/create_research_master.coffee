@@ -8,6 +8,7 @@ $ ->
     $('.reset-pi-name').on 'click', ->
       $('.submit-rm-record').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', false)
+      $('#research_master_pi_name').val('')
 
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''
@@ -19,4 +20,7 @@ $ ->
       $('#pi_email').val(selection.email)
       $('#research_master_pi_name').prop('disabled', true)
       $('.submit-rm-record').prop('disabled', false)
+
+    $('.research-master-form').bind 'submit', ->
+      $(this).find(':input').prop('disabled', false)
 
