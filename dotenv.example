@@ -8,3 +8,4 @@ SPARC_URL='http://sparc.musc.edu'
 EIRB_URL='http://eirb.healthsciencessc.org'
 EPDS_URL='http://erma.musc.edu/cgi-bin/grants_pi/admin/index.cgi'
 ABOUT_URL=’http://horseshoe.musc.edu/research/rmid'
+EIRB_API_TOKEN=
