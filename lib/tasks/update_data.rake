@@ -8,8 +8,7 @@ task update_data: :environment do
   protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
   eirb_studies = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true",
                               timeout: 500, headers: {'Content-Type' => 'application/json',
-                              "Authorization" => "Token token=\"eirb_api_token\""})
-
+                              "Authorization" => "Token token=\"#{eirb_api_token}\""})
   protocols.each do |protocol|
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.create(type: protocol['type'],
