@@ -87,6 +87,6 @@ en:
       tooltips:
         pi_name: "Enter the name of the Principal Investigator (PI) of the research study. If the PI is unknown, enter the name of the proposed PI"
         department: "The department of the PI is populated once the Principal Investigator is selected based on the past records. If it is empty, begin entering the name of the department and select it from the list"
-        long_title: "Enter the Long Title of the study as it should appear in eIRB or other systems. Maximum length of the long title is 255 characters"
-        short_title: "Enter the Short Title of the study as it should appear in eIRB or other systems"
+        long_title: "Enter the Long Title of the study as it should appear in eIRB or other systems."
+        short_title: "Enter the Short Title of the study as it should appear in eIRB or other systems. Maximum length is 255 characters."
         funding_source: "Select if the study is internally or externally funded"
