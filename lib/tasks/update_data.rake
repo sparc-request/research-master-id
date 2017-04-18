@@ -2,6 +2,20 @@ require 'dotenv/tasks'
 
 task update_data: :environment do
 
+  def create_and_filter_eirb_study(study)
+    eirb_study = Protocol.create(type: study['type'],
+                                 short_title: study['short_title'],
+                                 long_title: study['title'],
+                                 eirb_id: study['pro_number'],
+                                 eirb_institution_id: study['institution_id'],
+                                 eirb_state: study['state']
+                                )
+    eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
+    eirb_study.short_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
+
+    eirb_study
+  end
+
   sparc_api = ENV.fetch("SPARC_API")
   eirb_api =  ENV.fetch("EIRB_API")
   eirb_api_token = ENV.fetch("EIRB_API_TOKEN")
@@ -41,25 +55,13 @@ task update_data: :environment do
       protocol.update_attribute(:short_title, study['short_title'])
     elsif Protocol.exists?(eirb_id: study['pro_number'])
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
-        eirb_study = Protocol.create(type: study['type'],
-                                     short_title: study['short_title'],
-                                     long_title: study['title'],
-                                     eirb_id: study['pro_number'],
-                                     eirb_institution_id: study['institution_id'],
-                                     eirb_state: study['state']
-                                    )
+        eirb_study = create_and_filter_eirb_study(study)
       end
       unless study['pi_name'].nil?
         PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
       end
     else
-      eirb_study = Protocol.create(type: study['type'],
-                                   short_title: study['short_title'],
-                                   long_title: study['title'],
-                                   eirb_id: study['pro_number'],
-                                   eirb_institution_id: study['institution_id'],
-                                   eirb_state: study['state']
-                                  )
+      eirb_study = create_and_filter_eirb_study(study)
       unless study['pi_name'].nil?
         PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
       end

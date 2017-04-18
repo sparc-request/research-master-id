@@ -199,6 +199,7 @@ GEM
       activesupport (>= 3.0)
       i18n
       polyamorous (~> 1.2)
+    rb-readline (0.5.4)
     rdoc (4.2.2)
       json (~> 1.4)
     responders (2.3.0)
@@ -296,6 +297,7 @@ DEPENDENCIES
   rack-cors
   rails (= 4.2.8)
   ransack
+  rb-readline
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
