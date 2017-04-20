@@ -28,7 +28,8 @@ task import_data: :environment do
                             eirb_state: study['state']
                            )
     eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
-    
+    eirb_study.save
+
     unless study['pi_name'].nil?
       PrimaryPi.create(name: study['pi_name'], protocol: eirb_study)
     end
