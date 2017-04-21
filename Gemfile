@@ -23,7 +23,8 @@ gem 'net-ldap', '~> 0.15.0'
 gem 'dotenv'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'sprockets', '3.6.3'
-
+gem 'exception_notification', '~> 4.1', '>= 4.1.4'
+gem 'slack-notifier', '~> 1.5', '>= 1.5.1'
 
 group :development, :test do
   gem 'byebug'
