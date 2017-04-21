@@ -5,7 +5,7 @@ $ ->
     hint: true
   },
     display: 'display_name'
-    limit: 20
+    limit: 2000
     source: (query, syncResults, asyncResults) ->
       $.get "/directories.json?name=#{$('#q_pi_name_cont').val()}", (data) ->
         asyncResults(data)
@@ -19,7 +19,7 @@ $ ->
     hint: true
   },
     display: 'display_name'
-    limit: 20
+    limit: 2000
     source: (query, syncResults, asyncResults) ->
       $.get "/directories.json?name=#{$('#q_primary_pi_name_cont').val()}", (data) ->
         asyncResults(data)
@@ -34,7 +34,7 @@ $ ->
       hint: true
     },
       display: 'display_name'
-      limit: 20
+      limit: 2000
       source: (query, syncResults, asyncResults) ->
         $.get "/directories.json?name=#{$('#research_master_pi_name').val()}", (data) ->
           asyncResults(data)
