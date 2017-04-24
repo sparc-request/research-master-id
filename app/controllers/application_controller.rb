@@ -4,4 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :authenticate_user!
 
+  def test_exception_notifier
+    raise 'This is a test. This is only a test.'
+  end
 end
+

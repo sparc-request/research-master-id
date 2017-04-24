@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   resource :detail, only: [:show]
 
+  get "test_exception_notifier" => "application#test_exception_notifier"
+
   namespace :api do
     resources :research_masters, only: [:index, :show]
     resources :api_keys, only: [:create, :new]
