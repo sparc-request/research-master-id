@@ -32,7 +32,7 @@ RSpec.describe Notifier do
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 
-      expect(result.from).to eq ['no-reply@rmid.musc.edu']
+      expect(result.from).to eq ['donotreply@musc.edu']
     end
 
     it 'should send to gmail if env is staging' do

@@ -8,7 +8,7 @@ class Notifier < ActionMailer::Base
     mail(
       to: address,
       subject: "Research Master Record Successfully Created (RMID: #{rm_id.id})",
-      from: 'no-reply@rmid.musc.edu'
+      from: 'donotreply@musc.edu'
     )
   end
 end
