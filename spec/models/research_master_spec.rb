@@ -3,8 +3,6 @@ require 'rails_helper'
 RSpec.describe ResearchMaster, type: :model do
   it { is_expected.to belong_to(:user) }
 
-  it { is_expected.to have_one(:associated_record) }
-
   it { is_expected.to have_one(:research_master_pi) }
 
   it { is_expected.to validate_length_of(:short_title).is_at_most(255) }

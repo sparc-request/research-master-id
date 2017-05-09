@@ -1,6 +1,5 @@
 class ResearchMaster < ActiveRecord::Base
   belongs_to :user
-  has_one :associated_record, dependent: :destroy
   has_one :research_master_pi, dependent: :destroy
 
   validates :pi_name,
@@ -33,7 +32,4 @@ class ResearchMaster < ActiveRecord::Base
   validates_format_of :short_title, with: /^[a-zA-Z\d\s.%\/$*<>!@#^\[\]{};:"'?&()-_=+]*$/,
     message: 'Special characters are not allowed in the Short Title',
     multiline: true
-
-  accepts_nested_attributes_for :associated_record, allow_destroy: true,
-    reject_if: proc { |att| att[:sparc_id].blank? && att[:eirb_id].blank? }
 end

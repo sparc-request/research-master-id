@@ -43,12 +43,10 @@ describe ResearchMastersController, type: :controller do
       protocol_one = create(:protocol, type: 'SPARC')
       protocol_two = create(:protocol, type: 'EIRB')
       user = create(:user)
-      rm = create(:research_master)
-      create(:associated_record,
-             research_master: rm,
-             sparc_id: protocol_one.id,
-             eirb_id: protocol_two.id
-            )
+      rm = create(:research_master,
+                  sparc_id: protocol_one.id,
+                  eirb_id: protocol_two.id
+                  )
       sign_in user
 
       get :show, id: rm, format: :js
@@ -82,7 +80,6 @@ describe ResearchMastersController, type: :controller do
       get :new, format: :js
 
       expect(assigns(:research_master)).to be_a_new(ResearchMaster)
-      expect(assigns(:research_master).associated_record).to be_a_new(AssociatedRecord)
     end
   end
 
