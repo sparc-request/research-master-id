@@ -55,13 +55,13 @@ task update_data: :environment do
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
         eirb_study = create_and_filter_eirb_study(study)
       end
-      unless study['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
+      unless study['pi_first_name'].nil?
+        PrimaryPi.find_or_create_by(first_name: study['pi_first_name'], last_name: study['pi_last_name'], protocol: eirb_study)
       end
     else
       eirb_study = create_and_filter_eirb_study(study)
-      unless study['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
+      unless study['pi_first_name'].nil?
+        PrimaryPi.find_or_create_by(first_name: study['pi_first_name'], last_name: study['pi_last_name'], protocol: eirb_study)
       end
     end
     unless study['research_master_id'].nil?
