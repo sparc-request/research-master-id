@@ -10,11 +10,12 @@ class LdapSearch
   def info_query(name)
     ldap = connect_to_ldap
     names = []
-    ldap.search(:base => ldap.base, :filter => filter_query('sn', "#{name}*")) do |entry|
+    composite_filter = filter_query('cn', "#{name}*") | filter_query('mail', "#{name}*")
+    ldap.search(:base => ldap.base, :filter => composite_filter) do |entry|
       new_array = entry[:cn] + entry[:mail]
       names.push(new_array)
     end
-    names
+    names.sort
   end
 
   def name_query(uid)
