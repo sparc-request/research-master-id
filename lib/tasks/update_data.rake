@@ -13,7 +13,7 @@ task update_data: :environment do
     eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     eirb_study.short_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     eirb_study.save
-
+ 
     eirb_study
   end
 
@@ -28,7 +28,7 @@ task update_data: :environment do
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.create(type: protocol['type'],
                                        short_title: protocol['short_title'],
-                                       long_title: protocol['title'],
+                                       long_title: protocol['title'], 
                                        sparc_id: protocol['id'],
                                        sparc_pro_number: protocol['pro_number']
                                       )
