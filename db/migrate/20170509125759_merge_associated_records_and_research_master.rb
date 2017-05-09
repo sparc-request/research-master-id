@@ -6,6 +6,7 @@ class MergeAssociatedRecordsAndResearchMaster < ActiveRecord::Migration
       AssociatedRecord.all.each do |ar|
         ar.research_master.update(sparc_id: ar.sparc_id, eirb_id: ar.eirb_id)
       end
+      drop_table :associated_records
     end
   end
 end
