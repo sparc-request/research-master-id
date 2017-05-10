@@ -10,7 +10,6 @@ module ResearchMasterId
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
-    config.active_record.raise_in_transactional_callbacks = true
     config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
 
     config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
