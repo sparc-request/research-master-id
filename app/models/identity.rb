@@ -1,4 +1,4 @@
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
 
   has_many :project_roles
 

@@ -1,4 +1,4 @@
-class Protocol < ActiveRecord::Base
+class Protocol < ApplicationRecord
   self.inheritance_column = nil
   has_one :primary_pi
 end

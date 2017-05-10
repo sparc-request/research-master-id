@@ -25,6 +25,8 @@ gem 'rack-cors', '~> 0.4.1'
 gem 'sprockets'
 gem 'exception_notification', '~> 4.2', '>= 4.2.1'
 gem 'slack-notifier', '~> 2.1'
+gem 'ar_to_ar'
+
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.6'

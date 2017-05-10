@@ -1,4 +1,4 @@
-class AssociatedRecord < ActiveRecord::Base
+class AssociatedRecord < ApplicationRecord
   belongs_to :research_master
 
   def self.associated_protocol_ids

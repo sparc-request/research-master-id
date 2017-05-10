@@ -1,3 +1,3 @@
-class PrimaryPi < ActiveRecord::Base
+class PrimaryPi < ApplicationRecord
   belongs_to :protocol
 end

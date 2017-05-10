@@ -54,6 +54,7 @@ GEM
       public_suffix (~> 2.0, >= 2.0.2)
     airbrussh (1.2.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    ar_to_ar (0.3.0)
     arel (8.0.0)
     autoprefixer-rails (7.0.1)
       execjs
@@ -288,6 +289,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ar_to_ar
   bootstrap-sass (~> 3.3, >= 3.3.7)
   capistrano (~> 3.8, >= 3.8.1)
   capistrano-passenger (~> 0.2.0)

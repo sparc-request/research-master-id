@@ -1,4 +1,4 @@
-class ResearchMaster < ActiveRecord::Base
+class ResearchMaster < ApplicationRecord
   belongs_to :user
   has_one :associated_record, dependent: :destroy
   has_one :research_master_pi, dependent: :destroy
