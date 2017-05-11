@@ -44,8 +44,8 @@ describe ResearchMastersController, type: :controller do
       protocol_two = create(:protocol, type: 'EIRB')
       user = create(:user)
       rm = create(:research_master,
-                  sparc_id: protocol_one.id,
-                  eirb_id: protocol_two.id
+                  sparc_protocol_id: protocol_one.id,
+                  eirb_protocol_id: protocol_two.id
                   )
       sign_in user
 
