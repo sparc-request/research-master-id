@@ -20,8 +20,8 @@ describe DirectoriesController, type: :controller do
       get :show, format: :json, name: 'Holt'
       body = JSON.parse(response.body)
 
-      expect(body.first['email']).to eq 'holtd@musc.edu'
-      expect(body.first['name']).to eq 'David Holt'
+      expect(body.first['email']).to eq 'holtzapp@musc.edu'
+      expect(body.first['name']).to eq 'Ashley Holtzapple'
     end
   end
 end
