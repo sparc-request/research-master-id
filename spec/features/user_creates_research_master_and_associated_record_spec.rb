@@ -34,8 +34,7 @@ feature 'User creates research master and associated record', js: true do
     choose 'research_master_funding_source_internal'
     click_button 'Submit'
     wait_for_ajax
-
-    expect(AssociatedRecord.count).to eq 1
+    
     expect(ResearchMaster.count).to eq 1
   end
 end

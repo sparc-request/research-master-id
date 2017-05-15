@@ -3,7 +3,8 @@ class ProtocolsController < ApplicationController
   layout 'main'
 
   def index
-    associated_ids = AssociatedRecord.associated_protocol_ids
+    rm = ResearchMaster.all
+    associated_ids = (rm.pluck(:sparc_protocol_id) + rm.pluck(:eirb_protocol_id)).compact!
     @q = Protocol.includes(:primary_pi).ransack(params[:q])
     @protocols = @q.result.includes(:primary_pi).where.not(id: associated_ids)
     respond_to do |format|

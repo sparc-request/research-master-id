@@ -27,13 +27,5 @@
         %span.glyphicon.glyphicon-edit
     %td
       .btn-group
-        = link_to 'javascript:void(0)', class: [('btn btn-danger'), (research_master.associated_record.present? ? 'dropdown-toggle' : 'research-master-delete'), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?), ('disabled' if research_master.eirb_validated? && research_master.user_id == current_user.id)], data: { id: research_master.id, toggle: 'dropdown' } do
+        = link_to 'javascript:void(0)', class: [('btn btn-danger'), 'research-master-delete', ('disabled' unless research_master.user_id == current_user.id || current_user.admin?), ('disabled' if research_master.eirb_validated? && research_master.user_id == current_user.id)], data: { id: research_master.id, toggle: 'dropdown' } do
           %span.glyphicon.glyphicon-remove
-          - if research_master.associated_record.present?
-            %span.caret
-        - if research_master.associated_record.present?
-          %ul.dropdown-menu.pull-right
-            %li
-              = link_to 'Delete Association Only', 'javascript:void(0);', class: 'association-delete', data: { rm_id: research_master.id, association_id: research_master.associated_record.id }
-            %li
-              = link_to 'Delete', 'javascript:void(0);', class: 'research-master-delete', data: { id: research_master.id }
