@@ -130,7 +130,7 @@ task update_data: :environment do
   puts("Done!")
   puts("New protocols total: #{new_eirb_protocols.count}")
   puts("New primary pis total: #{new_eirb_pis.count}")
-  puts("Finished EIRB_API data import.\n")
+  puts("Finished EIRB_API data import.")
 
   puts("New protocol ids: #{new_eirb_protocols + new_sparc_protocols}")
   puts("New primary pi ids: #{new_eirb_pis + new_sparc_pis}")
