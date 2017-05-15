@@ -11,15 +11,12 @@ class ResearchMastersController < ApplicationController
 
   def show
     research_master = ResearchMaster.find(params[:id])
-    if research_master.associated_record.present?
-      associated_record = research_master.associated_record
-      if associated_record.sparc_id?
-        @sparc_protocol = Protocol.find(associated_record.sparc_id)
+      if research_master.sparc_protocol_id?
+        @sparc_protocol = Protocol.find(research_master.sparc_protocol_id)
       end
-      if associated_record.eirb_id?
-        @eirb_protocol = Protocol.find(associated_record.eirb_id)
+      if research_master.eirb_protocol_id?
+        @eirb_protocol = Protocol.find(research_master.eirb_protocol_id)
       end
-    end
     respond_to do |format|
       format.js
     end
@@ -27,7 +24,6 @@ class ResearchMastersController < ApplicationController
 
   def new
     @research_master = ResearchMaster.new
-    @research_master.build_associated_record
     respond_to do |format|
       format.js
     end
@@ -57,9 +53,6 @@ class ResearchMastersController < ApplicationController
     @research_master.user = current_user
     respond_to do |format|
       if @research_master.save
-        if @research_master.associated_record.present?
-          @research_master.associated_record.update_rm
-        end
         rm_pi = create_rm_pi(params[:pi_name],
                              params[:pi_email],
                              params[:pi_department],

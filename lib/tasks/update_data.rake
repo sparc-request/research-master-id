@@ -1,7 +1,6 @@
 require 'dotenv/tasks'
 
 task update_data: :environment do
-
   def create_and_filter_eirb_study(study)
     eirb_study = Protocol.create(type: study['type'],
                                  short_title: study['short_title'] || "",
@@ -13,7 +12,7 @@ task update_data: :environment do
     eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     eirb_study.short_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     eirb_study.save
-
+ 
     eirb_study
   end
 
@@ -28,7 +27,7 @@ task update_data: :environment do
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.create(type: protocol['type'],
                                        short_title: protocol['short_title'],
-                                       long_title: protocol['title'],
+                                       long_title: protocol['title'], 
                                        sparc_id: protocol['id'],
                                        sparc_pro_number: protocol['pro_number']
                                       )
@@ -42,11 +41,9 @@ task update_data: :environment do
       existing_protocol.update_attribute(:short_title, protocol['short_title'])
     end
     unless protocol['research_master_id'].nil?
-      if ResearchMaster.exists?(protocol['research_master_id'])
-        ar = AssociatedRecord.find_or_create_by(
-          research_master_id: protocol['research_master_id']
-        )
-        ar.update_attribute(:sparc_id, Protocol.find_by(sparc_id: protocol['id']).id)
+      rm = ResearchMaster.find_by(id: protocol['research_master_id'])
+      unless rm.nil?
+        rm.update_attribute(:sparc_protocol_id, Protocol.find_by(sparc_id: protocol['id']).id)
       end
     end
   end
@@ -69,15 +66,12 @@ task update_data: :environment do
     end
     unless study['research_master_id'].nil?
       validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated', 'Withdrawn']
-      if ResearchMaster.exists?(study['research_master_id'])
-        ar = AssociatedRecord.find_or_create_by(
-          research_master_id: study['research_master_id']
-        )
+      rm = ResearchMaster.find_by(id: study['research_master_id'])
+      unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          ar.update_attribute(:eirb_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+          rm.update_attribute(:eirb_protocol_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
         end
         if validated_states.include?(study['state'])
-          rm = ResearchMaster.find(study['research_master_id'])
           rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
         end
       end

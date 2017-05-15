@@ -2,9 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   root 'research_masters#index'
 
-  resources :research_masters do
-    resources :associated_records, only: [:destroy]
-  end
+  resources :research_masters
 
   resource :detail, only: [:show]
 
