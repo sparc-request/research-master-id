@@ -65,6 +65,10 @@
       .col-md-2
         %button.btn.btn-default.clear-all
           Clear Search Form
+    .col-md-6.col-md-offset-3
+      .text-center
+        = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
+        
     %br
     %table.table.table-striped.table-bordered.table-hover
       %thead
@@ -87,9 +91,7 @@
             Delete
         %tbody.research-master-records
           = render "research_master_index_table", research_masters: @research_masters
-    .col-md-6.col-md-offset-3
-      .text-center
-        = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
+    
 %div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content
