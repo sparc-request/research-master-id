@@ -4,8 +4,8 @@ task update_data: :environment do
 
   def create_and_filter_eirb_study(study)
     eirb_study = Protocol.create(type: study['type'],
-                                 short_title: study['short_title'],
-                                 long_title: study['title'],
+                                 short_title: study['short_title'] || "",
+                                 long_title: study['title'] || "",
                                  eirb_id: study['pro_number'],
                                  eirb_institution_id: study['institution_id'],
                                  eirb_state: study['state']
