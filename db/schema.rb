@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509125759) do
+ActiveRecord::Schema.define(version: 20170330153439) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string   "access_token", limit: 255

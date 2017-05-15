@@ -3,8 +3,8 @@ require 'dotenv/tasks'
 task update_data: :environment do
   def create_and_filter_eirb_study(study)
     eirb_study = Protocol.create(type: study['type'],
-                                 short_title: study['short_title'] || "",
-                                 long_title: study['title'] || "",
+                                 short_title: study['short_title'],
+                                 long_title: study['title'],
                                  eirb_id: study['pro_number'],
                                  eirb_institution_id: study['institution_id'],
                                  eirb_state: study['state']
@@ -32,7 +32,8 @@ task update_data: :environment do
                                        sparc_pro_number: protocol['pro_number']
                                       )
       unless protocol['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: protocol['pi_name'],
+        PrimaryPi.find_or_create_by(first_name: protocol['pi_name'].split(" ")[0],
+                                    last_name: protocol['pi_name'].split(" ")[1],
                                     department: protocol['pi_department'].humanize.titleize,
                                     protocol: sparc_protocol)
       end
@@ -56,12 +57,12 @@ task update_data: :environment do
         eirb_study = create_and_filter_eirb_study(study)
       end
       unless study['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
+        PrimaryPi.find_or_create_by(first_name: study['pi_name'].split(" ")[0], last_name: study['pi_name'].split(" ")[1], protocol: eirb_study)
       end
     else
       eirb_study = create_and_filter_eirb_study(study)
       unless study['pi_name'].nil?
-        PrimaryPi.find_or_create_by(name: study['pi_name'], protocol: eirb_study)
+        PrimaryPi.find_or_create_by(first_name: study['pi_name'].split(" ")[0], last_name: study['pi_name'].split(" ")[1], protocol: eirb_study)
       end
     end
     unless study['research_master_id'].nil?
