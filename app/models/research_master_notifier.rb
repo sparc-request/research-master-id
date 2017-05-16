@@ -21,7 +21,7 @@ class ResearchMasterNotifier
       @owner_email,
       @rm_pi,
       @rm_id
-    ).deliver_later
+    ).deliver_now
   end
 
   def send_multiple
@@ -30,7 +30,7 @@ class ResearchMasterNotifier
         recipient,
         @rm_pi,
         @rm_id
-      ).deliver_later
+      ).deliver_now
     end
   end
 

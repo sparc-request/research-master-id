@@ -8,7 +8,7 @@ describe DirectoriesController, type: :controller do
       user = create(:user)
       sign_in user
 
-      get :show, format: :json, name: 'will'
+      get :show, params: { name: 'will', format: :json }
 
       expect(response).to be_success
     end
@@ -17,7 +17,7 @@ describe DirectoriesController, type: :controller do
       user = create(:user)
       sign_in user
 
-      get :show, format: :json, name: 'Holt'
+      get :show, params: { name: 'Holt', format: :json }
       body = JSON.parse(response.body)
 
       expect(body.first['email']).to eq 'holtzapp@musc.edu'

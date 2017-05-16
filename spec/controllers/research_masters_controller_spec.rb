@@ -24,7 +24,7 @@ describe ResearchMastersController, type: :controller do
     it 'should only allow signed in users' do
       rm = create(:research_master)
 
-      get :show, id: rm, format: :js
+      get :show, params: { id: rm, format: :js }
 
       expect(response).to have_http_status 401
     end
@@ -34,7 +34,7 @@ describe ResearchMastersController, type: :controller do
       rm = create(:research_master)
       sign_in user
 
-      get :show, id: rm, format: :js
+      get :show, params: { id: rm, format: :js }
 
       expect(response).to be_success
     end
@@ -49,7 +49,7 @@ describe ResearchMastersController, type: :controller do
                   )
       sign_in user
 
-      get :show, id: rm, format: :js
+      get :show, params: { id: rm, format: :js }
 
       expect(assigns(:sparc_protocol)).to eq protocol_one
       expect(assigns(:eirb_protocol)).to eq protocol_two
@@ -62,13 +62,13 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      get :new, format: :js
+      get :new, params: { format: :js }
 
       expect(response).to be_success
     end
 
     it 'should only allow signed in users' do
-      get :new, format: :js
+      get :new, params: { format: :js }
 
       expect(response).to have_http_status 401
     end
@@ -77,7 +77,7 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      get :new, format: :js
+      get :new, params: { format: :js }
 
       expect(assigns(:research_master)).to be_a_new(ResearchMaster)
     end
@@ -88,7 +88,7 @@ describe ResearchMastersController, type: :controller do
     it 'should only allow signed in users' do
       rm = create(:research_master)
 
-      get :edit, id: rm, format: :js
+      get :edit, params: { id: rm, format: :js }
 
       expect(response).to have_http_status 401
     end
@@ -98,7 +98,7 @@ describe ResearchMastersController, type: :controller do
       rm = create(:research_master)
       sign_in user
 
-      get :edit, id: rm, format: :js
+      get :edit, params: { id: rm, format: :js }
 
       expect(response).to be_success
     end
@@ -108,17 +108,20 @@ describe ResearchMastersController, type: :controller do
     it 'should create a RMID' do
       user = create(:user)
       sign_in user
-
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: 'ooga',
-      pi_email: 'booga@booga.com'
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: 'ooga',
+          pi_email: 'booga@booga.com'
+          }, 
+        xhr: true
       }.to change(ResearchMaster, :count).by(1)
     end
 
@@ -126,16 +129,20 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: 'pi-man',
-      pi_email: 'primary-pi@gmail.com'
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: 'pi-man',
+          pi_email: 'primary-pi@gmail.com'
+        },
+        xhr: true
       }.to change(ActionMailer::Base.deliveries, :count).by(2)
     end
 
@@ -143,16 +150,20 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: 'William Holt',
-      pi_email: "#{user.email}"
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: 'William Holt',
+          pi_email: "#{user.email}"
+        },
+        xhr: true
       }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
 
@@ -160,16 +171,20 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: 'pi man',
-      pi_email: 'pi-guy@pi.com'
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: 'pi man',
+          pi_email: 'pi-guy@pi.com'
+        },
+        xhr: true
       }.to change(ResearchMasterPi, :count).by(1)
     end
 
@@ -177,16 +192,20 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: nil,
-      pi_email: nil
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: nil,
+          pi_email: nil
+        },
+        xhr: true
       }.to change(ActionMailer::Base.deliveries, :count).by(1)
     end
 
@@ -194,16 +213,20 @@ describe ResearchMastersController, type: :controller do
       user = create(:user)
       sign_in user
 
-      expect { xhr :post, 'create', research_master: {
-        pi_name: 'William Holt',
-        department: 'department',
-        long_title: 'long title',
-        short_title: 'short',
-        funding_source: 'source',
-        user_id: user.id
-      },
-      pi_name: nil,
-      pi_email: nil
+      expect { post :create, 
+        params: {
+          research_master: {
+            pi_name: 'William Holt',
+            department: 'department',
+            long_title: 'long title',
+            short_title: 'short',
+            funding_source: 'source',
+            user_id: user.id
+          },
+          pi_name: nil,
+          pi_email: nil
+        },
+        xhr: true
       }.to change(ResearchMaster, :count).by(1)
     end
 
@@ -212,10 +235,9 @@ describe ResearchMastersController, type: :controller do
   describe '#update' do
     it 'should return success' do
       user = create(:user)
-      rm = create(:research_master)
       sign_in user
-
-      patch :update, id: rm, research_master: attributes_for(:research_master), format: :js
+      rm = create(:research_master)
+      patch :update, params: { id: rm, research_master: attributes_for(:research_master).except(:user), format: :js }
 
       expect(response).to be_success
     end
@@ -223,7 +245,7 @@ describe ResearchMastersController, type: :controller do
     it 'should only allow signed in users' do
       rm = create(:research_master)
 
-      patch :update, id: rm, research_master: attributes_for(:research_master), format: :js
+      patch :update, params: { id: rm, research_master: attributes_for(:research_master).except(:user), format: :js }
 
       expect(response).to have_http_status 401
     end
@@ -234,7 +256,7 @@ describe ResearchMastersController, type: :controller do
     it 'should only allow signed in users' do
       rm = create(:research_master)
 
-      delete :destroy, id: rm, format: :js
+      delete :destroy, params: { id: rm, format: :js }
 
       expect(response).to have_http_status 401
     end
@@ -244,7 +266,7 @@ describe ResearchMastersController, type: :controller do
       rm = create(:research_master)
       sign_in user
 
-      delete :destroy, id: rm, format: :js
+      delete :destroy, params: { id: rm, format: :js }
 
       expect(response).to be_success
     end
