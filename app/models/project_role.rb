@@ -1,4 +1,4 @@
-class ProjectRole < ActiveRecord::Base
+class ProjectRole < ApplicationRecord
 
   belongs_to :identity
 end
