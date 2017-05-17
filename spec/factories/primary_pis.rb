@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :primary_pi do
-    name "MyString"
+    first_name "MyString"
     protocol nil
   end
 end
