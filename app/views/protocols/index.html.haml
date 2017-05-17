@@ -22,10 +22,10 @@
                   %button.btn.btn-danger.clear-selection
                     %i.glyphicon.glyphicon-remove-circle
           .form-group
-            = f.label :primary_pi_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
+            = f.label :primary_pi_first_name_cont, 'Search by PI Name', class: 'col-md-2 control-label'
             .col-md-10
               .input-group
-                = f.search_field :primary_pi_name_cont, class: 'form-control', placeholder: 'PI Name'
+                = f.search_field :primary_pi_first_name_cont, class: 'form-control', placeholder: 'PI Name'
                 .input-group-btn
                   %button.btn.btn-danger.clear-selection
                     %i.glyphicon.glyphicon-remove-circle
@@ -85,7 +85,7 @@
                 = protocol.eirb_id
               %td
                 - unless protocol.primary_pi.nil?
-                  = protocol.primary_pi.name
+                  = protocol.primary_pi.first_name
                 - else
                   N/A
               %td

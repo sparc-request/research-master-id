@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,83 +10,81 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170330153439) do
+ActiveRecord::Schema.define(version: 20170509125759) do
 
-  create_table "api_keys", force: :cascade do |t|
-    t.string   "access_token", limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+  create_table "api_keys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "access_token"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
-  create_table "primary_pis", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.string   "department",  limit: 255
-    t.integer  "protocol_id", limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+  create_table "primary_pis", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "department"
+    t.integer  "protocol_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id", using: :btree
   end
 
-  add_index "primary_pis", ["protocol_id"], name: "index_primary_pis_on_protocol_id", using: :btree
-
-  create_table "protocols", force: :cascade do |t|
-    t.string   "type",                limit: 255
+  create_table "protocols", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "type"
     t.text     "short_title",         limit: 65535
     t.text     "long_title",          limit: 65535
-    t.integer  "sparc_id",            limit: 4
-    t.integer  "coeus_id",            limit: 4
-    t.string   "eirb_id",             limit: 255
-    t.string   "eirb_institution_id", limit: 255
-    t.string   "eirb_state",          limit: 255
-    t.string   "sparc_pro_number",    limit: 255
+    t.integer  "sparc_id"
+    t.integer  "coeus_id"
+    t.string   "eirb_id"
+    t.string   "eirb_institution_id"
+    t.string   "eirb_state"
+    t.string   "sparc_pro_number"
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
   end
 
-  create_table "research_master_pis", force: :cascade do |t|
-    t.string  "name",               limit: 255
-    t.string  "email",              limit: 255
-    t.string  "department",         limit: 255
-    t.integer "research_master_id", limit: 4
+  create_table "research_master_pis", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string  "name"
+    t.string  "email"
+    t.string  "department"
+    t.integer "research_master_id"
+    t.index ["research_master_id"], name: "index_research_master_pis_on_research_master_id", using: :btree
   end
 
-  add_index "research_master_pis", ["research_master_id"], name: "index_research_master_pis_on_research_master_id", using: :btree
-
-  create_table "research_masters", force: :cascade do |t|
-    t.string   "pi_name",           limit: 255
-    t.string   "department",        limit: 255
+  create_table "research_masters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "pi_name"
+    t.string   "department"
     t.text     "long_title",        limit: 65535
-    t.string   "short_title",       limit: 255
-    t.string   "funding_source",    limit: 255
+    t.string   "short_title"
+    t.string   "funding_source"
     t.boolean  "eirb_validated",                  default: false
-    t.integer  "user_id",           limit: 4
-    t.integer  "sparc_protocol_id", limit: 4
-    t.integer  "eirb_protocol_id",  limit: 4
+    t.integer  "user_id"
+    t.integer  "sparc_protocol_id"
+    t.integer  "eirb_protocol_id"
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
+    t.index ["user_id"], name: "index_research_masters_on_user_id", using: :btree
   end
 
-  add_index "research_masters", ["user_id"], name: "index_research_masters_on_user_id", using: :btree
-
-  create_table "users", force: :cascade do |t|
-    t.string   "email",                  limit: 255, default: "", null: false
-    t.string   "name",                   limit: 255
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "name"
     t.boolean  "admin"
     t.boolean  "developer"
-    t.string   "encrypted_password",     limit: 255, default: "", null: false
-    t.string   "reset_password_token",   limit: 255
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          limit: 4,   default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",     limit: 255
-    t.string   "last_sign_in_ip",        limit: 255
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_master_pis", "research_masters"

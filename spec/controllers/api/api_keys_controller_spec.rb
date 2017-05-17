@@ -35,7 +35,7 @@ describe Api::ApiKeysController, type: :controller do
       user = create(:user, developer: true)
       sign_in user
 
-      xhr :post, 'create'
+      post :create, xhr: true
 
       expect(response).to have_http_status 200
     end
@@ -43,7 +43,7 @@ describe Api::ApiKeysController, type: :controller do
       user = create(:user, developer: true)
       sign_in user
 
-      expect{ xhr :post, 'create' }.to change(ApiKey, :count).by(1)
+      expect{post :create, xhr: true}.to change(ApiKey, :count).by(1)
     end
   end
 end

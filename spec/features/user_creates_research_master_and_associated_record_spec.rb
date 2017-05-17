@@ -2,8 +2,8 @@ require 'rails_helper'
 
 feature 'User creates research master and associated record', js: true do
   scenario 'successfully' do
-    pi = create(:primary_pi, name: 'big daddy')
-    pi_two = create(:primary_pi, name: 'big dawg')
+    pi = create(:primary_pi, first_name: 'big', last_name: 'daddy')
+    pi_two = create(:primary_pi, first_name: 'big', last_name: 'dawg')
     protocol_one = create(:protocol,
                           type: 'SPARC',
                           sparc_id: 9737,
@@ -21,7 +21,7 @@ feature 'User creates research master and associated record', js: true do
     user.update_attributes(admin: true, developer: true)
 
     visit protocols_path
-    fill_in 'q_primary_pi_name_cont', with: 'big'
+    fill_in 'q_primary_pi_first_name_cont', with: 'big'
     click_button 'Search'
     check "protocol_#{protocol_one.id}"
     check "protocol_#{protocol_two.id}"

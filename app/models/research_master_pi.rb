@@ -1,4 +1,4 @@
-class ResearchMasterPi < ActiveRecord::Base
+class ResearchMasterPi < ApplicationRecord
   belongs_to :research_master
 
   validates :name, :email, presence: true
