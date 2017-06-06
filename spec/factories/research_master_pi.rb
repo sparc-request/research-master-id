@@ -3,6 +3,6 @@ FactoryGirl.define do
     name 'String'
     email 'email@email.com'
     department 'dept'
-    research_master nil
+    research_master
   end
 end
