@@ -1,15 +1,14 @@
 source 'https://rubygems.org'
 
-
-gem 'rails', '5.0.3'
+gem 'rails', '~> 5.1', '>= 5.1.1'
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
 gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'haml-rails', '~> 0.9'
+gem 'haml-rails', '~> 1.0'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'faker'
@@ -22,9 +21,10 @@ gem 'whenever', '~> 0.9.7'
 gem 'net-ldap', '~> 0.15.0'
 gem 'dotenv'
 gem 'rack-cors', :require => 'rack/cors'
-gem 'sprockets', '3.6.3'
+gem 'sprockets', '~> 3.7', '>= 3.7.1'
 gem 'exception_notification', '~> 4.1', '>= 4.1.4'
 gem 'slack-notifier', '~> 1.5', '>= 1.5.1'
+gem 'listen', '~> 3.1', '>= 3.1.5'
 
 group :development, :test do
   gem 'byebug'

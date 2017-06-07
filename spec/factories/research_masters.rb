@@ -1,11 +1,20 @@
 FactoryGirl.define do
+  sequence :department do |n|
+    "department-#{n}"
+  end
+  sequence :long_title do |n|
+    "long_title - #{n}"
+  end
+  sequence :short_title do |n|
+    "short_title - #{n}"
+  end
   factory :research_master do
-    pi_name "MyString"
-    department "MyString"
-    long_title "MyString"
-    short_title "MyString"
-    funding_source "MyString"
-    user nil
+    pi_name "ooga bo"
+    department
+    long_title
+    short_title "short title bra"
+    funding_source "who knows"
+    user
   end
 end
 
