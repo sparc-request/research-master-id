@@ -106,7 +106,7 @@ task update_data: :environment do
       end
     end
     unless study['research_master_id'].nil?
-      validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated', 'Withdrawn']
+      validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
       rm = ResearchMaster.find_by(id: study['research_master_id'])
       unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
