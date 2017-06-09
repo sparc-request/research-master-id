@@ -56,8 +56,9 @@ task update_data: :environment do
                                        sparc_pro_number: protocol['pro_number']
                                       )
       new_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
-      unless protocol['pi_name'].nil?
-        pi = PrimaryPi.find_or_initialize_by(name: protocol['pi_name'],
+      if protocol['first_name'] || protocol['last_name']
+        pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
+                                            last_name: protocol['last_name'],
                                             department: protocol['pi_department'].humanize.titleize,
                                             protocol: sparc_protocol)
         new_sparc_pis.append(pi.id) if pi.save
@@ -94,14 +95,14 @@ task update_data: :environment do
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
         eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
       end
-      unless study['pi_name'].nil?
-        pi = PrimaryPi.find_or_initialize_by(name: study['pi_name'], protocol: eirb_study)
+      if study['first_name'] || study['last_name']
+        pi = PrimaryPi.find_or_initialize_by(first_name: study['first_name'], last_name: study['last_name'], protocol: eirb_study)
         new_erib_pis.append(pi.id) if pi.save
       end
     else
       eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
-      unless study['pi_name'].nil?
-        pi = PrimaryPi.find_or_initialize_by(name: study['pi_name'], protocol: eirb_study)
+      if study['first_name'] || study['last_name']
+        pi = PrimaryPi.find_or_initialize_by(first_name: study['first_name'], last_name: study['last_name'], protocol: eirb_study)
         new_eirb_pis.append(pi.id) if pi.save
       end
     end
