@@ -57,9 +57,14 @@ task update_data: :environment do
                                       )
       new_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
       if protocol['first_name'] || protocol['last_name']
+        unless Department.exists?(name: protocol['pi_department'].humanize.titleize)
+          sparc_department = Department.create(name: protocol['pi_department'].humanize.titleize)
+        else
+          sparc_department = Department.find_by(name: protocol['pi_department'].humanize.titleize)
+        end
         pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
                                             last_name: protocol['last_name'],
-                                            department: protocol['pi_department'].humanize.titleize,
+                                            department_id: sparc_department.id,
                                             protocol: sparc_protocol)
         new_sparc_pis.append(pi.id) if pi.save
       end
