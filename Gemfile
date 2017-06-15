@@ -25,6 +25,7 @@ gem 'sprockets', '~> 3.7', '>= 3.7.1'
 gem 'exception_notification', '~> 4.1', '>= 4.1.4'
 gem 'slack-notifier', '~> 1.5', '>= 1.5.1'
 gem 'listen', '~> 3.1', '>= 3.1.5'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   gem 'byebug'
