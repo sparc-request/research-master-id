@@ -24,7 +24,7 @@
                 %td
                   = @sparc_protocol.sparc_id
                 %td
-                  = @sparc_protocol.primary_pi.name
+                  = "#{@sparc_protocol.primary_pi.first_name} #{@sparc_protocol.primary_pi.last_name}"
                 %td
                   = @sparc_protocol.long_title
             - unless @eirb_protocol.nil?
@@ -34,6 +34,6 @@
                 %td
                   = @eirb_protocol.eirb_id
                 %td
-                  = @eirb_protocol.primary_pi.name
+                  = "#{@eirb_protocol.primary_pi.first_name} #{@eirb_protocol.primary_pi.last_name}"
                 %td
                   = @eirb_protocol.long_title
