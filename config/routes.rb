@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :research_masters, only: [:index, :show]
+    resources :validated_records, only: [:index]
     resources :api_keys, only: [:create, :new]
   end
 

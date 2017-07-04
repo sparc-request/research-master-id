@@ -1,6 +1,4 @@
-class Api::ResearchMastersController < ApplicationController
-  skip_before_action :authenticate_user!
-  before_action :restrict_access
+class Api::ResearchMastersController < Api::BaseController
 
   def index
     @research_masters = ResearchMaster.all
@@ -15,12 +13,5 @@ class Api::ResearchMastersController < ApplicationController
       format.json { render json: @research_master }
     end
   end
-
-  private
-
-  def restrict_access
-    authenticate_or_request_with_http_token do |token, options|
-      ApiKey.exists?(access_token: token)
-    end
-  end
 end
+
