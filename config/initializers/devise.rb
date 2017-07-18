@@ -7,8 +7,14 @@ Devise.setup do |config|
   end
 
   config.omniauth :shibboleth,
-    {:uid_field => 'eppn',
-     :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
+    {
+    :uid_field => 'eppn',
+     :info_fields => {
+      :email => 'mail',
+      :name => 'cn',
+      :last_name => 'sn',
+      :first_name => 'givenName'
+    },
      :extra_fields => [:schacHomeOrganization]
     }
   # The secret key used by Devise. Devise uses this key to generate
