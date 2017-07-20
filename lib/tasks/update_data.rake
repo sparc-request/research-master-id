@@ -59,7 +59,6 @@ task update_data: :environment do
       if protocol['first_name'] || protocol['last_name']
         pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
                                             last_name: protocol['last_name'],
-                                            department: protocol['pi_department'].humanize.titleize,
                                             protocol: sparc_protocol)
         new_sparc_pis.append(pi.id) if pi.save
       end
