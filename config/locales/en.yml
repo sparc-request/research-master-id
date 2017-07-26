@@ -79,6 +79,8 @@ en:
         long_title: "Long Title"
         short_title: "Short Title"
         funding_source: "Funding Source"
+        research_type: "Research Type"
+        musc_health_services: "MUSC Health Services"
       placeholders:
         pi_name: "Search for PI Name"
         department: "Department"

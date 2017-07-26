@@ -41,6 +41,16 @@
             = f.label :funding_source do
               = f.radio_button :funding_source, 'External'
               External
+      .form-group
+        = f.label :research_type, t(:research_masters)[:new][:fields][:research_type], class: 'col-sm-2 control-label'
+        .col-sm-10
+          .radio
+            = f.label :research_type do
+              = f.radio_button :research_type, 'basic_science_research'
+              Basic Science Research
+            = f.label :research_type do
+              = f.radio_button :research_type, 'clinical_research'
+              Clinical Research, Clinical Trial, Translational Research
         = f.hidden_field :sparc_protocol_id, value: @research_master.sparc_protocol_id
         = f.hidden_field :eirb_protocol_id, value: @research_master.eirb_protocol_id
     .modal-footer
