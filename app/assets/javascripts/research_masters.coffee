@@ -46,4 +46,10 @@ $ ->
     else
       removeCookie('showMoreCookie')
 
+  $(document).on 'change', '#research_master_research_type_clinical_research, #research_master_research_type_basic_science_research', ->
+    if $(this).val() == 'clinical_research'
+      $('.musc-health-services').show()
+    else
+      $('.musc-health-services').hide()
+
 
