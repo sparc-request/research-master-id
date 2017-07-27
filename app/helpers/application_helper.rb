@@ -23,4 +23,12 @@ module ApplicationHelper
       return 'Clinical Science (Non-billable)'
     end
   end
+
+  def display_musc_health_services(type)
+    if type == 'clinical_research'
+      return { style: 'display:block' }
+    else
+      return { style: 'display:none;' }
+    end
+  end
 end

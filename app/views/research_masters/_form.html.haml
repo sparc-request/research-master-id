@@ -51,7 +51,7 @@
             = f.label :research_type do
               = f.radio_button :research_type, 'clinical_research'
               Clinical Research, Clinical Trial, Translational Research
-      .form-group.musc-health-services{ style: 'display:none;'}
+      .form-group.musc-health-services{ display_musc_health_services(f.object.research_type) }
         = f.label :musc_health_services, t(:research_masters)[:new][:fields][:musc_research_services], class: 'col-sm-2 control-label'
         .col-sm-10
           .radio
