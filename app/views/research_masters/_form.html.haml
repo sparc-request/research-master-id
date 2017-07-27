@@ -45,7 +45,7 @@
         = f.label :research_type, t(:research_masters)[:new][:fields][:research_type], class: 'col-sm-2 control-label'
         .col-sm-10
           .radio
-            = f.label :research_type do
+            = f.label :research_type, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:basic_science] do
               = f.radio_button :research_type, 'basic_science_research'
               Basic Science Research
             = f.label :research_type do
@@ -55,10 +55,10 @@
         = f.label :musc_health_services, t(:research_masters)[:new][:fields][:musc_research_services], class: 'col-sm-2 control-label'
         .col-sm-10
           .radio
-            = f.label :musc_health_services do
+            = f.label :musc_health_services, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:musc_health_services] do
               = f.radio_button :musc_health_services, true
               MAY use MUSC Health Services
-            = f.label :musc_health_services do
+            = f.label :musc_health_services, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:no_musc_health_services] do
               = f.radio_button :musc_health_services, false
               WILL NOT use MUSC Health Services
         = f.hidden_field :sparc_protocol_id, value: @research_master.sparc_protocol_id

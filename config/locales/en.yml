@@ -92,3 +92,6 @@ en:
         long_title: "Enter the Long Title of the study as it should appear in eIRB or other systems."
         short_title: "Enter the Short Title of the study as it should appear in eIRB or other systems. Maximum length is 255 characters."
         funding_source: "Select if the study is internally or externally funded"
+        basic_science: "e.g. animal, bench"
+        musc_health_services: "hospital, outpatient, laboratory or professional billing"
+        no_musc_health_services: "not human subjects, chart review, observational or survey only"
