@@ -14,11 +14,13 @@ module ApplicationHelper
     nil
   end
 
-  def display_research_type(type)
+  def display_research_type(type, billable)
     if type == 'basic_science_research'
       return 'Basic Science Research'
-    else
-      return 'Clinical Research, Clinical Trial, Translational Research'
+    elsif billable && (type == 'clinical_research')
+      return 'Clinical Science (Billable)'
+    elsif !billable && (type == 'clinical_research')
+      return 'Clinical Science (Non-billable)'
     end
   end
 end
