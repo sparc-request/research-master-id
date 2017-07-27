@@ -13,4 +13,12 @@ module ApplicationHelper
     end
     nil
   end
+
+  def display_research_type(type)
+    if type == 'basic_science_research'
+      return 'Basic Science Research'
+    else
+      return 'Clinical Research, Clinical Trial, Translational Research'
+    end
+  end
 end
