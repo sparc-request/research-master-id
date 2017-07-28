@@ -15,3 +15,8 @@
           = f.label :remember_me
       .form-group
         = f.submit "Log in", class: "btn btn-primary sign-in"
+.row
+  .col-sm-4.col-sm-offset-4
+    = link_to 'Affiliated Users Log In',
+      user_shibboleth_omniauth_authorize_path,
+      class: 'btn btn-primary btn-lg btn-block'

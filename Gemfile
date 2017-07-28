@@ -20,11 +20,12 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'whenever', '~> 0.9.7'
 gem 'net-ldap', '~> 0.15.0'
 gem 'dotenv'
-gem 'rack-cors', :require => 'rack/cors'
 gem 'sprockets', '~> 3.7', '>= 3.7.1'
 gem 'exception_notification', '~> 4.1', '>= 4.1.4'
 gem 'slack-notifier', '~> 1.5', '>= 1.5.1'
 gem 'listen', '~> 3.1', '>= 3.1.5'
+gem 'rack-cors', :require => 'rack/cors'
+gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
 
 group :development, :test do
   gem 'byebug'
@@ -33,7 +34,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.3', '>= 3.3.1'
   gem 'capistrano'
   gem 'capistrano-rvm'
   gem 'capistrano-rails'

@@ -5,6 +5,18 @@ Devise.setup do |config|
   config.warden do |manager|
     manager.default_strategies(:scope => :user).unshift :ldap_authenticatable
   end
+
+  config.omniauth :shibboleth,
+    {
+    :uid_field => 'eppn',
+     :info_fields => {
+      :email => 'mail',
+      :name => 'cn',
+      :last_name => 'sn',
+      :first_name => 'givenName'
+    },
+     :extra_fields => [:schacHomeOrganization]
+    }
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.

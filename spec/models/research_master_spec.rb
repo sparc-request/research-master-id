@@ -68,5 +68,36 @@ RSpec.describe ResearchMaster, type: :model do
 
     expect(research_master_two).to be_valid
   end
+
+  describe '#validated' do
+    it 'should return only records that have been validated by eirb' do
+      rm_one = create(
+        :research_master,
+        eirb_validated: true
+      )
+      create(
+        :research_master,
+        eirb_validated: false
+      )
+
+      result = ResearchMaster.validated
+
+      expect(result).to include(rm_one)
+    end
+    it 'should return only records that have been validated by eirb' do
+      create(
+        :research_master,
+        eirb_validated: true
+      )
+      rm_two = create(
+        :research_master,
+        eirb_validated: false
+      )
+
+      result = ResearchMaster.validated
+
+      expect(result).not_to include(rm_two)
+    end
+  end
 end
 

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   root 'research_masters#index'
 
   resources :research_masters
@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :research_masters, only: [:index, :show]
+    resources :validated_records, only: [:index]
     resources :api_keys, only: [:create, :new]
   end
 

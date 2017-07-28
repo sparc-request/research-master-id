@@ -10,80 +10,84 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509125759) do
+ActiveRecord::Schema.define(version: 20170726154646) do
 
-  create_table "api_keys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "access_token"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+  create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "access_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "primary_pis", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email"
-    t.string   "department"
-    t.integer  "protocol_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id", using: :btree
+  create_table "primary_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "department"
+    t.integer "protocol_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id"
   end
 
-  create_table "protocols", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "type"
-    t.text     "short_title",         limit: 65535
-    t.text     "long_title",          limit: 65535
-    t.integer  "sparc_id"
-    t.integer  "coeus_id"
-    t.string   "eirb_id"
-    t.string   "eirb_institution_id"
-    t.string   "eirb_state"
-    t.string   "sparc_pro_number"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+  create_table "protocols", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "type"
+    t.text "short_title"
+    t.text "long_title"
+    t.integer "sparc_id"
+    t.integer "coeus_id"
+    t.string "eirb_id"
+    t.string "eirb_institution_id"
+    t.string "eirb_state"
+    t.string "sparc_pro_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "research_master_pis", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string  "name"
-    t.string  "email"
-    t.string  "department"
+  create_table "research_master_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name"
+    t.string "email"
+    t.string "department"
     t.integer "research_master_id"
-    t.index ["research_master_id"], name: "index_research_master_pis_on_research_master_id", using: :btree
+    t.index ["research_master_id"], name: "index_research_master_pis_on_research_master_id"
   end
 
-  create_table "research_masters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "pi_name"
-    t.string   "department"
-    t.text     "long_title",        limit: 65535
-    t.string   "short_title"
-    t.string   "funding_source"
-    t.boolean  "eirb_validated",                  default: false
-    t.integer  "user_id"
-    t.integer  "sparc_protocol_id"
-    t.integer  "eirb_protocol_id"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.index ["user_id"], name: "index_research_masters_on_user_id", using: :btree
+  create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "pi_name"
+    t.string "department"
+    t.text "long_title"
+    t.string "short_title"
+    t.string "funding_source"
+    t.boolean "eirb_validated", default: false
+    t.integer "user_id"
+    t.integer "sparc_protocol_id"
+    t.integer "eirb_protocol_id"
+    t.datetime "eirb_association_date"
+    t.datetime "sparc_association_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "research_type"
+    t.boolean "musc_health_services"
+    t.index ["user_id"], name: "index_research_masters_on_user_id"
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "name"
-    t.boolean  "admin"
-    t.boolean  "developer"
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
+  create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "email", default: "", null: false
+    t.string "name"
+    t.boolean "admin"
+    t.boolean "developer"
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "primary_pis", "protocols"

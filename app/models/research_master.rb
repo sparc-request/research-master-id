@@ -32,4 +32,8 @@ class ResearchMaster < ApplicationRecord
   validates_format_of :short_title, with: /^[a-zA-Z\d\s.%\/$*<>!@#^\[\]{};:"'?&()-_=+]*$/,
     message: 'Special characters are not allowed in the Short Title',
     multiline: true
+
+  def self.validated
+    where(eirb_validated: true)
+  end
 end
