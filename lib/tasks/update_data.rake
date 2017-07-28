@@ -69,7 +69,10 @@ task update_data: :environment do
     unless protocol['research_master_id'].nil?
       rm = ResearchMaster.find_by(id: protocol['research_master_id'])
       unless rm.nil?
-        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id, sparc_association_date: DateTime.current)
+        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id)
+        if rm.sparc_association_date.nil?
+          rm.update_attribute(:sparc_association_date, DateTime.current)
+        end
       end
     end
     print(progress_bar(count, protocols.count/10)) if count % (protocols.count/10)
@@ -110,7 +113,10 @@ task update_data: :environment do
       rm = ResearchMaster.find_by(id: study['research_master_id'])
       unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id, eirb_association_date: DateTime.current)
+          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+          if rm.eirb_association_date.nil?
+            rm.update_attribute(:eirb_association_date, DateTime.current)
+          end
         end
         if validated_states.include?(study['state'])
           rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
