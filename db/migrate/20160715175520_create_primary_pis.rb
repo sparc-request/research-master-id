@@ -1,4 +1,4 @@
-class CreatePrimaryPis < ActiveRecord::Migration
+class CreatePrimaryPis < ActiveRecord::Migration[4.2]
   def change
     create_table :primary_pis do |t|
       t.string :name

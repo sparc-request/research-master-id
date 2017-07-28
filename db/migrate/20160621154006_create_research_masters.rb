@@ -1,4 +1,4 @@
-class CreateResearchMasters < ActiveRecord::Migration
+class CreateResearchMasters < ActiveRecord::Migration[4.2]
   def change
     create_table :research_masters do |t|
       t.string :pi_name

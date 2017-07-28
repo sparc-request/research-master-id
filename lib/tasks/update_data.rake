@@ -55,7 +55,7 @@ task update_data: :environment do
                                        sparc_id: protocol['id'],
                                        sparc_pro_number: protocol['pro_number']
                                       )
-      new_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save 
+      new_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
       if protocol['first_name'] || protocol['last_name']
         pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
                                             last_name: protocol['last_name'],

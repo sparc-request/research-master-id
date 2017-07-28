@@ -1,4 +1,4 @@
-class CreateAssociatedRecords < ActiveRecord::Migration
+class CreateAssociatedRecords < ActiveRecord::Migration[4.2]
   def change
     create_table :associated_records do |t|
       t.references :research_master, index: true, foreign_key: true
