@@ -1,4 +1,4 @@
-class CreateResearchMasterPisTable < ActiveRecord::Migration
+class CreateResearchMasterPisTable < ActiveRecord::Migration[4.2]
   def change
     create_table :research_master_pis do |t|
       t.string :name

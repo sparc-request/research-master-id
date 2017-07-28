@@ -3,7 +3,9 @@ $ ->
     $('.research-master-form').renderFormErrors('research_master', data.responseJSON.error)
 
   $('#newResearchMasterModal').on 'shown.bs.modal', ->
-    $('.submit-rm-record').prop('disabled', true)
+    if $('#research_master_pi_name').val().length < 1 ||
+       $('#research_master_pi_name').val() == $('#research_master_pi_name').attr('placeholder')
+      $('.submit-rm-record').prop('disabled', true)
 
     $('.reset-pi-name').on 'click', ->
       $('.submit-rm-record').prop('disabled', true)

@@ -5,7 +5,7 @@
         %span
           &times;
       %h4.modal-title
-        New Research Master Record
+        = "#{@research_master.new_record? ? 'New' : 'Edit' } Research Master Record"
     .modal-body
       = hidden_field_tag 'pi_name', nil
       = hidden_field_tag 'pi_email', nil
