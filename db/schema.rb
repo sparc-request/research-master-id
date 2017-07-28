@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170725155951) do
+ActiveRecord::Schema.define(version: 20170726154646) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -20,7 +20,6 @@ ActiveRecord::Schema.define(version: 20170725155951) do
 
   create_table "primary_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "first_name"
-    t.string "middle_initial"
     t.string "last_name"
     t.string "email"
     t.string "department"
@@ -66,6 +65,8 @@ ActiveRecord::Schema.define(version: 20170725155951) do
     t.datetime "sparc_association_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "research_type"
+    t.boolean "musc_health_services"
     t.index ["user_id"], name: "index_research_masters_on_user_id"
   end
 
