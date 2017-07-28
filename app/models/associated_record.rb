@@ -1,0 +1,3 @@
+class AssociatedRecord < ApplicationRecord
+
+end
