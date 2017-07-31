@@ -14,6 +14,7 @@ feature 'User should be able to create a new research master record', js: true d
       fill_in 'research_master_long_title', with: 'Long John'
       fill_in 'research_master_short_title', with: 'Shortstop'
       choose 'research_master_funding_source_internal'
+      choose 'research_master_research_type_basic_science_research'
       click_button 'Submit'
       wait_for_ajax
 
