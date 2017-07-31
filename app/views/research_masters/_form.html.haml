@@ -46,20 +46,18 @@
         .col-sm-10
           .radio
             = f.label :research_type, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:basic_science] do
-              = f.radio_button :research_type, 'basic_science_research'
+              = f.radio_button :research_type, 'basic_science_research', class: 'research-radio'
               Basic Science Research
             = f.label :research_type do
-              = f.radio_button :research_type, 'clinical_research'
+              = radio_button_tag :clinical_research, '', f.object.clinical_research?, class: 'research-radio'
               Clinical Research, Clinical Trial, Translational Research
-      .form-group.musc-health-services{ display_musc_health_services(f.object.research_type) }
-        = f.label :musc_health_services, t(:research_masters)[:new][:fields][:musc_health_services], class: 'col-sm-2 control-label'
-        .col-sm-10
+        .col-sm-offset-3.col-sm-8.clinical-research-dependent{ style: f.object.clinical_research? ? 'display:block;' : 'display:none;'}
           .radio
-            = f.label :musc_health_services, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:musc_health_services] do
-              = f.radio_button :musc_health_services, true
+            = f.label :research_type, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:clinical_billable] do
+              = f.radio_button :research_type, 'clinical_research_billable'
               MAY use MUSC Health Services
-            = f.label :musc_health_services, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:no_musc_health_services] do
-              = f.radio_button :musc_health_services, false
+            = f.label :research_type, data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:clinical_non_billable] do
+              = f.radio_button :research_type, 'clinical_research_non_billable'
               WILL NOT use MUSC Health Services
         = f.hidden_field :sparc_protocol_id, value: @research_master.sparc_protocol_id
         = f.hidden_field :eirb_protocol_id, value: @research_master.eirb_protocol_id

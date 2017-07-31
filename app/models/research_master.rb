@@ -33,7 +33,13 @@ class ResearchMaster < ApplicationRecord
     message: 'Special characters are not allowed in the Short Title',
     multiline: true
 
+  validates_presence_of :research_type
+
   def self.validated
     where(eirb_validated: true)
+  end
+
+  def clinical_research?
+    ['clinical_research_billable', 'clinical_research_non_billable'].include?(self.research_type)
   end
 end
