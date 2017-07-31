@@ -23,6 +23,9 @@ task update_data: :environment do
 
   save_errors = ""
 
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:eirb_validated, false)
+  end
   puts("\nBeginning data retrieval from APIs...")
 
   sparc_api = ENV.fetch("SPARC_API")
