@@ -23,7 +23,7 @@
     %td.research-master{ data: { id: research_master.id } }
       = research_master.funding_source
     %td.research-master{ data: { id: research_master.id } }
-      = display_research_type(research_master.research_type, research_master.musc_health_services)
+      = display_research_type(research_master.research_type)
     %td
       = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' unless research_master.user_id == current_user.id || current_user.admin?), ('disabled' if research_master.eirb_validated?)], remote: true do
         %span.glyphicon.glyphicon-edit
