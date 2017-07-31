@@ -76,7 +76,6 @@ ActiveRecord::Schema.define(version: 20170726154646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "research_type"
-    t.boolean "musc_health_services"
     t.index ["user_id"], name: "index_research_masters_on_user_id"
   end
 
