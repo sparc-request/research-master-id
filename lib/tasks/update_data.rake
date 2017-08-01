@@ -29,7 +29,11 @@ task update_data: :environment do
     unless rm.eirb_protocol_id.nil?
       protocol = Protocol.find(rm.eirb_protocol_id)
       if validated_states.include?(protocol.eirb_state)
-        rm.update_attribute(:eirb_validated, true)
+        rm.update_attributes(
+          eirb_validated: true,
+          short_title: protocol.short_title,
+          long_title: protocol.long_title
+        )
       end
     end
   end
