@@ -25,6 +25,13 @@ task update_data: :environment do
 
   ResearchMaster.all.each do |rm|
     rm.update_attribute(:eirb_validated, false)
+    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    unless rm.eirb_protocol_id.nil?
+      protocol = Protocol.find(rm.eirb_protocol_id)
+      if validated_states.include?(protocol.eirb_state)
+        rm.update_attribute(:eirb_validated, true)
+      end
+    end
   end
   puts("\nBeginning data retrieval from APIs...")
 
