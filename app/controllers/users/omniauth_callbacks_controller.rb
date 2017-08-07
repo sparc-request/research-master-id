@@ -2,6 +2,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_action :authenticate_user!
 
   def shibboleth
+    Rails.logger.debug(request.env['omniauth.auth'])
     @user = User.from_omniauth(request.env["omniauth.auth"])
 
     if @user.persisted?
