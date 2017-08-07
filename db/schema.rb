@@ -10,22 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726154646) do
+ActiveRecord::Schema.define(version: 20170807153607) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "associated_records", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "research_master_id"
-    t.integer "sparc_id"
-    t.integer "coeus_id"
-    t.integer "eirb_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["research_master_id"], name: "index_associated_records_on_research_master_id"
   end
 
   create_table "primary_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -99,7 +89,6 @@ ActiveRecord::Schema.define(version: 20170726154646) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "associated_records", "research_masters"
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_master_pis", "research_masters"
   add_foreign_key "research_masters", "users"
