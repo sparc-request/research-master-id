@@ -21,7 +21,7 @@ feature 'User creates research master and associated record', js: true do
     user.update_attributes(admin: true, developer: true)
 
     visit protocols_path
-    fill_in 'q_primary_pi_first_name_cont', with: 'big'
+    fill_in 'q_primary_pi_first_name_or_primary_pi_last_name_cont', with: 'big'
     click_button 'Search'
     check "protocol_#{protocol_one.id}"
     check "protocol_#{protocol_two.id}"
