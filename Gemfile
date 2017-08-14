@@ -26,6 +26,7 @@ gem 'slack-notifier', '~> 1.5', '>= 1.5.1'
 gem 'listen', '~> 3.1', '>= 3.1.5'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
+gem 'cancancan', '~> 2.0'
 
 group :development, :test do
   gem 'byebug'
