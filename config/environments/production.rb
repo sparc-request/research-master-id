@@ -4,6 +4,17 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
 
+  config.middleware.use ExceptionNotification::Rack,
+    :slack => {
+    :webhook_url => ENV.fetch('SLACK_WEBHOOK_URL'),
+    :channel => "#rmid_errors",
+    :username => 'RMID Error Bot',
+    :additional_parameters => {
+      :icon_url => "https://slack.com/img/icons/app-57.pn",
+      :mrkdwn => true
+    }
+  }
+
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
