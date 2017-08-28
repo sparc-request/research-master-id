@@ -5,20 +5,20 @@ RSpec.describe Notifier do
   describe '#success' do
 
     it 'should have two recipients' do
-      ENV['ENVIRONMENT'] = 'production'
+      ENV["ENVIRONMENT"] = "production"
       owner = create(:user)
-      rm_id = create(:research_master, user: owner)
-      rm_pi = create(:research_master_pi, research_master: rm_id)
+      rm_pi = create(:user)
+      rm_id = create(:research_master, creator: owner, pi: rm_pi)
 
-      result = Notifier.success(owner.email, rm_pi, rm_id)
+      result = Notifier.success([owner.email, rm_pi.email], rm_pi, rm_id)
 
-      expect(result.to).to eq [owner.email]
+      expect(result.to).to eq [owner.email, rm_pi.email]
     end
 
     it 'should have the correct subject' do
       owner = create(:user)
-      rm_id = create(:research_master, user: owner)
-      rm_pi = create(:research_master_pi, research_master: rm_id)
+      rm_pi = create(:user)
+      rm_id = create(:research_master, creator: owner, pi: rm_pi)
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 
@@ -27,8 +27,8 @@ RSpec.describe Notifier do
 
     it 'it should be from no-reply@rmid.musc.edu' do
       owner = create(:user, email: 'pi@email.com')
-      rm_id = create(:research_master, user: owner)
-      rm_pi = create(:research_master_pi, research_master: rm_id)
+      rm_pi = create(:user)
+      rm_id = create(:research_master, creator: owner, pi: rm_pi)
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 
@@ -36,10 +36,10 @@ RSpec.describe Notifier do
     end
 
     it 'should send to gmail if env is staging' do
-      ENV['ENVIRONMENT'] = 'staging'
+      ENV["ENVIRONMENT"] = "staging"
       owner = create(:user, email: 'pi@email.com')
-      rm_id = create(:research_master, user: owner)
-      rm_pi = create(:research_master_pi, research_master: rm_id)
+      rm_pi = create(:user)
+      rm_id = create(:research_master, creator: owner, pi: rm_pi)
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 
@@ -49,8 +49,8 @@ RSpec.describe Notifier do
     it 'carry on if production' do
       ENV['ENVIRONMENT'] = 'production'
       owner = create(:user, email: 'pi@email.com')
-      rm_id = create(:research_master, user: owner)
-      rm_pi = create(:research_master_pi, research_master: rm_id)
+      rm_pi = create(:user)
+      rm_id = create(:research_master, creator: owner, pi: rm_pi)
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 

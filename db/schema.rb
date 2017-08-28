@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808131546) do
+ActiveRecord::Schema.define(version: 20170828192145) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -65,7 +65,8 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.string "short_title"
     t.string "funding_source"
     t.boolean "eirb_validated", default: false
-    t.integer "user_id"
+    t.integer "creator_id"
+    t.integer "pi_id"
     t.integer "sparc_protocol_id"
     t.integer "eirb_protocol_id"
     t.datetime "eirb_association_date"
@@ -73,7 +74,8 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "research_type"
-    t.index ["user_id"], name: "index_research_masters_on_user_id"
+    t.index ["creator_id"], name: "index_research_masters_on_creator_id"
+    t.index ["pi_id"], name: "index_research_masters_on_pi_id"
   end
 
   create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -99,5 +101,6 @@ ActiveRecord::Schema.define(version: 20170808131546) do
   add_foreign_key "primary_pis", "departments"
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_master_pis", "research_masters"
-  add_foreign_key "research_masters", "users"
+  add_foreign_key "research_masters", "users", column: "creator_id"
+  add_foreign_key "research_masters", "users", column: "pi_id"
 end

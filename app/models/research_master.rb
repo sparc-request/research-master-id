@@ -1,6 +1,6 @@
 class ResearchMaster < ApplicationRecord
-  belongs_to :user
-  has_one :research_master_pi, dependent: :destroy
+  belongs_to :creator, class_name: "User"
+  belongs_to :pi, class_name: "User"
 
   validates :pi_name,
     :department,

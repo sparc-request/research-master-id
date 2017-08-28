@@ -26,7 +26,7 @@
     %th
       PI Name
     %th
-      = @rm_pi.name
+      = @pi.name
   %tr
     %th
       PI Department
@@ -56,7 +56,7 @@
     %th
       Creator
     %th
-      = @rm_id.user.name
+      = @rm_id.creator.name || @rm_id.creator.email
 %p
   Please contact the SUCCESS Center at (843) 792-8300 or
   = mail_to 'success@musc.edu'
