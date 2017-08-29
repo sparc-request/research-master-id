@@ -33,7 +33,7 @@ server 'bmic-dev-staging.obis.musc.edu', user: 'deploy', roles: %w{app db web}
 
 set :tmp_dir, "/home/deploy/tmp"
 set :deploy_to, '/var/www/rails/research_master_id'
-set :branch, 'testing'
+set :branch, 'v1.1.5'
 set :rails_env, 'production'
 set :rvm_ruby_version, '2.4.1@research-master-id --create'
 set :passenger_restart_with_touch, true
