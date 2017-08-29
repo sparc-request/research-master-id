@@ -6,9 +6,9 @@ class Ability
       can :manage, :all
     end
 
-    can :update, ResearchMaster, user_id: user.id
+    can :update, ResearchMaster, creator_id: user.id
 
-    can :destroy, ResearchMaster, eirb_validated: false, user_id: user.id
+    can :destroy, ResearchMaster, eirb_validated: false, creator_id: user.id
 
     # Define abilities for the passed in user here. For example:
     #

@@ -51,16 +51,15 @@ class ResearchMastersController < ApplicationController
 
   def create
     @research_master = ResearchMaster.new(research_master_params)
-    @research_master.user = current_user
+    @research_master.creator = current_user
+    @research_master.pi = find_or_create_pi(params[:pi_email],
+                                            params[:pi_name],
+                                            Devise.friendly_token,
+                                           )
     respond_to do |format|
       if @research_master.save
-        rm_pi = create_rm_pi(params[:pi_name],
-                             params[:pi_email],
-                             params[:pi_department],
-                             @research_master
-                            )
-        rm_notifier = ResearchMasterNotifier.new(rm_pi,
-                                                 @research_master.user.email,
+        rm_notifier = ResearchMasterNotifier.new(@research_master.pi,
+                                                 @research_master.creator.email,
                                                  @research_master
                                                 )
         rm_notifier.send_mail
@@ -84,14 +83,12 @@ class ResearchMastersController < ApplicationController
     @research_masters = @q.result(distinct: true)
   end
 
-  def create_rm_pi(name, email, department, rm_id)
-    if name.present? && email.present?
-      ResearchMasterPi.create(
-        name: name,
-        email: email,
-        department: department,
-        research_master: rm_id
-      )
+  def find_or_create_pi(email, name, password)
+    if email.present?
+      user = User.create_with(password: password, password_confirmation: password).
+        find_or_create_by(email: email)
+      user.update_attribute(:name, name)
+      user
     end
   end
 
