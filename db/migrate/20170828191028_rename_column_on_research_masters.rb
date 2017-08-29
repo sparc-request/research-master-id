@@ -1,5 +1,6 @@
 class RenameColumnOnResearchMasters < ActiveRecord::Migration[5.1]
   def change
-    rename_column :research_masters, :user_id, :creator_id
+    remove_reference :research_masters, :user, index: true, foreign_key: true
+    add_reference :research_masters, :creator, foreign_key: { to_table: :users }, after: :creator_id, type: :integer
   end
 end
