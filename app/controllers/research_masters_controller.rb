@@ -80,7 +80,7 @@ class ResearchMastersController < ApplicationController
 
   def find_rm_records
     @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result(distinct: true)
+    @research_masters = @q.result(distinct: true).page(params[:page])
   end
 
   def find_or_create_pi(email, name, password)
