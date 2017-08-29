@@ -1,20 +1,12 @@
-%nav.navbar.navbar-default.navbar-fixed-top{ style: 'top: 110px !important;' }
-  .container-fluid
+%nav.navbar.navbar-default
+  .container
     .navbar-header
       = link_to 'SPARC', ENV.fetch('SPARC_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'eIRB', ENV.fetch('EIRB_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'ePDS', ENV.fetch('EPDS_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'About RMID', ENV.fetch('ABOUT_URL'),
         class: 'navbar-brand', target: '_blank'
-      %button{ class: 'navbar-toggle collapsed',
-      data: { toggle: 'collapse', target: '#navbar' } }
-        %span.sr-only Toggle navigation
-        %span.icon-bar
-        %span.icon-bar
-        %span.icon-bar
-      .visible-xs.visible-sm
-        = link_to 'RMID', root_path, class: 'navbar-brand'
-    .collapse.navbar-collapse#navbar
+    #navbar
       %ul.nav.navbar-nav.navbar-right
         - if user_signed_in?
           %p.navbar-text
@@ -24,6 +16,11 @@
               = link_to new_api_api_key_path do
                 API
                 %i.glyphicon.glyphicon-flash
+          - if current_user.admin?
+            %li
+              = link_to protocols_path do
+                Protocols
+                %i.glyphicon.glyphicon-th-list
         %li
           - if user_signed_in?
             - if ENV.fetch('ENVIRONMENT') == 'development'
@@ -36,5 +33,5 @@
               %i.glyphicon.glyphicon-log-in
         %li
           = link_to root_path do
-            Return to Home
+            Home
             %i.glyphicon.glyphicon-home
