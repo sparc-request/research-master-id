@@ -1,12 +1,13 @@
-.col-lg-12#header-logos
-  .col-md-3
+.row
+  .col-xs-4
     %a{ href: t(:header_logos)[:org_link], target: '_blank' }
-      = image_tag 'musc_logo.jpg', alt: raw(t(:header_logos)[:org_text]), class: 'org-logo'
-  .col-md-6
+      = image_tag 'musc_logo.jpg', alt: raw(t(:header_logos)[:org_text]),
+        height: 110, style: "padding-bottom:10px;"
+  .col-xs-4
     %a.rmid-logo{ href: ENV.fetch('RMID_LINK') }
       %h1.text-center
         = t(:header_logos)[:rmid_text]
-  .col-md-3
+  .col-xs-4
     %a.vp-logo{ href: t(:header_logos)[:vp_link], target: '_blank' }
       %h3.text-center
         = raw(t(:header_logos)[:vp_text])

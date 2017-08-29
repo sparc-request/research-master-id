@@ -1,98 +1,95 @@
 = render 'instructions'
-.panel.panel-primary#research-master-records
-  .panel-heading
-    Search for Research Master Records
-  .panel-body
-    .row
-      .col-md-10
-        = search_form_for(@q, html: { class: 'form-horizontal clear-form' }) do |f|
-          .form-group
-            = f.label :pi_name_cont, t(:research_masters)[:index][:search_fields][:pi_name], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:pi_name]
-            .col-md-10
-              .input-group
-                = f.search_field :pi_name_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:pi_name]
-                .input-group-btn
-                  %button.btn.btn-danger.clear-selection
-                    %i.glyphicon.glyphicon-remove-circle
-          .form-group
-            = f.label :short_title_cont, t(:research_masters)[:index][:search_fields][:short_title], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:short_title]
-            .col-md-10
-              .input-group
-                = f.search_field :short_title_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:short_title]
-                .input-group-btn
-                  %button.btn.btn-danger.clear-selection
-                    %i.glyphicon.glyphicon-remove-circle
-          .form-group
-            = f.label :long_title_cont, t(:research_masters)[:index][:search_fields][:long_title], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:long_title]
-            .col-md-10
-              .input-group
-                = f.search_field :long_title_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:long_title]
-                .input-group-btn
-                  %button.btn.btn-danger.clear-selection
-                    %i.glyphicon.glyphicon-remove-circle
-          #optional-search-fields{ style: 'display:none;' }
-            .form-group
-              = f.label :funding_source_cont, t(:research_masters)[:index][:search_fields][:funding_source], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:funding_source]
-              .col-md-10
-                .input-group
-                  = f.search_field :funding_source_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:funding_source]
-                  .input-group-btn
-                    %button.btn.btn-danger.clear-selection
-                      %i.glyphicon.glyphicon-remove-circle
-            .form-group
-              = f.label :id_eq, t(:research_masters)[:index][:search_fields][:rmid], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:rmid]
-              .col-md-10
-                .input-group
-                  = f.search_field :id_eq, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:rmid]
-                  .input-group-btn
-                    %button.btn.btn-danger.clear-selection
-                      %i.glyphicon.glyphicon-remove-circle
-            .form-group
-              = f.label :department_cont, t(:research_masters)[:index][:search_fields][:department], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:department]
-              .col-md-10
-                .input-group
-                  = f.search_field :department_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:department]
-                  .input-group-btn
-                    %button.btn.btn-danger.clear-selection
-                      %i.glyphicon.glyphicon-remove-circle
-          .form-group
-            .col-sm-offset-2.col-sm-10
-              = f.submit class: 'btn btn-success'
-          .form-group
-            = label_tag :show_more, t(:research_masters)[:index][:show_more][:label], class: 'col-md-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:show_more][:tooltip]
-            .col-md-1
-              = check_box_tag :show_more, 0, false, id: 'show_more', class: 'form-control checkbox-inline'
-      .col-md-2
-        %button.btn.btn-default.clear-all
-          Clear Search Form
-    .col-md-6.col-md-offset-3
-      .text-center
-        = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
-    %div#divider
-    %table.table.table-striped.table-bordered.table-hover
-      %thead
-        %tr
-          %th
-            = sort_link(@q, :id, 'RMID')
-          %th
-            = sort_link(@q, :pi_name, 'PI Name')
-          %th
-            = sort_link(@q, :department, 'Department')
-          %th
-            = sort_link(@q, :long_title, 'Long Title')
-          %th
-            = sort_link(@q, :short_title, 'Short Title')
-          %th
-            = sort_link(@q, :funding_source, 'Funding Source')
-          %th
-            = sort_link(@q, :research_type, 'Research Type')
-          %th
-            Edit
-          %th
-            Delete
-        %tbody.research-master-records
-          = render "research_master_index_table", research_masters: @research_masters
-
+.row
+  .col-xs-10
+    = search_form_for(@q, html: { class: 'form-horizontal clear-form' }) do |f|
+      .form-group
+        = f.label :pi_name_cont, t(:research_masters)[:index][:search_fields][:pi_name], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:pi_name]
+        .col-xs-10
+          .input-group
+            = f.search_field :pi_name_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:pi_name]
+            .input-group-btn
+              %button.btn.btn-danger.clear-selection
+                %i.glyphicon.glyphicon-remove-circle
+      .form-group
+        = f.label :short_title_cont, t(:research_masters)[:index][:search_fields][:short_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:short_title]
+        .col-xs-10
+          .input-group
+            = f.search_field :short_title_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:short_title]
+            .input-group-btn
+              %button.btn.btn-danger.clear-selection
+                %i.glyphicon.glyphicon-remove-circle
+      .form-group
+        = f.label :long_title_cont, t(:research_masters)[:index][:search_fields][:long_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:long_title]
+        .col-xs-10
+          .input-group
+            = f.search_field :long_title_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:long_title]
+            .input-group-btn
+              %button.btn.btn-danger.clear-selection
+                %i.glyphicon.glyphicon-remove-circle
+      #optional-search-fields{ style: 'display:none;' }
+        .form-group
+          = f.label :funding_source_cont, t(:research_masters)[:index][:search_fields][:funding_source], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:funding_source]
+          .col-xs-10
+            .input-group
+              = f.search_field :funding_source_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:funding_source]
+              .input-group-btn
+                %button.btn.btn-danger.clear-selection
+                  %i.glyphicon.glyphicon-remove-circle
+        .form-group
+          = f.label :id_eq, t(:research_masters)[:index][:search_fields][:rmid], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:rmid]
+          .col-xs-10
+            .input-group
+              = f.search_field :id_eq, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:rmid]
+              .input-group-btn
+                %button.btn.btn-danger.clear-selection
+                  %i.glyphicon.glyphicon-remove-circle
+        .form-group
+          = f.label :department_cont, t(:research_masters)[:index][:search_fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:department]
+          .col-xs-10
+            .input-group
+              = f.search_field :department_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:department]
+              .input-group-btn
+                %button.btn.btn-danger.clear-selection
+                  %i.glyphicon.glyphicon-remove-circle
+      .form-group
+        .col-xs-offset-2.col-xs-10
+          = f.submit class: 'btn btn-success'
+      .form-group
+        = label_tag :show_more, t(:research_masters)[:index][:show_more][:label], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:show_more][:tooltip]
+        .col-xs-1
+          = check_box_tag :show_more, 0, false, id: 'show_more', class: 'form-control checkbox-inline'
+  .col-xs-2
+    %button.btn.btn-default.clear-all
+      Clear Search Form
+.col-xs-6.col-xs-offset-3
+  .text-center
+    = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
+%div#divider
+%table.table.table-striped.table-hover#research-master-records
+  %thead
+    %tr
+      %th
+        = sort_link(@q, :id, 'RMID')
+      %th
+        = sort_link(@q, :pi_name, 'PI Name')
+      %th
+        = sort_link(@q, :department, 'Department')
+      %th
+        = sort_link(@q, :long_title, 'Long Title')
+      %th
+        = sort_link(@q, :short_title, 'Short Title')
+      %th
+        = sort_link(@q, :funding_source, 'Funding Source')
+      %th
+        = sort_link(@q, :research_type, 'Research Type')
+      %th
+        Edit
+      %th
+        Delete
+    %tbody.research-master-records
+      = render "research_master_index_table", research_masters: @research_masters
+    
+>>>>>>> wth - Disable Bootstrap Responsiveness
 %div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content

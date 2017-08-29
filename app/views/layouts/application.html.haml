@@ -2,16 +2,17 @@
 %html
   %head
     %meta{:charset => "utf-8"}
-    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
-    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %title Research Master ID
     = stylesheet_link_tag    'application', media: 'all'
     = javascript_include_tag 'application'
     = csrf_meta_tags
   %body
-    = render 'shared/header_logos'
+    .container
+      = render 'shared/header_logos'
     = render 'shared/navbar'
-    - flash_messages
-    = content_for?(:content) ? yield(:content) : yield
-    = render 'shared/about_modal'
+    .container
+      - flash_messages
+      = content_for?(:content) ? yield(:content) : yield
+      = render 'shared/about_modal'
 
