@@ -1,6 +1,8 @@
 class ResearchMaster < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :pi, class_name: "User"
+  paginates_per 50
+
 
   validates :pi_name,
     :department,

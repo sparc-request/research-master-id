@@ -88,7 +88,8 @@
         Delete
     %tbody.research-master-records
       = render "research_master_index_table", research_masters: @research_masters
-
+.text-center
+  = paginate @research_masters
 %div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content
