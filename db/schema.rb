@@ -64,9 +64,9 @@ ActiveRecord::Schema.define(version: 20170828192145) do
     t.text "long_title"
     t.string "short_title"
     t.string "funding_source"
-    t.boolean "eirb_validated", default: false
     t.integer "creator_id"
     t.integer "pi_id"
+    t.boolean "eirb_validated", default: false
     t.integer "sparc_protocol_id"
     t.integer "eirb_protocol_id"
     t.datetime "eirb_association_date"
