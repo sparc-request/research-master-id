@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170829192308) do
+ActiveRecord::Schema.define(version: 20170830152203) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -46,8 +46,22 @@ ActiveRecord::Schema.define(version: 20170829192308) do
     t.string "eirb_institution_id"
     t.string "eirb_state"
     t.string "sparc_pro_number"
+    t.string "mit_award_number"
+    t.string "sequence_number"
+    t.string "title"
+    t.string "entity_award_number"
+    t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "research_master_id", null: false
+    t.bigint "protocol_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_research_master_coeus_relations_on_protocol_id"
+    t.index ["research_master_id"], name: "index_research_master_coeus_relations_on_research_master_id"
   end
 
   create_table "research_master_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
