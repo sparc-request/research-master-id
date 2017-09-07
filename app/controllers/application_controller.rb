@@ -7,5 +7,19 @@ class ApplicationController < ActionController::Base
   def test_exception_notifier
     raise 'This is a test. This is only a test.'
   end
+
+  protected
+
+  def authenticate_user!
+    if user_signed_in?
+      super
+    else
+      if ENV.fetch('ENVIRONMENT') == 'development'
+        super
+      else
+        redirect_to user_shibboleth_omniauth_callback_path
+      end
+    end
+  end
 end
 

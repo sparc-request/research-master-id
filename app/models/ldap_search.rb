@@ -7,6 +7,13 @@ class LdapSearch
     end
   end
 
+  def employee_number_query(employee_number)
+    ldap = connect_to_ldap
+    ldap.search(:base => ldap.base, :filter => filter_query('muscedupersonpvid', employee_number)) do |entry|
+      return entry[:mail].first
+    end
+  end
+
   def info_query(name)
     ldap = connect_to_ldap
     names = []
