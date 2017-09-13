@@ -23,6 +23,18 @@ task update_data: :environment do
 
   save_errors = ""
 
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:eirb_validated, false)
+    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    unless rm.eirb_protocol_id.nil?
+      protocol = Protocol.find(rm.eirb_protocol_id)
+      if validated_states.include?(protocol.eirb_state)
+        rm.update_attribute(:eirb_validated, true)
+        rm.update_attribute(:short_title, protocol.short_title)
+        rm.update_attribute(:long_title, protocol.long_title)
+      end
+    end
+  end
   puts("\nBeginning data retrieval from APIs...")
 
   sparc_api = ENV.fetch("SPARC_API")
@@ -59,6 +71,7 @@ task update_data: :environment do
       if protocol['first_name'] || protocol['last_name']
         pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
                                             last_name: protocol['last_name'],
+                                            department: Department.find_or_create_by(name: protocol['pi_department'].nil? ? 'N/A' : protocol['pi_department']),
                                             protocol: sparc_protocol)
         new_sparc_pis.append(pi.id) if pi.save
       end
@@ -69,7 +82,10 @@ task update_data: :environment do
     unless protocol['research_master_id'].nil?
       rm = ResearchMaster.find_by(id: protocol['research_master_id'])
       unless rm.nil?
-        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id, sparc_association_date: DateTime.current)
+        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id)
+        if rm.sparc_association_date.nil?
+          rm.update_attribute(:sparc_association_date, DateTime.current)
+        end
       end
     end
     print(progress_bar(count, protocols.count/10)) if count % (protocols.count/10)
@@ -101,7 +117,12 @@ task update_data: :environment do
     else
       eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
       if study['first_name'] || study['last_name']
-        pi = PrimaryPi.find_or_initialize_by(first_name: study['first_name'], last_name: study['last_name'], protocol: eirb_study)
+        pi = PrimaryPi.find_or_initialize_by(
+          first_name: study['first_name'],
+          last_name: study['last_name'],
+          department: Department.find_or_create_by(name: study['pi_department'].nil? ? 'N/A' : study['pi_department']),
+          protocol: eirb_study
+        )
         new_eirb_pis.append(pi.id) if pi.save
       end
     end
@@ -110,7 +131,10 @@ task update_data: :environment do
       rm = ResearchMaster.find_by(id: study['research_master_id'])
       unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id, eirb_association_date: DateTime.current)
+          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+          if rm.eirb_association_date.nil?
+            rm.update_attribute(:eirb_association_date, DateTime.current)
+          end
         end
         if validated_states.include?(study['state'])
           rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)

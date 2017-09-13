@@ -26,9 +26,10 @@
                 %i.glyphicon.glyphicon-flash
         %li
           - if user_signed_in?
-            = link_to destroy_user_session_path, method: :delete do
-              Log out
-              %i.glyphicon.glyphicon-log-out
+            - if ENV.fetch('ENVIRONMENT') == 'development'
+              = link_to destroy_user_session_path, method: :delete do
+                Log out
+                %i.glyphicon.glyphicon-log-out
           - else
             = link_to new_user_session_path do
               Log in

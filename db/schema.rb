@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726154646) do
+ActiveRecord::Schema.define(version: 20170808131546) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -22,10 +28,11 @@ ActiveRecord::Schema.define(version: 20170726154646) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
-    t.string "department"
+    t.bigint "department_id"
     t.integer "protocol_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_primary_pis_on_department_id"
     t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id"
   end
 
@@ -66,7 +73,6 @@ ActiveRecord::Schema.define(version: 20170726154646) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "research_type"
-    t.boolean "musc_health_services"
     t.index ["user_id"], name: "index_research_masters_on_user_id"
   end
 
@@ -90,6 +96,7 @@ ActiveRecord::Schema.define(version: 20170726154646) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "primary_pis", "departments"
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_master_pis", "research_masters"
   add_foreign_key "research_masters", "users"

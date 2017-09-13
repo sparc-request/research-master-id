@@ -14,6 +14,7 @@ FactoryGirl.define do
     long_title
     short_title "short title bra"
     funding_source "who knows"
+    research_type 'clinical_something'
     user
   end
 end

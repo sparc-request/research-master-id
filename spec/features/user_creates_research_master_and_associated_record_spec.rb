@@ -21,7 +21,7 @@ feature 'User creates research master and associated record', js: true do
     user.update_attributes(admin: true, developer: true)
 
     visit protocols_path
-    fill_in 'q_primary_pi_first_name_cont', with: 'big'
+    fill_in 'q_primary_pi_first_name_or_primary_pi_last_name_cont', with: 'big'
     click_button 'Search'
     check "protocol_#{protocol_one.id}"
     check "protocol_#{protocol_two.id}"
@@ -32,6 +32,7 @@ feature 'User creates research master and associated record', js: true do
     fill_in 'research_master_long_title', with: 'Long John'
     fill_in 'research_master_short_title', with: 'Shortstop'
     choose 'research_master_funding_source_internal'
+    choose 'research_master_research_type_basic_science_research'
     click_button 'Submit'
     wait_for_ajax
     

@@ -116,6 +116,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: 'ooga',
@@ -137,6 +138,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: 'pi-man',
@@ -158,6 +160,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: 'William Holt',
@@ -179,6 +182,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: 'pi man',
@@ -200,6 +204,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: nil,
@@ -221,6 +226,7 @@ describe ResearchMastersController, type: :controller do
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',
+            research_type: 'clinical_billing',
             user_id: user.id
           },
           pi_name: nil,

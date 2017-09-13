@@ -31,6 +31,7 @@ class ResearchMastersController < ApplicationController
 
   def edit
     @research_master = ResearchMaster.find(params[:id])
+    authorize! :update, @research_master
     respond_to do |format|
       format.js
     end
@@ -72,6 +73,7 @@ class ResearchMastersController < ApplicationController
 
   def destroy
     @research_master = ResearchMaster.find(params[:id])
+    authorize! :destroy, @research_master
     @research_master.destroy
   end
 

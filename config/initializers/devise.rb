@@ -10,10 +10,7 @@ Devise.setup do |config|
     {
     :uid_field => 'eppn',
      :info_fields => {
-      :email => 'mail',
-      :name => 'cn',
-      :last_name => 'sn',
-      :first_name => 'givenName'
+      :employeeNumber => 'employeeNumber'
     },
      :extra_fields => [:schacHomeOrganization]
     }

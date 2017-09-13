@@ -34,6 +34,9 @@
                 %td
                   = @eirb_protocol.eirb_id
                 %td
-                  = "#{@eirb_protocol.primary_pi.first_name} #{@eirb_protocol.primary_pi.last_name}"
+                  - unless @eirb_protocol.primary_pi.nil?
+                    = "#{@eirb_protocol.primary_pi.first_name} #{@eirb_protocol.primary_pi.last_name}"
+                  - else
+                    = "N/A"
                 %td
                   = @eirb_protocol.long_title
