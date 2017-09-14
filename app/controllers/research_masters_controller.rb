@@ -58,11 +58,10 @@ class ResearchMastersController < ApplicationController
                                            )
     respond_to do |format|
       if @research_master.save
-        rm_notifier = ResearchMasterNotifier.new(@research_master.pi,
-                                                 @research_master.creator.email,
-                                                 @research_master
-                                                )
-        rm_notifier.send_mail
+        SendEmailsJob.perform_later(@research_master.pi,
+                                    @research_master.creator.email,
+                                    @research_master
+                                   )
         format.js
       else
         format.json { render json: { error: @research_master.errors }, status: 400 }

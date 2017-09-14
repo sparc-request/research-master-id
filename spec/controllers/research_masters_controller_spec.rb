@@ -125,28 +125,6 @@ describe ResearchMastersController, type: :controller do
         xhr: true
       }.to change(ResearchMaster, :count).by(1)
     end
-
-    it 'should send two emails - one to owner and pi' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            creator_id: user.id
-          },
-          pi_name: 'pi-man',
-          pi_email: 'primary-pi@gmail.com'
-        },
-        xhr: true
-      }.to change(ActionMailer::Base.deliveries, :count).by(2)
-    end
   end
 
   describe '#update' do
