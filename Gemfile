@@ -29,6 +29,7 @@ gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
 gem 'cancancan', '~> 2.0'
 gem 'kaminari', '~> 1.0', '>= 1.0.1'
 gem 'delayed_job_active_record'
+gem 'daemons', '~> 1.2', '>= 1.2.4'
 
 group :development, :test do
   gem 'byebug'
