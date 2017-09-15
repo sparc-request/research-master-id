@@ -17,6 +17,7 @@ class ResearchMastersController < ApplicationController
       if research_master.eirb_protocol_id?
         @eirb_protocol = Protocol.find(research_master.eirb_protocol_id)
       end
+    @coeus_records = research_master.protocols
     respond_to do |format|
       format.js
     end
