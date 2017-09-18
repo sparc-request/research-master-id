@@ -26,6 +26,7 @@ class User < ApplicationRecord
     end
     where(email: email).first_or_create! do |user|
       user.password = Devise.friendly_token[0,20]
+      user.net_id = ldap_search.net_id_query(email)
     end
   end
 

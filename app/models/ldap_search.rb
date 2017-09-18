@@ -32,6 +32,13 @@ class LdapSearch
     end
   end
 
+  def net_id_query(email)
+    ldap = connect_to_ldap
+    ldap.search(:base => ldap.base, :filter => filter_query('mail', email)) do |entry|
+      return entry[:uid].first
+    end
+  end
+
   private
 
   def connect_to_ldap
