@@ -1,6 +1,7 @@
 class ResearchMaster < ApplicationRecord
   belongs_to :user
   has_one :research_master_pi, dependent: :destroy
+  has_one :associated_record, dependent: :destroy
 
   validates :pi_name,
     :department,
