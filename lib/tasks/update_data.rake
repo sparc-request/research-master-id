@@ -25,13 +25,15 @@ task update_data: :environment do
 
   ResearchMaster.all.each do |rm|
     rm.update_attribute(:eirb_validated, false)
-    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated', 'Pre Submission', 'IRB Staff Review']
     unless rm.eirb_protocol_id.nil?
       protocol = Protocol.find(rm.eirb_protocol_id)
       if validated_states.include?(protocol.eirb_state)
         rm.update_attribute(:eirb_validated, true)
         rm.update_attribute(:short_title, protocol.short_title)
         rm.update_attribute(:long_title, protocol.long_title)
+      else
+        rm.update_attribute(:eirb_validated, false)
       end
     end
   end
