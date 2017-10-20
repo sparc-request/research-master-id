@@ -3,6 +3,7 @@ class ResearchMaster < ApplicationRecord
   belongs_to :pi, class_name: "User"
   has_many :research_master_coeus_relations
   has_many :protocols, through: :research_master_coeus_relations
+  has_many :research_master_pis, dependent: :destroy
   paginates_per 50
 
 
