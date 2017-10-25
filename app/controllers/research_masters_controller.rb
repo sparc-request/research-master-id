@@ -73,6 +73,11 @@ class ResearchMastersController < ApplicationController
   def destroy
     @research_master = ResearchMaster.find(params[:id])
     authorize! :destroy, @research_master
+    if @research_master.sparc_protocol_id
+      HTTParty.patch(
+        "#{ENV.fetch('SPARC_URL')}/protocols/#{Protocol.find(@research_master.sparc_protocol_id).sparc_id}/research_master?access_token=#{ApiKey.first.access_token}"
+      )
+    end
     @research_master.destroy
   end
 
