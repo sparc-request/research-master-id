@@ -114,6 +114,9 @@ task update_data: :environment do
     if Protocol.exists?(eirb_id: study['pro_number'])
       protocol = Protocol.find_by(eirb_id: study['pro_number'])
       protocol.update_attribute(:short_title, study['short_title'])
+      protocol.update_attribute(:long_title, study['title'])
+      protocol.update_attribute(:eirb_state, study['state'])
+      protocol.update_attribute(:eirb_institution_id, study['institution_id'])
     elsif Protocol.exists?(eirb_id: study['pro_number'])
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
         eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
