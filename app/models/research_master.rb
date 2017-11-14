@@ -1,6 +1,6 @@
 class ResearchMaster < ApplicationRecord
   belongs_to :creator, class_name: "User"
-  belongs_to :pi, class_name: "User"
+  belongs_to :pi, class_name: "User", optional: true
   has_many :research_master_coeus_relations
   has_many :protocols, through: :research_master_coeus_relations
   has_many :research_master_pis, dependent: :destroy
