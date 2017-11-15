@@ -15,16 +15,20 @@ task update_pi_net_id: :environment do
   protocols.each do |protocol|
     if Protocol.exists?(sparc_id: protocol['id'])
       protocol_to_update = Protocol.find_by(sparc_id: protocol['id'])
-      pi = protocol_to_update.primary_pi
-      pi.update_attribute(:net_id, protocol['ldap_uid'])
+      unless protocol_to_update.primary_pi.nil?
+        pi = protocol_to_update.primary_pi
+        pi.update_attribute(:net_id, protocol['ldap_uid'])
+      end
     end
   end
-
+  puts eirb_studies
   eirb_studies.each do |study|
     if Protocol.exists?(eirb_id: study['pro_number'])
       study_to_update = Protocol.find_by(eirb_id: study['pro_number'])
-      pi = study_to_update.primary_pi
-      pi.update_attribute(:net_id, study['primary_principal_investigator_id'])
+      unless study_to_update.primary_pi.nil?
+        pi = study_to_update.primary_pi
+        pi.update_attribute(:net_id, study['primary_principal_investigator_id'])
+      end
     end
   end
 end
