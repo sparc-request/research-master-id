@@ -40,3 +40,13 @@
                     = "N/A"
                 %td
                   = @eirb_protocol.long_title
+            - @coeus_records.find_each do |cr|
+              %tr
+                %td
+                  = cr.type
+                %td
+                  = cr.mit_award_number
+                %td
+                  = 'N/A'
+                %td
+                  = cr.title

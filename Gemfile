@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 5.1', '>= 5.1.3'
+gem 'rails', '~> 5.1', '>= 5.1.4'
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
@@ -27,6 +27,9 @@ gem 'listen', '~> 3.1', '>= 3.1.5'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
 gem 'cancancan', '~> 2.0'
+gem 'kaminari', '~> 1.0', '>= 1.0.1'
+gem 'delayed_job_active_record'
+gem 'daemons', '~> 1.2', '>= 1.2.4'
 
 group :development, :test do
   gem 'byebug'

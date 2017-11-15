@@ -15,7 +15,8 @@ FactoryGirl.define do
     short_title "short title bra"
     funding_source "who knows"
     research_type 'clinical_something'
-    user
+    association :creator, factory: :user
+    association :pi, factory: :user
   end
 end
 

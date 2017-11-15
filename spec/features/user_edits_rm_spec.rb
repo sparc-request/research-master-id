@@ -5,7 +5,7 @@ feature 'User edits rm', js: true do
     create_and_sign_in_user
     user = User.first
     rm = create(:research_master,
-                user: user,
+                creator: user,
                 eirb_validated: false,
                 pi_name: 'billy',
                 department: 'My Pills',
@@ -35,7 +35,7 @@ feature 'User edits rm', js: true do
     user_two = create(:user)
     user.update_attribute(:admin, true)
     rm = create(:research_master,
-                user: user_two,
+                creator: user_two,
                 eirb_validated: false,
                 pi_name: 'billy',
                 department: 'My Pills',
@@ -64,7 +64,7 @@ feature 'User edits rm', js: true do
     create_and_sign_in_user
     user = create(:user)
     rm = create(:research_master,
-                user: user,
+                creator: user,
                 eirb_validated: false,
                 pi_name: 'billy',
                 department: 'My Pills',
@@ -80,7 +80,7 @@ feature 'User edits rm', js: true do
     create_and_sign_in_user
     user = User.first
     rm = create(:research_master,
-                user: user,
+                creator: user,
                 pi_name: 'billy',
                 department: 'My Pills',
                 long_title: 'Long John',
