@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170914182636) do
+ActiveRecord::Schema.define(version: 20171114144322) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20170914182636) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
+    t.string "net_id"
     t.bigint "department_id"
     t.integer "protocol_id"
     t.datetime "created_at", null: false
@@ -109,6 +110,7 @@ ActiveRecord::Schema.define(version: 20170914182636) do
 
   create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "email", default: "", null: false
+    t.string "net_id"
     t.string "name"
     t.boolean "admin"
     t.boolean "developer"
