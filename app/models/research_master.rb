@@ -1,4 +1,8 @@
 class ResearchMaster < ApplicationRecord
+  include SanitizedData
+  sanitize_setter :long_title, :special_characters, :squeeze, :strip
+  sanitize_setter :short_title, :special_characters, :squeeze, :strip
+
   belongs_to :user
   has_one :research_master_pi, dependent: :destroy
 
