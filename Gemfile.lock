@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:HSSC/sanitized_data.git
-  revision: ff9b55f5fae77ab52004cea8af7b1aa11f645fd8
+  revision: 2fde04e1cb3bf61ff6109bb712984bf2fce4bd23
   specs:
-    sanitized_data (0.0.1)
+    sanitized_data (0.0.3)
       iconv
 
 GEM
