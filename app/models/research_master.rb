@@ -2,9 +2,12 @@ class ResearchMaster < ApplicationRecord
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
-
-  belongs_to :user
-  has_one :research_master_pi, dependent: :destroy
+  belongs_to :creator, class_name: "User"
+  belongs_to :pi, class_name: "User", optional: true
+  has_many :research_master_coeus_relations
+  has_many :protocols, through: :research_master_coeus_relations
+  has_many :research_master_pis, dependent: :destroy
+  paginates_per 50
 
   validates :pi_name,
     :department,

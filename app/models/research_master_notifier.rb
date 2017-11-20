@@ -1,13 +1,13 @@
 class ResearchMasterNotifier
 
-  def initialize(rm_pi, owner_email, rm_id)
-    @rm_pi = rm_pi
+  def initialize(pi, owner_email, rm_id)
+    @pi = pi
     @owner_email = owner_email || NullUser.new.email
     @rm_id = rm_id
   end
 
   def send_mail
-    if @rm_pi.nil? || same_email
+    if @pi.nil?
       send_one
     else
       send_multiple
@@ -19,7 +19,7 @@ class ResearchMasterNotifier
   def send_one
     Notifier.success(
       @owner_email,
-      @rm_pi,
+      @pi,
       @rm_id
     ).deliver_now
   end
@@ -28,18 +28,14 @@ class ResearchMasterNotifier
     recipients.each do |recipient|
       Notifier.success(
         recipient,
-        @rm_pi,
+        @pi,
         @rm_id
       ).deliver_now
     end
   end
 
-  def same_email
-    @rm_pi.email == @owner_email
-  end
-
   def recipients
-    [@rm_pi.email, @owner_email]
+    [@pi.email, @owner_email]
   end
 end
 

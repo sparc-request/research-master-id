@@ -5,7 +5,7 @@ feature 'User should be able to delete rm', js: true do
   scenario 'successfully as user' do
     create_and_sign_in_user
     user = User.first
-    create(:research_master, user: user)
+    create(:research_master, creator: user)
 
     find('a.research-master-delete').click
     within '.sweet-alert.visible' do
@@ -21,7 +21,7 @@ feature 'User should be able to delete rm', js: true do
     user = User.first
     user_two = create(:user)
     user.update_attribute(:admin, true)
-    create(:research_master, user: user_two)
+    create(:research_master, creator: user_two)
 
     find('a.research-master-delete').click
     within '.sweet-alert.visible' do
@@ -35,7 +35,7 @@ feature 'User should be able to delete rm', js: true do
   scenario 'disable link if not users/admin' do
     create_and_sign_in_user
     user_two = create(:user)
-    create(:research_master, user: user_two)
+    create(:research_master, creator: user_two)
 
     expect(page).to have_css 'a.research-master-delete.disabled'
   end

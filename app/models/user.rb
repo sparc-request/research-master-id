@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, omniauth_providers: [:shibboleth]
-  has_many :research_masters
+
 
   attr_accessor :login
 
@@ -26,7 +26,12 @@ class User < ApplicationRecord
     end
     where(email: email).first_or_create! do |user|
       user.password = Devise.friendly_token[0,20]
+      user.net_id = ldap_search.net_id_query(email)
     end
+  end
+
+  def research_masters
+    ResearchMaster.where("creator_id = ? OR pi_id = ?", self.id, self.id)
   end
 end
 

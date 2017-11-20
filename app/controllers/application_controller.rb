@@ -18,11 +18,9 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def authenticate_user!
-    if user_signed_in?
-      super
-    else
-      if ENV.fetch('ENVIRONMENT') == 'development'
+  unless ENV.fetch("ENVIRONMENT") == "development"
+    def authenticate_user!
+      if user_signed_in?
         super
       else
         redirect_to user_shibboleth_omniauth_callback_path
