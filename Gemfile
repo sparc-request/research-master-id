@@ -54,3 +54,5 @@ group :test do
   gem 'rails-controller-testing'
 end
 
+### custom gem for data sanitization ###
+gem 'sanitized_data',  git: 'git@github.com:HSSC/sanitized_data.git'

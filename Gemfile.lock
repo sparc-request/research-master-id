@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:HSSC/sanitized_data.git
+  revision: 2fde04e1cb3bf61ff6109bb712984bf2fce4bd23
+  specs:
+    sanitized_data (0.0.3)
+      iconv
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -142,6 +149,7 @@ GEM
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.8.6)
+    iconv (1.0.4)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -355,6 +363,7 @@ DEPENDENCIES
   rails-controller-testing
   ransack
   rspec-rails (~> 3.0)
+  sanitized_data!
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   shoulda-matchers (~> 3.1)
@@ -366,4 +375,4 @@ DEPENDENCIES
   whenever (~> 0.9.7)
 
 BUNDLED WITH
-   1.14.6
+   1.16.0
