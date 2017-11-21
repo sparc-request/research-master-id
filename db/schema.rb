@@ -10,12 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808131546) do
+ActiveRecord::Schema.define(version: 20171114144322) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -28,6 +43,7 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
+    t.string "net_id"
     t.bigint "department_id"
     t.integer "protocol_id"
     t.datetime "created_at", null: false
@@ -46,8 +62,22 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.string "eirb_institution_id"
     t.string "eirb_state"
     t.string "sparc_pro_number"
+    t.string "mit_award_number"
+    t.string "sequence_number"
+    t.string "title"
+    t.string "entity_award_number"
+    t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "research_master_id", null: false
+    t.bigint "protocol_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_research_master_coeus_relations_on_protocol_id"
+    t.index ["research_master_id"], name: "index_research_master_coeus_relations_on_research_master_id"
   end
 
   create_table "research_master_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -64,8 +94,9 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.text "long_title"
     t.string "short_title"
     t.string "funding_source"
+    t.integer "creator_id"
+    t.integer "pi_id"
     t.boolean "eirb_validated", default: false
-    t.integer "user_id"
     t.integer "sparc_protocol_id"
     t.integer "eirb_protocol_id"
     t.datetime "eirb_association_date"
@@ -73,11 +104,13 @@ ActiveRecord::Schema.define(version: 20170808131546) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "research_type"
-    t.index ["user_id"], name: "index_research_masters_on_user_id"
+    t.index ["creator_id"], name: "index_research_masters_on_creator_id"
+    t.index ["pi_id"], name: "index_research_masters_on_pi_id"
   end
 
   create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "email", default: "", null: false
+    t.string "net_id"
     t.string "name"
     t.boolean "admin"
     t.boolean "developer"
@@ -99,5 +132,6 @@ ActiveRecord::Schema.define(version: 20170808131546) do
   add_foreign_key "primary_pis", "departments"
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_master_pis", "research_masters"
-  add_foreign_key "research_masters", "users"
+  add_foreign_key "research_masters", "users", column: "creator_id"
+  add_foreign_key "research_masters", "users", column: "pi_id"
 end

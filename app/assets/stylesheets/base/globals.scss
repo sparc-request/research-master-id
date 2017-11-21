@@ -1,10 +1,7 @@
 #header-logos {
-  top: 0px;
-  position: fixed;
-  z-index: 1031;
   background: white;
 
-  .org-logo, .rmid-lgoo, .vp-logo {
+  .org-logo, .rmid-logo, .vp-logo {
     height: 110px;
   }
 
@@ -25,10 +22,6 @@
       margin-bottom: 29px;
     }
   }
-}
-
-body {
-  padding-top: 160px;
 }
 
 .alert {

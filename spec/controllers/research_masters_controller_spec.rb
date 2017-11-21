@@ -117,7 +117,7 @@ describe ResearchMastersController, type: :controller do
             short_title: 'short',
             funding_source: 'source',
             research_type: 'clinical_billing',
-            user_id: user.id
+            creator_id: user.id
           },
           pi_name: 'ooga',
           pi_email: 'booga@booga.com'
@@ -125,117 +125,6 @@ describe ResearchMastersController, type: :controller do
         xhr: true
       }.to change(ResearchMaster, :count).by(1)
     end
-
-    it 'should send two emails - one to owner and pi' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            user_id: user.id
-          },
-          pi_name: 'pi-man',
-          pi_email: 'primary-pi@gmail.com'
-        },
-        xhr: true
-      }.to change(ActionMailer::Base.deliveries, :count).by(2)
-    end
-
-    it 'should send one email if same email address' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            user_id: user.id
-          },
-          pi_name: 'William Holt',
-          pi_email: "#{user.email}"
-        },
-        xhr: true
-      }.to change(ActionMailer::Base.deliveries, :count).by(1)
-    end
-
-    it 'should create a RM PI' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            user_id: user.id
-          },
-          pi_name: 'pi man',
-          pi_email: 'pi-guy@pi.com'
-        },
-        xhr: true
-      }.to change(ResearchMasterPi, :count).by(1)
-    end
-
-    it 'should still send an email if RM PI is nil' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            user_id: user.id
-          },
-          pi_name: nil,
-          pi_email: nil
-        },
-        xhr: true
-      }.to change(ActionMailer::Base.deliveries, :count).by(1)
-    end
-
-    it 'should still create a RM object if RM PI nil' do
-      user = create(:user)
-      sign_in user
-
-      expect { post :create, 
-        params: {
-          research_master: {
-            pi_name: 'William Holt',
-            department: 'department',
-            long_title: 'long title',
-            short_title: 'short',
-            funding_source: 'source',
-            research_type: 'clinical_billing',
-            user_id: user.id
-          },
-          pi_name: nil,
-          pi_email: nil
-        },
-        xhr: true
-      }.to change(ResearchMaster, :count).by(1)
-    end
-
   end
 
   describe '#update' do

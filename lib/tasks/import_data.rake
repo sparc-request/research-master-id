@@ -27,7 +27,6 @@ task import_data: :environment do
                             eirb_institution_id: study['institution_id'],
                             eirb_state: study['state']
                            )
-    eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     eirb_study.save
 
     unless study['pi_name'].nil?
