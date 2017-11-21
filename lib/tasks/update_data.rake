@@ -9,8 +9,6 @@ task update_data: :environment do
                                  eirb_institution_id: study['institution_id'],
                                  eirb_state: study['state']
                                 )
-    eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
-    eirb_study.short_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     new_protocols.append(eirb_study.id) if eirb_study.save
     eirb_study
   end
@@ -25,7 +23,7 @@ task update_data: :environment do
 
   ResearchMaster.all.each do |rm|
     rm.update_attribute(:eirb_validated, false)
-    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated', 'Pre Submission', 'IRB Staff Review']
+    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     unless rm.eirb_protocol_id.nil?
       protocol = Protocol.find(rm.eirb_protocol_id)
       if validated_states.include?(protocol.eirb_state)
@@ -71,7 +69,7 @@ task update_data: :environment do
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.new(type: protocol['type'],
                                        short_title: protocol['short_title'],
-                                       long_title: protocol['title'], 
+                                       long_title: protocol['title'],
                                        sparc_id: protocol['id'],
                                        sparc_pro_number: protocol['pro_number']
                                       )
@@ -117,6 +115,7 @@ task update_data: :environment do
       protocol.update_attribute(:long_title, study['title'])
       protocol.update_attribute(:eirb_state, study['state'])
       protocol.update_attribute(:eirb_institution_id, study['institution_id'])
+    #TODO How would this ever get called.  The `if` above would always catch this, right?
     elsif Protocol.exists?(eirb_id: study['pro_number'])
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
         eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
