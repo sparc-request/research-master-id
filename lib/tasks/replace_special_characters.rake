@@ -13,7 +13,7 @@ task replace_special_characters: :environment do
       puts 'in the long title'
       master.update_attribute(:long_title, new_title)
     end
-    
+
     new_title = master.short_title.gsub(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
 
     if new_title != master.short_title

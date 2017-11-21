@@ -9,8 +9,6 @@ task update_data: :environment do
                                  eirb_institution_id: study['institution_id'],
                                  eirb_state: study['state']
                                 )
-    eirb_study.long_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
-    eirb_study.short_title.gsub!(/[^a-zA-Z0-9\-.\s%\/$*<>!@#^\[\]{};:"'?&()-_=+]/, ' ')
     new_protocols.append(eirb_study.id) if eirb_study.save
     eirb_study
   end
@@ -32,6 +30,8 @@ task update_data: :environment do
         rm.update_attribute(:eirb_validated, true)
         rm.update_attribute(:short_title, protocol.short_title)
         rm.update_attribute(:long_title, protocol.long_title)
+      else
+        rm.update_attribute(:eirb_validated, false)
       end
     end
   end
@@ -40,6 +40,7 @@ task update_data: :environment do
   sparc_api = ENV.fetch("SPARC_API")
   eirb_api =  ENV.fetch("EIRB_API")
   eirb_api_token = ENV.fetch("EIRB_API_TOKEN")
+  coeus_api = ENV.fetch("COEUS_API")
 
   print("Fetching from SPARC_API... ")
   protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
@@ -49,6 +50,11 @@ task update_data: :environment do
   eirb_studies = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true",
                               timeout: 500, headers: {'Content-Type' => 'application/json',
                               "Authorization" => "Token token=\"#{eirb_api_token}\""})
+  puts("Done")
+
+  print("Fetching from COEUS_API... ")
+  award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
+  awards_hrs = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
   puts("Done")
 
   puts("\nError retrieving protocols from SPARC_API: #{protocols}") if protocols.is_a? String
@@ -63,7 +69,7 @@ task update_data: :environment do
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.new(type: protocol['type'],
                                        short_title: protocol['short_title'],
-                                       long_title: protocol['title'], 
+                                       long_title: protocol['title'],
                                        sparc_id: protocol['id'],
                                        sparc_pro_number: protocol['pro_number']
                                       )
@@ -106,6 +112,10 @@ task update_data: :environment do
     if Protocol.exists?(eirb_id: study['pro_number'])
       protocol = Protocol.find_by(eirb_id: study['pro_number'])
       protocol.update_attribute(:short_title, study['short_title'])
+      protocol.update_attribute(:long_title, study['title'])
+      protocol.update_attribute(:eirb_state, study['state'])
+      protocol.update_attribute(:eirb_institution_id, study['institution_id'])
+    #TODO How would this ever get called.  The `if` above would always catch this, right?
     elsif Protocol.exists?(eirb_id: study['pro_number'])
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
         eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
@@ -144,12 +154,47 @@ task update_data: :environment do
     print(progress_bar(count, eirb_studies.count/10)) if count % (eirb_studies.count/10)
     count += 1
   end
-  puts("")
-  puts("Done!")
-  puts("New protocols total: #{new_eirb_protocols.count}")
-  puts("New primary pis total: #{new_eirb_pis.count}")
   puts("Finished EIRB_API data import.")
 
+  puts("\n\nBeginning COEUS API data import...")
+  puts("Total number of protocols from COEUS API: #{award_details.count}")
+  count = 1
+  award_details.each do |ad|
+    unless Protocol.exists?(mit_award_number: ad['mit_award_number'])
+      Protocol.create(
+        type: 'COEUS',
+        mit_award_number: ad['mit_award_number'],
+        sequence_number: ad['sequence_number'],
+        title: ad['title'],
+        entity_award_number: ad['entity_award_number']
+      )
+    end
+    if ResearchMaster.exists?(ad['rmid'])
+      ResearchMasterCoeusRelation.find_or_create_by(
+        protocol: Protocol.find_by(mit_award_number: ad['mit_award_number']),
+        research_master: ResearchMaster.find(ad['rmid'])
+      )
+    end
+    print(progress_bar(count, award_details.count/10)) if count % (award_details.count/10)
+    count += 1
+  end
+  puts("Updating protocols from COEUS API: #{awards_hrs.count}")
+  count = 1
+  awards_hrs.each do |ah|
+    if Protocol.exists?(mit_award_number: ah['mit_award_number'])
+      protocol = Protocol.find_by(mit_award_number: ah['mit_award_number'])
+      protocol.update_attribute(:coeus_protocol_number, ah['protocol_number'])
+    end
+    print(progress_bar(count, awards_hrs.count/10)) if count % (awards_hrs.count/10)
+  end
+
+
+  puts("")
+  puts("Done!")
+  puts("Finished COEUS_API data import.")
+
+  puts("New protocols total: #{new_eirb_protocols.count}")
+  puts("New primary pis total: #{new_eirb_pis.count}")
   puts("New protocol ids: #{new_eirb_protocols + new_sparc_protocols}")
   puts("New primary pi ids: #{new_eirb_pis + new_sparc_pis}")
 end
