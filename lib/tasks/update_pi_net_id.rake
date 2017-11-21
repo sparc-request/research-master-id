@@ -27,7 +27,7 @@ task update_pi_net_id: :environment do
       study_to_update = Protocol.find_by(eirb_id: study['pro_number'])
       unless study_to_update.primary_pi.nil?
         pi = study_to_update.primary_pi
-        pi.update_attribute(:net_id, study['primary_principal_investigator_id'])
+        pi.update_attribute(:net_id, study['pi_net_id'])
       end
     end
   end
