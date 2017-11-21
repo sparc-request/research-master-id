@@ -35,7 +35,7 @@ server 'bmic-rmid-v.mdc.musc.edu', user: 'wih205', roles: %w{app db web}
 set :deploy_to, '/var/www/rails/research_master_id'
 set :branch, 'production'
 set :rails_env, 'production'
-set :rvm_ruby_version, '2.3.3@research_master_id --create'
+set :rvm_ruby_version, '2.4.2@research_master_id --create'
 set :passenger_restart_with_touch, true
 
 
