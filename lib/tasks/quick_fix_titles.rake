@@ -10,8 +10,9 @@ task quick_fix_titles: :environment do
 
     master.long_title = long_title
     master.short_title = short_title
-    if master.valid?
-      master.save
+
+    if master.save(validate: false)
+      puts "Updated #{master.id}"
     else
       puts "Error fixing: #{master.errors.inspect}"
     end
