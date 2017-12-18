@@ -75,7 +75,7 @@ class ResearchMastersController < ApplicationController
     authorize! :destroy, @research_master
     if @research_master.sparc_protocol_id
       HTTParty.patch(
-        "#{ENV.fetch('SPARC_URL')}/protocols/#{Protocol.find(@research_master.sparc_protocol_id).sparc_id}/research_master?access_token=#{ENV.fetch('rmid_api_token')}"
+        "#{ENV.fetch('SPARC_URL')}/protocols/#{Protocol.find(@research_master.sparc_protocol_id).sparc_id}/research_master?access_token=#{ENV.fetch('SPARC_API_TOKEN')}"
       )
     end
     @research_master.destroy
