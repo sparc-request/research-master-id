@@ -24,7 +24,10 @@
                 %td
                   = @sparc_protocol.sparc_id
                 %td
-                  = "#{@sparc_protocol.primary_pi.first_name} #{@sparc_protocol.primary_pi.last_name}"
+                  - unless @sparc_protocol.primary_pi.nil?
+                    = "#{@sparc_protocol.primary_pi.first_name} #{@sparc_protocol.primary_pi.last_name}"
+                  - else
+                    = "N/A"
                 %td
                   = @sparc_protocol.long_title
             - unless @eirb_protocol.nil?
