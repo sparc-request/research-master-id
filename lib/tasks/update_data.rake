@@ -7,7 +7,10 @@ task update_data: :environment do
                                  long_title: study['title'] || "",
                                  eirb_id: study['pro_number'],
                                  eirb_institution_id: study['institution_id'],
-                                 eirb_state: study['state']
+                                 eirb_state: study['state'],
+                                 date_initially_approved: study['date_initially_approved'],
+                                 date_approved: study['date_approved'],
+                                 date_expiration: study['date_expiration']
                                 )
     new_protocols.append(eirb_study.id) if eirb_study.save
     eirb_study
@@ -115,6 +118,9 @@ task update_data: :environment do
       protocol.update_attribute(:long_title, study['title'])
       protocol.update_attribute(:eirb_state, study['state'])
       protocol.update_attribute(:eirb_institution_id, study['institution_id'])
+      protocol.update_attribute(:date_initially_approved, study['date_initially_approved'])
+      protocol.update_attribute(:date_approved, study['date_approved'])
+      protocol.update_attribute(:date_expiration, study['date_expiration'])
     #TODO How would this ever get called.  The `if` above would always catch this, right?
     elsif Protocol.exists?(eirb_id: study['pro_number'])
       if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
