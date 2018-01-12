@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114144322) do
+ActiveRecord::Schema.define(version: 20180112135337) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -61,6 +61,9 @@ ActiveRecord::Schema.define(version: 20171114144322) do
     t.string "eirb_id"
     t.string "eirb_institution_id"
     t.string "eirb_state"
+    t.datetime "date_initially_approved"
+    t.datetime "date_approved"
+    t.datetime "date_expiration"
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
