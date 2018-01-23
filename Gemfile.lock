@@ -50,6 +50,8 @@ GEM
     airbrussh (1.2.0)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
+    audited (4.6.0)
+      activerecord (>= 4.0, < 5.2)
     autoprefixer-rails (7.1.1)
       execjs
     bcrypt (3.1.11)
@@ -328,6 +330,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  audited (~> 4.6)
   bootstrap-sass (~> 3.3.6)
   byebug
   cancancan (~> 2.0)
