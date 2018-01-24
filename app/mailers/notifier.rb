@@ -7,7 +7,7 @@ class Notifier < ActionMailer::Base
     address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : recipient
     mail(
       to: address,
-      subject: "Research Master Record Successfully Created (RMID: #{rm_id.id})",
+      subject: "Research Master Record Successfully Created (RMID: #{rm_id.id} - #{recipient.email})",
       from: 'donotreply@musc.edu'
     )
   end
