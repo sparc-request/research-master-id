@@ -3,10 +3,11 @@ class Ability
 
   def initialize(user)
     if user.admin?
-      can :manage, :all
+      can :update, ResearchMaster, eirb_validated: false
+      can :destroy, ResearchMaster
     end
 
-    can :update, ResearchMaster, creator_id: user.id
+    can :update, ResearchMaster, creator_id: user.id, eirb_validated: false
 
     can :destroy, ResearchMaster, eirb_validated: false, creator_id: user.id
 
