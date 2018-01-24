@@ -1,4 +1,5 @@
 class ResearchMaster < ApplicationRecord
+  audited
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
