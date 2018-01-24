@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem "audited", "~> 4.6"
 gem 'rails', '~> 5.1', '>= 5.1.4'
 gem 'mysql2', '>= 0.3.13', '< 0.5'
 gem 'sass-rails', '~> 5.0'
