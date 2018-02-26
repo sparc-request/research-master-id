@@ -87,6 +87,12 @@ task update_data: :environment do
     else
       existing_protocol = Protocol.find_by(sparc_id: protocol['id'])
       existing_protocol.update_attribute(:short_title, protocol['short_title'])
+      existing_protocol.update_attribute(:long_title, protocol['title'])
+      unless existing_protocol.primary_pi.nil?
+        existing_protocol.primary_pi.update_attribute(:first_name, protocol['first_name'])
+        existing_protocol.primary_pi.update_attribute(:last_name, protocol['last_name'])
+        existing_protocol.primary_pi.update_attribute(:department, Department.find_or_create_by(name: protocol['pi_department'].nil? ? 'N/A' : protocol['pi_department']))
+      end
     end
     unless protocol['research_master_id'].nil?
       rm = ResearchMaster.find_by(id: protocol['research_master_id'])
