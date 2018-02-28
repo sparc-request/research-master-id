@@ -160,6 +160,14 @@ task update_data: :environment do
         end
         if validated_states.include?(study['state'])
           rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
+          if User.exists?(rm.pi_id)
+            current_pi = User.find(rm.pi_id)
+          end
+          new_pi = User.create_with(email: study['pi_email'], name: "#{study['first_name']} #{study['last_name']}").find_or_create_by(net_id: study['pi_net_id'])
+          rm.update_attribute(:pi_id, new_pi.id)
+          if rm.pi_id_changed?
+            PiMailer.notify_pis(rm, current_pi, new_pi).deliver_now
+          end
         end
       end
     end
