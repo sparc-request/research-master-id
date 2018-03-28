@@ -82,6 +82,9 @@
         = sort_link(@q, :funding_source, 'Funding Source')
       %th
         = sort_link(@q, :research_type, 'Research Type')
+      - if current_user.admin?
+        %th
+          Notification
       %th
         Edit
       %th
