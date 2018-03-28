@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   resources :research_masters
 
+  resource :notifications
+
   resource :detail, only: [:show]
 
   get "test_exception_notifier" => "application#test_exception_notifier"
