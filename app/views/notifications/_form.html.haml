@@ -1,0 +1,26 @@
+= form_for @notification, html: { class: 'form-horizontal' }, remote: true do |f|
+  = hidden_field_tag 'research_master_id', research_master.id
+  .modal-content
+    .modal-header
+      %button{ class: 'close', data: { dismiss: 'modal' } }
+        %span
+          &times;
+      %h4.modal-title
+        Send Notification
+    .modal-body
+      .form-group
+        = label_tag 'from', 'From', class: 'col-xs-2'
+        .col-xs-10
+          = text_field_tag 'from', current_user.email, class: 'form-control', disabled: true
+      .form-group
+        = label_tag 'to', 'To', class: 'col-xs-2'
+        .col-xs-10
+          = text_field_tag 'to', "#{research_master.creator.email}, #{research_master.pi.nil? ? '' : research_master.pi.email}", class: 'form-control', disabled: true
+      .form-group
+        = f.label :message, 'Message*', class: 'col-xs-2'
+        .col-xs-10
+          = f.text_area :message, class: 'form-control'
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+        Close
+      = f.submit 'Send Message', class: 'btn btn-primary notification-button'
