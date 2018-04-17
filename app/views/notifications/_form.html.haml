@@ -15,7 +15,8 @@
       .form-group
         = label_tag 'to', 'To', class: 'col-xs-2'
         .col-xs-10
-          = text_field_tag 'to', "#{research_master.creator.email}, #{research_master.pi.nil? ? '' : research_master.pi.email}", class: 'form-control', disabled: true
+          -#= text_field_tag 'to', "#{research_master.creator.email}, #{research_master.pi.nil? ? '' : research_master.pi.email}", class: 'form-control', disabled: true
+          = text_field_tag 'to', notification_email_recipients(research_master.creator, research_master.pi), class: 'form-control', disabled: true
       .form-group
         = f.label :message, 'Message*', class: 'col-xs-2'
         .col-xs-10
