@@ -2,7 +2,7 @@
   .panel-heading
     Associated Protocols
   .panel-body
-    - if @sparc_protocol.nil? && @eirb_protocol.nil?
+    - if @sparc_protocol.nil? && @eirb_protocol.nil? && !@coeus_records.present?
       %h1.text-center
         No Associated Protocols
     - else
