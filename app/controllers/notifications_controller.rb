@@ -13,7 +13,7 @@ class NotificationsController < ApplicationController
     @research_master = ResearchMaster.find(params[:research_master_id])
     @notification = Notification.new(notification_params)
     if @notification.valid?
-      AdminNotificationJob.perform_later(@research_master, @notification.message, current_user)
+      AdminNotifierMailer.admin_email(@research_master, @notification.message, current_user.email).deliver
     end
     respond_to do |format|
       format.js
