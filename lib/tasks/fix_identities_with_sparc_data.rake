@@ -19,8 +19,21 @@ task fix_identities_with_sparc_data: :environment do
     end
   end
 
-  User.find(698).update!(email: 'fabie@musc.edu', net_id: 'jof210', name: 'Joshua Fabie')
-  User.find(195).update!(email: 'axon@musc.edu', net_id: 'axon', name: 'Robert Axon')
-  User.find(178).update!(email: 'nelsonjd@musc.edu', net_id: 'jod9', name: 'Joni Nelson')
+  user_one = User.find(698)
 
+  ResearchMaster.find_by(creator_id: user_one.id).update_attribute(:creator_id, 709)
+
+  user_one.destroy
+
+  user_two = User.find(195)
+
+  ResearchMaster.find_by(creator_id: user_two.id).update_attribute(:creator_id, 1464)
+
+  user_two.destroy
+
+  user_three = User.find(178)
+  user_three.update_attribute(:email, 'nelsonjd@musc.edu')
+  user_three.update_attribute(:net_id, 'jod9')
+  user_three.update_attribute(:name, 'Joni Nelson')
 end
+
