@@ -119,6 +119,7 @@ task update_data: :environment do
   new_eirb_pis = []
   eirb_studies.each do |study|
     if Protocol.exists?(eirb_id: study['pro_number'])
+      ################update eirb protocol####################
       protocol = Protocol.find_by(eirb_id: study['pro_number'])
       protocol.update_attribute(:short_title, study['short_title'])
       protocol.update_attribute(:long_title, study['title'])
@@ -127,16 +128,17 @@ task update_data: :environment do
       protocol.update_attribute(:date_initially_approved, study['date_initially_approved'])
       protocol.update_attribute(:date_approved, study['date_approved'])
       protocol.update_attribute(:date_expiration, study['date_expiration'])
-    #TODO How would this ever get called.  The `if` above would always catch this, right?
-    elsif Protocol.exists?(eirb_id: study['pro_number'])
-      if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
-        eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
-      end
-      if study['first_name'] || study['last_name']
-        pi = PrimaryPi.find_or_initialize_by(first_name: study['first_name'], last_name: study['last_name'], protocol: eirb_study)
-        new_erib_pis.append(pi.id) if pi.save
-      end
+      ###############update eirb protocol##########################
+
+      ###############update eirb pi##############################
+      pi = PrimaryPi.find_or_create_by(protocol_id: protocol.id)
+      pi.update_attribute(:first_name, study['first_name'])
+      pi.update_attribute(:last_name, study['last_name'])
+      pi.update_attribute(:email, study['pi_email'])
+      pi.update_attribute(:net_id, study['pi_net_id'])
+      ###############update eirb pi###########################
     else
+      #############new eirb protocols#######################
       eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
       if study['first_name'] || study['last_name']
         pi = PrimaryPi.find_or_initialize_by(
@@ -147,6 +149,7 @@ task update_data: :environment do
         )
         new_eirb_pis.append(pi.id) if pi.save
       end
+      ############new eirb protocols######################
     end
     unless study['research_master_id'].nil?
       validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
