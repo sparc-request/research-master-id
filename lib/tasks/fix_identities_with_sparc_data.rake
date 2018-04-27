@@ -10,10 +10,10 @@ task fix_identities_with_sparc_data: :environment do
   identities.each do |identity|
     if User.exists?(email: identity['email'])
       user = User.find_by(email: identity['email'])
-      if user.net_id == '[]'
+      if user.net_id == '[]' || user.net_id == nil
         user.update_attribute(:net_id, identity['ldap_uid'].remove('@musc.edu'))
       end
-      if user.name == '[]'
+      if user.name == '[]' || user.name == nil
         user.update_attribute(:name, identity['first_name'] + identity['last_name'])
       end
     end
