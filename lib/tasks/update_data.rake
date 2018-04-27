@@ -162,14 +162,25 @@ task update_data: :environment do
           end
         end
         if validated_states.include?(study['state'])
-          rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
-          if User.exists?(rm.pi_id)
-            current_pi = User.find(rm.pi_id)
+          if rm.pi.present?
+            existing_pi_id = rm.pi.net_id
+          else
+            existing_pi_id = nil
           end
-          new_pi = User.create_with(email: study['pi_email'], name: "#{study['first_name']} #{study['last_name']}").find_or_create_by(net_id: study['pi_net_id'])
+          rm.update_attribute(:short_title, study['short_title'])
+          rm.update_attribute(:long_title, study['title'])
+          rm.update_attribute(:eirb_validated, true)
+          new_pi = User.find_or_create_by(email: study['pi_net_id'])
+          new_pi.update_attribute(:net_id, study['pi_email'].remove('@musc.edu'))
+          new_pi.update_attribute(:name, "#{study['first_name']} #{study['last_name']}")
+          rm.update_attribute(:pi_name, "#{study['first_name']} #{study['last_name']}")
           rm.update_attribute(:pi_id, new_pi.id)
-          if rm.pi_id_changed?
-            PiMailer.notify_pis(rm, current_pi, new_pi).deliver_now
+          if existing_pi_id != rm.pi.id
+            if User.exists?(existing_pi_id)
+              unless User.find(existing_pi_id).name == rm.pi.name
+                PiMailer.notify_pis(rm, User.find(existing_pi_id), rm.pi).deliver_now
+              end
+            end
           end
         end
       end
