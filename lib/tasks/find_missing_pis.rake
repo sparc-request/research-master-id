@@ -22,4 +22,10 @@ task find_missing_pis: :environment do
     end
   end
 
+  CSV.foreach(Rails.root.join('public', 'missing_pis_rmid.csv'), headers: true) do |row|
+    rm = ResearchMaster.find(row['id'])
+    user = User.find_or_create_by(net_id: row['PI Net ID'])
+    rm.update_attribute(:pi_id, user.id)
+  end
+
 end
