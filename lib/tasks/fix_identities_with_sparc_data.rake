@@ -14,7 +14,7 @@ task fix_identities_with_sparc_data: :environment do
         user.update_attribute(:net_id, identity['ldap_uid'].remove('@musc.edu'))
       end
       if user.name == '[]' || user.name == nil
-        user.update_attribute(:name, identity['first_name'] + identity['last_name'])
+        user.update_attribute(:name, "#{identity['first_name']} #{identity['last_name']}")
       end
     end
   end
