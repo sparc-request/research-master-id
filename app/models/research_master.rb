@@ -4,7 +4,7 @@ class ResearchMaster < ApplicationRecord
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
   belongs_to :creator, class_name: "User"
-  belongs_to :pi, class_name: "User", optional: true
+  belongs_to :pi, class_name: "User"
   has_many :research_master_coeus_relations
   has_many :protocols, through: :research_master_coeus_relations
   paginates_per 50
