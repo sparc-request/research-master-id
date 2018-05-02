@@ -68,6 +68,9 @@ task update_data: :environment do
   count = 1
   new_sparc_protocols = []
   new_sparc_pis = []
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:sparc_protocol_id, nil)
+  end
   protocols.each do |protocol|
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.new(type: protocol['type'],
@@ -97,7 +100,7 @@ task update_data: :environment do
     unless protocol['research_master_id'].nil?
       rm = ResearchMaster.find_by(id: protocol['research_master_id'])
       unless rm.nil?
-        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id)
+        rm.update_attribute(:sparc_protocol_id, Protocol.find_by(sparc_id: protocol['id']).id)
         if rm.sparc_association_date.nil?
           rm.update_attribute(:sparc_association_date, DateTime.current)
         end
@@ -117,6 +120,9 @@ task update_data: :environment do
   count = 1
   new_eirb_protocols = []
   new_eirb_pis = []
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:eirb_protocol_id, nil)
+  end
   eirb_studies.each do |study|
     if Protocol.exists?(eirb_id: study['pro_number'])
       ################update eirb protocol####################
@@ -156,7 +162,7 @@ task update_data: :environment do
       rm = ResearchMaster.find_by(id: study['research_master_id'])
       unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+          rm.update_attribute(:eirb_protocol_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
           if rm.eirb_association_date.nil?
             rm.update_attribute(:eirb_association_date, DateTime.current)
           end
@@ -204,10 +210,9 @@ task update_data: :environment do
       )
     end
     if ResearchMaster.exists?(ad['rmid'])
-      ResearchMasterCoeusRelation.find_or_create_by(
-        protocol: Protocol.find_by(mit_award_number: ad['mit_award_number']),
-        research_master: ResearchMaster.find(ad['rmid'])
-      )
+      ResearchMasterCoeusRelation.find_or_create_by(protocol: Protocol.find_by(mit_award_number: ad['mit_award_number'])) do |rmcr|
+        rmcr.research_master_id = ad['rmid']
+      end
     end
     print(progress_bar(count, award_details.count/10)) if count % (award_details.count/10)
     count += 1
