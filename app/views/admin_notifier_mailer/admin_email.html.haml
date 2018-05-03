@@ -4,12 +4,12 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
   %body
     %p
-      = "Dear #{@research_master_id.creator.email}, #{@research_master_id.pi.nil? ? '' : @research_master_id.pi.email}"
+      = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email} & #{@research_master_id.pi.name.present? ? @research_master_id.pi.name : @research_master_id.pi.email}"
     %p
       You have received a message from a Research Master ID admin. You can view the message below.
     %p
       %strong
-        Message:
+        = "In regard to the RMID record #{@research_master_id.id} (Short Title: #{@research_master_id.short_title})"
       %p
         = @message
     %p
