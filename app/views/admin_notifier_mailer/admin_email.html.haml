@@ -4,7 +4,10 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
   %body
     %p
-      = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email} & #{@research_master_id.pi.name.present? ? @research_master_id.pi.name : @research_master_id.pi.email}"
+      - if @research_master_id.creator.id == @research_master_id.pi.id
+        = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email}"
+      - else
+        = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email} & #{@research_master_id.pi.name.present? ? @research_master_id.pi.name : @research_master_id.pi.email}"
     %p
       You have received a message from a Research Master ID admin. You can view the message below.
     %p
