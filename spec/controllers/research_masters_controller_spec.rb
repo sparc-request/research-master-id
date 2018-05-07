@@ -108,10 +108,9 @@ describe ResearchMastersController, type: :controller do
     it 'should create a RMID' do
       user = create(:user)
       sign_in user
-      expect { post :create, 
+      expect { post :create,
         params: {
           research_master: {
-            pi_name: 'William Holt',
             department: 'department',
             long_title: 'long title',
             short_title: 'short',
@@ -121,7 +120,7 @@ describe ResearchMastersController, type: :controller do
           },
           pi_name: 'ooga',
           pi_email: 'booga@booga.com'
-          }, 
+          },
         xhr: true
       }.to change(ResearchMaster, :count).by(1)
     end

@@ -9,7 +9,6 @@ FactoryGirl.define do
     "short_title - #{n}"
   end
   factory :research_master do
-    pi_name "ooga bo"
     department
     long_title
     short_title "short title bra"
