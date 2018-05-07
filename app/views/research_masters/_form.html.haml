@@ -7,15 +7,16 @@
       %h4.modal-title
         = "#{@research_master.new_record? ? 'New' : 'Edit' } Research Master Record"
     .modal-body
-      = hidden_field_tag 'pi_name', nil
-      = hidden_field_tag 'pi_email', nil
+      = hidden_field_tag 'pi_name', (f.object.pi.present? ? f.object.pi.name : nil)
+      = hidden_field_tag 'pi_email', (f.object.pi.present? ? f.object.pi.email : nil)
       = hidden_field_tag 'pi_department', nil
       .form-group
-        = f.label :pi_name, t(:research_masters)[:new][:fields][:pi_name], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]
-        = mark_required(@research_master, :pi_name)
+        %label{class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
+          = t(:research_masters)[:new][:fields][:pi_name]
+        \*
         .col-xs-10
           .input-group
-            = f.text_field :pi_name, class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name]
+            = text_field_tag 'pi_name_text_field', (f.object.pi.present? ? f.object.pi.name : ''), class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name], id: 'research_master_pi_name'
             %span.input-group-btn
               = link_to 'Reset', 'javascript:void(0);',
                 class: 'btn btn-default reset-pi-name'
