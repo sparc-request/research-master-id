@@ -100,7 +100,7 @@ feature 'User should be able to create a new research master record', js: true d
       choose 'research_master_funding_source_internal'
       click_button 'Submit'
       wait_for_ajax
-      
+
       expect(page).to have_content('Special characters are not allowed in the Short Title')
     end
 
@@ -116,7 +116,7 @@ feature 'User should be able to create a new research master record', js: true d
       choose 'research_master_funding_source_internal'
       click_button 'Submit'
       wait_for_ajax
-      
+
       expect(page).to have_content('Special characters are not allowed in the Long Title')
     end
   end
