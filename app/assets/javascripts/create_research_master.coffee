@@ -11,6 +11,7 @@ $ ->
       $('.submit-rm-record').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', false)
       $('#research_master_pi_name').val('')
+      $('#research_master_pi_name').typeahead('val','')
 
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''

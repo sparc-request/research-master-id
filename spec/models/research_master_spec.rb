@@ -10,13 +10,14 @@ RSpec.describe ResearchMaster, type: :model do
   it { is_expected.to validate_presence_of(:funding_source) }
 
   it 'should validate on uniqueness of pi_name, department and long title' do
+    pi = create(:user, name: 'pi')
     create(:research_master,
-          pi_name: 'pi',
+          pi: pi,
           department: 'department',
           long_title: 'long'
          )
     research_master_two = build(:research_master,
-                                pi_name: 'pi',
+                                pi: pi,
                                 department: 'department',
                                 long_title: 'long'
                                )
@@ -26,12 +27,12 @@ RSpec.describe ResearchMaster, type: :model do
 
   it 'should validate on uniqueness of pi_name, department and long title' do
     create(:research_master,
-          pi_name: 'pi',
+          pi: create(:user, name: 'pi'),
           department: 'department',
           long_title: 'long'
          )
     research_master_two = build(:research_master,
-                                pi_name: 'brady',
+                                pi: create(:user, name: 'brady'),
                                 department: 'department',
                                 long_title: 'long'
                                )
@@ -40,13 +41,14 @@ RSpec.describe ResearchMaster, type: :model do
   end
 
   it 'should validate on uniqueness of pi_name, department and long title' do
+    pi = create(:user, name: 'pi')
     create(:research_master,
-          pi_name: 'pi',
+          pi: pi,
           department: 'department',
           long_title: 'long'
          )
     research_master_two = build(:research_master,
-                                pi_name: 'pi',
+                                pi: pi,
                                 department: 'department2',
                                 long_title: 'long'
                                )
@@ -55,13 +57,14 @@ RSpec.describe ResearchMaster, type: :model do
   end
 
   it 'should validate on uniqueness of pi_name, department and long title' do
+    pi = create(:user, name: 'pi')
     create(:research_master,
-          pi_name: 'pi',
+          pi: pi,
           department: 'department',
           long_title: 'long'
          )
     research_master_two = build(:research_master,
-                                pi_name: 'pi',
+                                pi: pi,
                                 department: 'department',
                                 long_title: 'long2'
                                )
