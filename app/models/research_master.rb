@@ -9,26 +9,26 @@ class ResearchMaster < ApplicationRecord
   has_many :protocols, through: :research_master_coeus_relations
   paginates_per 50
 
-  validates :pi_name,
-    :department,
+  validates :department,
     :long_title,
     :short_title,
     :funding_source,
     presence: true
+
   validates_length_of :short_title, maximum: 255
 
-  validates :pi_name,
+  validates :pi_id,
     uniqueness: { scope: [:department, :long_title],
     message: 'There is an existing Research Master record with the same
     Department and Long Title' }
 
   validates :department,
-    uniqueness: { scope: [:pi_name, :long_title],
+    uniqueness: { scope: [:pi_id, :long_title],
     message: 'There is an existing Research Master record with the same PI Name
     and Long Title' }
 
   validates :long_title,
-    uniqueness: { scope: [:pi_name, :department],
+    uniqueness: { scope: [:pi_id, :department],
     message: 'There is an existing Research Master record with the same PI Name
     and Department' }
 

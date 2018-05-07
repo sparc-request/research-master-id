@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180123174553) do
+ActiveRecord::Schema.define(version: 20180507150154) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20180123174553) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20180123174553) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20180123174553) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.bigint "research_master_id", null: false
     t.bigint "protocol_id", null: false
     t.datetime "created_at", null: false
@@ -105,8 +105,15 @@ ActiveRecord::Schema.define(version: 20180123174553) do
     t.index ["research_master_id"], name: "index_research_master_coeus_relations_on_research_master_id"
   end
 
+  create_table "research_master_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name"
+    t.string "email"
+    t.string "department"
+    t.integer "research_master_id"
+    t.index ["research_master_id"], name: "index_research_master_pis_on_research_master_id"
+  end
+
   create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "pi_name"
     t.string "department"
     t.text "long_title"
     t.string "short_title"
@@ -148,6 +155,7 @@ ActiveRecord::Schema.define(version: 20180123174553) do
 
   add_foreign_key "primary_pis", "departments"
   add_foreign_key "primary_pis", "protocols"
+  add_foreign_key "research_master_pis", "research_masters"
   add_foreign_key "research_masters", "users", column: "creator_id"
   add_foreign_key "research_masters", "users", column: "pi_id"
 end
