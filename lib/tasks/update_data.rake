@@ -1,6 +1,8 @@
 require 'dotenv/tasks'
 
 task update_data: :environment do
+  notifier = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
+
   def create_and_filter_eirb_study(study, new_protocols)
     eirb_study = Protocol.new(type: study['type'],
                                  short_title: study['short_title'] || "",
@@ -179,16 +181,27 @@ task update_data: :environment do
             user.password_confirmation = friendly_token
           end
           existing_pi = rm.pi
-          rm.pi_id = pi.id
-          if rm.pi_id_changed?
-            rm.save(validate: false)
-            unless existing_pi.nil?
-              begin
-                PiMailer.notify_pis(rm, existing_pi, rm.pi).deliver_now
-              rescue
-                puts "Failed - #{existing_pi} #{rm.pi}"
+
+          # update pi only if the pi record is valid
+          if pi.valid?
+            rm.pi_id = pi.id
+
+            if rm.pi_id_changed? && rm.pi_id.present?
+              rm.save(validate: false)
+              unless existing_pi.nil?
+                begin
+                  PiMailer.notify_pis(rm, existing_pi, rm.pi).deliver_now
+                rescue
+                  notifier.ping "PI email failed to deliver"
+                  notifier.ping "#{pi.inspect}"
+                  notifier.ping "#{pi.errors.full_messages}"
+                end
               end
             end
+          else
+            notifier.ping "PI record failed to update Research Master record"
+            notifier.ping "#{pi.inspect}"
+            notifier.ping "#{pi.errors.full_messages}"
           end
         end
       end
