@@ -1,5 +1,9 @@
-%p
-  = "Dear #{@creator.name} & #{@existing_pi.name} & #{@current_pi.name}"
+- if @creator.id == @current_pi.id
+  %p
+    = "Dear #{@existing_pi.name} & #{@current_pi.name}"
+- else
+  %p
+    = "Dear #{@creator.name} & #{@existing_pi.name} & #{@current_pi.name}"
 %p
   The Primary PI of the Research Master ID record has been updated. Please see below the detailed information.
 
