@@ -190,7 +190,7 @@ task update_data: :environment do
               rm.save(validate: false)
               unless existing_pi.nil?
                 begin
-                  PiMailer.notify_pis(rm, existing_pi, rm.pi).deliver_now
+                  PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
                 rescue
                   notifier.ping "PI email failed to deliver"
                   notifier.ping "#{pi.inspect}"
