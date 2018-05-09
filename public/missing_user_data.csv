@@ -1,0 +1,18 @@
+id,email,net_id,name,admin,developer,encrypted_password,reset_password_token,reset_password_sent_at,remember_created_at,sign_in_count,current_sign_in_at,last_sign_in_at,current_sign_in_ip,last_sign_in_ip,created_at,updated_at,Net ID
+1501,woolfsk@musc.edu,NULL,Shane Woolf,NULL,NULL,$2a$10$JS.1IrdqZ20ym7rb.JOis.EjOuVi.HBnQERjNKAwyZ/nz7x5Mnvdy,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,woolfsk
+1493,thompsai@musc.edu,NULL,Aiko Thompson,NULL,NULL,$2a$10$sMcwv.StunxVwtwKxsKl0um06L987Avh.CPTic5jMyo8juGS0jLI.,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,akt200
+1497,robisojg@musc.edu,NULL,Jacob Robison,NULL,NULL,$2a$10$hDT1itU/NuAxsKDZb50wTuWmWWf1We95bXWDu.XraRRaBCWaeRaXq,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,robisojg
+1508,roberll@musc.edu,NULL,Laura Roberts,NULL,NULL,$2a$10$oMlPdQNEHHJCO9TJZA3MjugSJnq43WlVAIPuIf19Jy6L7ILAqoj9i,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,llr6
+1499,reitman@musc.edu,NULL,Charles Reitman,NULL,NULL,$2a$10$mW./2bbK6GMWTQNV7hpc1.tMyzg/ezjv8d8ffNZfSfdmkQD/jy90q,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,car209
+1495,patekris@musc.edu,NULL,Krishna Patel,NULL,NULL,$2a$10$ZbwzrSQ7WX5wT/UQpZTy/.O3H24tCwbgKjwNFL32YCTlpClEQG306,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,krp211
+1503,newbry@musc.edu,NULL,Sean Newbry,NULL,NULL,$2a$10$S4QQGVKDV5Lzzr3Qo/UeWulL6pBpHb9HZow8baQFIRae0LVv1NC5e,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,san206
+1507,mcgillij@musc.edu,NULL,John McGillicuddy,NULL,NULL,$2a$10$qkyfK66bo2I6TcysAFqtyey7ZTA49dqWXkKwPSaBPkuST.demjene,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,mcgillij
+1509,katikalm@musc.edu,NULL,Lakshmi Katikaneni,NULL,NULL,$2a$10$EG9evPFK03JMbyo8/.Vsme8xTMTztnDyR5nUDeskTM1xdv/s/wR/a,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,katikalm
+1496,kalhorn@musc.edu,NULL,Stephen Kalhorn,NULL,NULL,$2a$10$65W6IrO17jKQN45QEsGuGOhqfJc8KaLoRQnOQxcH7GhHKHiBqwubi,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,spk4
+1494,earhart@musc.edu,NULL,Kimberly Earhart,NULL,NULL,$2a$10$Tna4RFRPcoIcZLcvIUOqPOZoXq1kFNribicV4gkf3h06XrAOHr79q,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,kre202
+1492,dececco@musc.edu,NULL,Carlo De Cecco,NULL,NULL,$2a$10$WmIpgdO2eGPEXPbbY/Fk7etgELv2vDDnsGdxd6OQyrJAvGUjC913K,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,cnd4
+1500,borckard@musc.edu,NULL,Jeffrey Borckardt,NULL,NULL,$2a$10$IKqTYETcnmkaowIUJpkNHu9L/g1erg8l5A2Io.LQVI1Wtym04Bu9C,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,borckard
+1504,ballietw@musc.edu,NULL,Wendy Balliet,NULL,NULL,$2a$10$.ghX9izKbkZrKvvijR1tU.jhjlwqAMdARc70iW0yYVJlAhiURge3.,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,web9
+1502,axon@musc.edu,NULL,Robert Axon,NULL,NULL,$2a$10$kouwNBaTnuXsC/SlXHpdw.rUGMOyY0WVXRk2KL2rCbifTDF6pRQKa,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,axon
+1498,andermic@musc.edu,NULL,Michael Anderson,NULL,NULL,$2a$10$eIQljodQcGGcK442TJsKZOmpgB8N/7aeCQ/jWtndb4QgKIZHe9qDu,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,mra202
+1505,abbottan@musc.edu,NULL,Andrea Abbott,NULL,NULL,$2a$10$JBjlwEr4JkPaD6xwvoRmx.eDFFAgR3xFq.wSuOmCl3PNSmba43sMy,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,4/27/18 19:25,4/27/18 19:25,ama208

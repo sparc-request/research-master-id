@@ -1,13 +1,18 @@
 require 'dotenv/tasks'
 
 task update_data: :environment do
+  notifier = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
+
   def create_and_filter_eirb_study(study, new_protocols)
     eirb_study = Protocol.new(type: study['type'],
                                  short_title: study['short_title'] || "",
                                  long_title: study['title'] || "",
                                  eirb_id: study['pro_number'],
                                  eirb_institution_id: study['institution_id'],
-                                 eirb_state: study['state']
+                                 eirb_state: study['state'],
+                                 date_initially_approved: study['date_initially_approved'],
+                                 date_approved: study['date_approved'],
+                                 date_expiration: study['date_expiration']
                                 )
     new_protocols.append(eirb_study.id) if eirb_study.save
     eirb_study
@@ -65,6 +70,9 @@ task update_data: :environment do
   count = 1
   new_sparc_protocols = []
   new_sparc_pis = []
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:sparc_protocol_id, nil)
+  end
   protocols.each do |protocol|
     unless Protocol.exists?(sparc_id: protocol['id'])
       sparc_protocol = Protocol.new(type: protocol['type'],
@@ -84,11 +92,17 @@ task update_data: :environment do
     else
       existing_protocol = Protocol.find_by(sparc_id: protocol['id'])
       existing_protocol.update_attribute(:short_title, protocol['short_title'])
+      existing_protocol.update_attribute(:long_title, protocol['title'])
+      unless existing_protocol.primary_pi.nil?
+        existing_protocol.primary_pi.update_attribute(:first_name, protocol['first_name'])
+        existing_protocol.primary_pi.update_attribute(:last_name, protocol['last_name'])
+        existing_protocol.primary_pi.update_attribute(:department, Department.find_or_create_by(name: protocol['pi_department'].nil? ? 'N/A' : protocol['pi_department']))
+      end
     end
     unless protocol['research_master_id'].nil?
       rm = ResearchMaster.find_by(id: protocol['research_master_id'])
       unless rm.nil?
-        rm.update_attributes(sparc_protocol_id: Protocol.find_by(sparc_id: protocol['id']).id)
+        rm.update_attribute(:sparc_protocol_id, Protocol.find_by(sparc_id: protocol['id']).id)
         if rm.sparc_association_date.nil?
           rm.update_attribute(:sparc_association_date, DateTime.current)
         end
@@ -108,23 +122,31 @@ task update_data: :environment do
   count = 1
   new_eirb_protocols = []
   new_eirb_pis = []
+  ResearchMaster.all.each do |rm|
+    rm.update_attribute(:eirb_protocol_id, nil)
+  end
   eirb_studies.each do |study|
     if Protocol.exists?(eirb_id: study['pro_number'])
+      ################update eirb protocol####################
       protocol = Protocol.find_by(eirb_id: study['pro_number'])
       protocol.update_attribute(:short_title, study['short_title'])
       protocol.update_attribute(:long_title, study['title'])
       protocol.update_attribute(:eirb_state, study['state'])
       protocol.update_attribute(:eirb_institution_id, study['institution_id'])
-    #TODO How would this ever get called.  The `if` above would always catch this, right?
-    elsif Protocol.exists?(eirb_id: study['pro_number'])
-      if Protocol.find_by(eirb_id: study['pro_number']).type == 'SPARC'
-        eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
-      end
-      if study['first_name'] || study['last_name']
-        pi = PrimaryPi.find_or_initialize_by(first_name: study['first_name'], last_name: study['last_name'], protocol: eirb_study)
-        new_erib_pis.append(pi.id) if pi.save
-      end
+      protocol.update_attribute(:date_initially_approved, study['date_initially_approved'])
+      protocol.update_attribute(:date_approved, study['date_approved'])
+      protocol.update_attribute(:date_expiration, study['date_expiration'])
+      ###############update eirb protocol##########################
+
+      ###############update eirb pi##############################
+      pi = PrimaryPi.find_or_create_by(protocol_id: protocol.id)
+      pi.update_attribute(:first_name, study['first_name'])
+      pi.update_attribute(:last_name, study['last_name'])
+      pi.update_attribute(:email, study['pi_email'])
+      pi.update_attribute(:net_id, study['pi_net_id'])
+      ###############update eirb pi###########################
     else
+      #############new eirb protocols#######################
       eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
       if study['first_name'] || study['last_name']
         pi = PrimaryPi.find_or_initialize_by(
@@ -135,19 +157,52 @@ task update_data: :environment do
         )
         new_eirb_pis.append(pi.id) if pi.save
       end
+      ############new eirb protocols######################
     end
     unless study['research_master_id'].nil?
       validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
       rm = ResearchMaster.find_by(id: study['research_master_id'])
       unless rm.nil?
         if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          rm.update_attributes(eirb_protocol_id: Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
+          rm.update_attribute(:eirb_protocol_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
           if rm.eirb_association_date.nil?
             rm.update_attribute(:eirb_association_date, DateTime.current)
           end
         end
         if validated_states.include?(study['state'])
-          rm.update_attributes(short_title: study['short_title'], long_title: study['title'], eirb_validated: true)
+          rm.update_attribute(:short_title, study['short_title'])
+          rm.update_attribute(:long_title, study['title'])
+          rm.update_attribute(:eirb_validated, true)
+          friendly_token = Devise.friendly_token
+          pi = User.find_or_create_by(net_id: study['pi_net_id'].remove('@musc.edu')) do |user|
+            user.email = study['pi_email']
+            user.name = "#{study['first_name']} #{study['last_name']}"
+            user.password = friendly_token
+            user.password_confirmation = friendly_token
+          end
+          existing_pi = rm.pi
+
+          # update pi only if the pi record is valid
+          if pi.valid?
+            rm.pi_id = pi.id
+
+            if rm.pi_id_changed? && rm.pi_id.present?
+              rm.save(validate: false)
+              unless existing_pi.nil?
+                begin
+                  PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
+                rescue
+                  notifier.ping "PI email failed to deliver"
+                  notifier.ping "#{pi.inspect}"
+                  notifier.ping "#{pi.errors.full_messages}"
+                end
+              end
+            end
+          else
+            notifier.ping "PI record failed to update Research Master record"
+            notifier.ping "#{pi.inspect}"
+            notifier.ping "#{pi.errors.full_messages}"
+          end
         end
       end
     end
@@ -170,10 +225,9 @@ task update_data: :environment do
       )
     end
     if ResearchMaster.exists?(ad['rmid'])
-      ResearchMasterCoeusRelation.find_or_create_by(
-        protocol: Protocol.find_by(mit_award_number: ad['mit_award_number']),
-        research_master: ResearchMaster.find(ad['rmid'])
-      )
+      ResearchMasterCoeusRelation.find_or_create_by(protocol: Protocol.find_by(mit_award_number: ad['mit_award_number'])) do |rmcr|
+        rmcr.research_master_id = ad['rmid']
+      end
     end
     print(progress_bar(count, award_details.count/10)) if count % (award_details.count/10)
     count += 1

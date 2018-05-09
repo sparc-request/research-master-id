@@ -1,4 +1,4 @@
 class PrimaryPi < ApplicationRecord
-  belongs_to :protocol
-  belongs_to :department
+  belongs_to :protocol, optional: true
+  belongs_to :department, optional: true
 end

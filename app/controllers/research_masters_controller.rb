@@ -40,7 +40,11 @@ class ResearchMastersController < ApplicationController
 
   def update
     @research_master = ResearchMaster.find(params[:id])
-    @research_master.update_attributes(research_master_params)
+    @research_master.assign_attributes(research_master_params)
+    @research_master.pi = find_or_create_pi(params[:pi_email],
+                                            params[:pi_name],
+                                            Devise.friendly_token,
+                                           )
     respond_to do |format|
       if @research_master.save
         format.js
