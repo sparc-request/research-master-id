@@ -6,7 +6,11 @@ class PiMailer < ApplicationMailer
     @existing_pi = existing_pi
     @current_pi = current_pi
     @creator = creator
-    address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi.email, current_pi.email, creator.email]
+    if @current_pi.id == @creator.id
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi.email, current_pi.email]
+    else
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi.email, current_pi.email, creator.email]
+    end
     mail to: address, subject: "(RMID - #{rm.id}) Research Master ID Primary PI Record Update"
   end
 end
