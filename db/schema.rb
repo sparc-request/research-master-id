@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114144322) do
+ActiveRecord::Schema.define(version: 20180507150154) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -18,7 +18,29 @@ ActiveRecord::Schema.define(version: 20171114144322) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "auditable_id"
+    t.string "auditable_type"
+    t.integer "associated_id"
+    t.string "associated_type"
+    t.integer "user_id"
+    t.string "user_type"
+    t.string "username"
+    t.string "action"
+    t.text "audited_changes"
+    t.integer "version", default: 0
+    t.string "comment"
+    t.string "remote_address"
+    t.string "request_uuid"
+    t.datetime "created_at"
+    t.index ["associated_type", "associated_id"], name: "associated_index"
+    t.index ["auditable_type", "auditable_id"], name: "auditable_index"
+    t.index ["created_at"], name: "index_audits_on_created_at"
+    t.index ["request_uuid"], name: "index_audits_on_request_uuid"
+    t.index ["user_id", "user_type"], name: "user_index"
+  end
+
+  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -33,7 +55,7 @@ ActiveRecord::Schema.define(version: 20171114144322) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "departments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -61,6 +83,9 @@ ActiveRecord::Schema.define(version: 20171114144322) do
     t.string "eirb_id"
     t.string "eirb_institution_id"
     t.string "eirb_state"
+    t.datetime "date_initially_approved"
+    t.datetime "date_approved"
+    t.datetime "date_expiration"
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
@@ -71,7 +96,7 @@ ActiveRecord::Schema.define(version: 20171114144322) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.bigint "research_master_id", null: false
     t.bigint "protocol_id", null: false
     t.datetime "created_at", null: false
@@ -89,7 +114,6 @@ ActiveRecord::Schema.define(version: 20171114144322) do
   end
 
   create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "pi_name"
     t.string "department"
     t.text "long_title"
     t.string "short_title"

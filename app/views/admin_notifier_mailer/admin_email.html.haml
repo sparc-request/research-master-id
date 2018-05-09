@@ -1,0 +1,21 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+  %body
+    %p
+      - if @research_master_id.creator.id == @research_master_id.pi.id
+        = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email}"
+      - else
+        = "Dear #{@research_master_id.creator.name.present? ? @research_master_id.creator.name : @research_master_id.creator.email} & #{@research_master_id.pi.name.present? ? @research_master_id.pi.name : @research_master_id.pi.email}"
+    %p
+      You have received a message from a Research Master ID admin. You can view the message below.
+    %p
+      %strong
+        = "In regard to the RMID record #{@research_master_id.id} (Short Title: #{@research_master_id.short_title})"
+      %p
+        = @message
+    %p
+      Please contact the SUCCESS Center at (843) 792-8300 or
+      = mail_to 'success@musc.edu'
+      with any questions you may have.
