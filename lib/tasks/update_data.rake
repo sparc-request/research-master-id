@@ -192,16 +192,20 @@ task update_data: :environment do
                 begin
                   PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
                 rescue
-                  notifier.ping "PI email failed to deliver"
-                  notifier.ping "#{pi.inspect}"
-                  notifier.ping "#{pi.errors.full_messages}"
+                  if ENV.fetch('ENVIRONMENT') == 'production'
+                    notifier.ping "PI email failed to deliver"
+                    notifier.ping "#{pi.inspect}"
+                    notifier.ping "#{pi.errors.full_messages}"
+                  end
                 end
               end
             end
           else
-            notifier.ping "PI record failed to update Research Master record"
-            notifier.ping "#{pi.inspect}"
-            notifier.ping "#{pi.errors.full_messages}"
+            if ENV.fetch('ENVIRONMENT') == 'production'
+              notifier.ping "PI record failed to update Research Master record"
+              notifier.ping "#{pi.inspect}"
+              notifier.ping "#{pi.errors.full_messages}"
+            end
           end
         end
       end
