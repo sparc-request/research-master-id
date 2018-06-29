@@ -22,7 +22,7 @@ RSpec.describe Notifier do
 
       result = Notifier.success(owner.email, rm_pi, rm_id)
 
-      expect(result.subject).to eq "Research Master Record Successfully Created (RMID: #{rm_id.id})"
+      expect(result.subject).to eq "Research Master Record Successfully Created (RMID: #{rm_id.id} - #{owner.email})"
     end
 
     it 'it should be from no-reply@rmid.musc.edu' do
