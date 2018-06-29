@@ -127,15 +127,6 @@ describe ResearchMastersController, type: :controller do
   end
 
   describe '#update' do
-    it 'should return success' do
-      user = create(:user)
-      sign_in user
-      rm = create(:research_master)
-      patch :update, params: { id: rm, research_master: attributes_for(:research_master).except(:user), format: :js }
-
-      expect(response).to be_success
-    end
-
     it 'should only allow signed in users' do
       rm = create(:research_master)
 
