@@ -32,6 +32,8 @@ gem 'kaminari', '~> 1.0', '>= 1.0.1'
 gem 'delayed_job_active_record'
 gem 'daemons', '~> 1.2', '>= 1.2.4'
 gem "letter_opener", :group => :development
+gem 'webmock', '~> 3.4', '>= 3.4.2'
+gem 'sinatra', '~> 2.0', '>= 2.0.3'
 
 group :development, :test do
   gem 'byebug'
