@@ -60,9 +60,9 @@ class ResearchMaster < ApplicationRecord
 
     if eirb_p = self.eirb_protocol
       json.merge!({
-        date_initially_approved:  eirb_p.date_initially_approved,
-        date_approved:            eirb_p.date_approved,
-        date_expiration:          eirb_p.date_expiration
+        date_initially_approved:  eirb_p.date_initially_approved.try(:strftime, "%m/%d/%Y"),
+        date_approved:            eirb_p.date_approved.try(:strftime, "%m/%d/%Y"),
+        date_expiration:          eirb_p.date_expiration.try(:strftime, "%m/%d/%Y")
       })
     end
 
