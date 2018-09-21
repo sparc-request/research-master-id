@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507150154) do
+ActiveRecord::Schema.define(version: 20180723173135) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20180507150154) do
     t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "coeus_project_id"
   end
 
   create_table "research_master_coeus_relations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -103,14 +104,6 @@ ActiveRecord::Schema.define(version: 20180507150154) do
     t.datetime "updated_at", null: false
     t.index ["protocol_id"], name: "index_research_master_coeus_relations_on_protocol_id"
     t.index ["research_master_id"], name: "index_research_master_coeus_relations_on_research_master_id"
-  end
-
-  create_table "research_master_pis", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-    t.string "email"
-    t.string "department"
-    t.integer "research_master_id"
-    t.index ["research_master_id"], name: "index_research_master_pis_on_research_master_id"
   end
 
   create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -155,7 +148,6 @@ ActiveRecord::Schema.define(version: 20180507150154) do
 
   add_foreign_key "primary_pis", "departments"
   add_foreign_key "primary_pis", "protocols"
-  add_foreign_key "research_master_pis", "research_masters"
   add_foreign_key "research_masters", "users", column: "creator_id"
   add_foreign_key "research_masters", "users", column: "pi_id"
 end
