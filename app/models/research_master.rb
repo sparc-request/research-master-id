@@ -51,6 +51,10 @@ class ResearchMaster < ApplicationRecord
     self.eirb_protocol_id && Protocol.find(self.eirb_protocol_id)
   end
 
+  def coeus_protocol
+    self.protocols.first
+  end
+
   def clinical_research?
     ['clinical_research_billable', 'clinical_research_non_billable'].include?(self.research_type)
   end
