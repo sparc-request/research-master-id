@@ -225,7 +225,8 @@ task update_data: :environment do
         mit_award_number: ad['mit_award_number'],
         sequence_number: ad['sequence_number'],
         title: ad['title'],
-        entity_award_number: ad['entity_award_number']
+        entity_award_number: ad['entity_award_number'],
+        coeus_project_id: ad['coeus_project_id']
       )
     end
     if ResearchMaster.exists?(ad['rmid'])
