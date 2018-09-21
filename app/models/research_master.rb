@@ -54,19 +54,4 @@ class ResearchMaster < ApplicationRecord
   def clinical_research?
     ['clinical_research_billable', 'clinical_research_non_billable'].include?(self.research_type)
   end
-
-  def to_json
-    json = self.attributes
-
-    if eirb_p = self.eirb_protocol
-      json.merge!({
-        eirb_pro_number:          eirb_p.eirb_id,
-        date_initially_approved:  eirb_p.date_initially_approved.try(:strftime, "%m/%d/%Y"),
-        date_approved:            eirb_p.date_approved.try(:strftime, "%m/%d/%Y"),
-        date_expiration:          eirb_p.date_expiration.try(:strftime, "%m/%d/%Y")
-      })
-    end
-
-    json
-  end
 end
