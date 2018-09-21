@@ -64,7 +64,7 @@ class ResearchMaster < ApplicationRecord
 
     if coeus_p = self.coeus_protocol
       json.merge!({
-        project_number: coeus_p.coeus_project_id
+        coeus_project_number: coeus_p.coeus_project_id
       })
     end
 
