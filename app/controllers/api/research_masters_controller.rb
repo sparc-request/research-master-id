@@ -1,7 +1,7 @@
 class Api::ResearchMastersController < Api::BaseController
 
   def index
-    @research_masters = ResearchMaster.all
+    @research_masters = ResearchMaster.eager_load(:protocols).all
 
     respond_to do |format|
       format.json { render json: @research_masters.map(&:to_json) }
