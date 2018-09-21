@@ -4,7 +4,7 @@ class Api::ResearchMastersController < Api::BaseController
     @research_masters = ResearchMaster.eager_load(:protocols).all
 
     respond_to do |format|
-      format.json { render json: @research_masters.map(&:to_json) }
+      format.json
     end
   end
 
@@ -12,7 +12,7 @@ class Api::ResearchMastersController < Api::BaseController
     @research_master = ResearchMaster.find(params[:id])
 
     respond_to do |format|
-      format.json { render json: @research_master.to_json }
+      format.json
     end
   end
 end
