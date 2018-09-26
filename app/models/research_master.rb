@@ -6,7 +6,7 @@ class ResearchMaster < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :pi, class_name: "User"
   has_many :research_master_coeus_relations
-  has_many :protocols, through: :research_master_coeus_relations
+  has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
   paginates_per 50
 
   validates :department,
@@ -49,10 +49,6 @@ class ResearchMaster < ApplicationRecord
 
   def eirb_protocol
     self.eirb_protocol_id && Protocol.find(self.eirb_protocol_id)
-  end
-
-  def coeus_protocol
-    self.protocols.first
   end
 
   def clinical_research?
