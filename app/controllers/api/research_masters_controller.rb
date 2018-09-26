@@ -1,7 +1,7 @@
 class Api::ResearchMastersController < Api::BaseController
 
   def index
-    @research_masters = ResearchMaster.eager_load(:protocols).all
+    @research_masters = ResearchMaster.eager_load(:coeus_protocols).all
 
     respond_to do |format|
       format.json
