@@ -57,4 +57,4 @@ group :test do
 end
 
 ### custom gem for data sanitization ###
-gem 'sanitized_data',  git: 'git@github.com:HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
