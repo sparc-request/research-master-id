@@ -139,11 +139,13 @@ task update_data: :environment do
       ###############update eirb protocol##########################
 
       ###############update eirb pi##############################
-      pi = PrimaryPi.find_or_create_by(protocol_id: protocol.id)
-      pi.update_attribute(:first_name, study['first_name'])
-      pi.update_attribute(:last_name, study['last_name'])
-      pi.update_attribute(:email, study['pi_email'])
-      pi.update_attribute(:net_id, study['pi_net_id'])
+      unless protocol.eirb_state == 'Completed'
+        pi = PrimaryPi.find_or_create_by(protocol_id: protocol.id)
+        pi.update_attribute(:first_name, study['first_name'])
+        pi.update_attribute(:last_name, study['last_name'])
+        pi.update_attribute(:email, study['pi_email'])
+        pi.update_attribute(:net_id, study['pi_net_id'])
+      end
       ###############update eirb pi###########################
     else
       #############new eirb protocols#######################
