@@ -5,7 +5,7 @@ task update_data: :environment do
     script_start      = Time.now
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
-    $email_notifier    = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
+    $error_notifier    = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
 
     $status_notifier.ping "Cronjob has started."
 
@@ -59,16 +59,16 @@ task update_data: :environment do
             PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
           rescue
             if ENV.fetch('ENVIRONMENT') == 'production'
-              $email_notifier.ping "PI email failed to deliver"
-              $email_notifier.ping "#{pi.inspect}"
-              $email_notifier.ping "#{pi.errors.full_messages}"
+              $error_notifier.ping "PI email failed to deliver"
+              $error_notifier.ping "#{pi.inspect}"
+              $error_notifier.ping "#{pi.errors.full_messages}"
             end
           end
         end
       elsif ENV.fetch('ENVIRONMENT') == 'production'
-        $email_notifier.ping "PI record failed to update Research Master record"
-        $email_notifier.ping "#{pi.inspect}"
-        $email_notifier.ping "#{pi.errors.full_messages}"
+        $error_notifier.ping "PI record failed to update Research Master record"
+        $error_notifier.ping "#{pi.inspect}"
+        $error_notifier.ping "#{pi.errors.full_messages}"
       end
     end
 
@@ -408,7 +408,7 @@ task update_data: :environment do
   rescue => error
     puts error.inspect
 
-    $status_notifier.ping "Cronjob has failed."
-    $status_notifier.ping "Error: #{error.inspect}"
+    $error_notifier.ping "Cronjob has failed unexpectedly."
+    $error_notifier.ping error.inspect
   end
 end
