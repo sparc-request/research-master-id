@@ -226,7 +226,7 @@ task update_data: :environment do
 
         existing_protocol.save(validate: false)
 
-        if existing_protocol.primary_pi
+        if existing_protocol.eirb_state == 'Completed' && existing_protocol.primary_pi
           existing_protocol.primary_pi.first_name = study['first_name']
           existing_protocol.primary_pi.last_name  = study['last_name']
           existing_protocol.primary_pi.email      = study['pi_email']
