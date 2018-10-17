@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20180723173135) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
