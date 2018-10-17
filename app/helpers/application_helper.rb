@@ -26,11 +26,11 @@ module ApplicationHelper
 
   def display_system_color(system)
     if system == "SPARC"
-      return content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: blue')
+      return content_tag(:span,'', class: 'glyphicon glyphicon-stop text-primary')
     elsif system == "EIRB"
-      return content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: green')
+      return content_tag(:span,'', class: 'glyphicon glyphicon-stop text-success')
     elsif system == "COEUS"
-      return content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: red')
+      return content_tag(:span,'', class: 'glyphicon glyphicon-stop text-danger')
     end
   end
 
