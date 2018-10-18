@@ -2,6 +2,11 @@ require 'dotenv/tasks'
 
 task update_data: :environment do
   begin
+    ## turn off auditing for the duration of this script
+    Protocol.auditing_enabled = false
+    ResearchMaster.auditing_enabled = false
+    User.auditing_enabled = false
+    
     script_start      = Time.now
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
@@ -15,12 +20,6 @@ task update_data: :environment do
     $rmc_relations     = ResearchMasterCoeusRelation.all
     $departments       = Department.all
     $users             = User.all
-
-    def progress_bar(count, increment)
-      bar = "Progress: |"
-      bar += ("=" * (count/increment)).ljust(10)
-      bar += "| #{count/increment*10}%\r"
-    end
 
     def find_or_create_department(pi_department)
       name = pi_department || 'N/A'
@@ -125,6 +124,9 @@ task update_data: :environment do
       new_sparc_protocols       = protocols.select{ |p| existing_sparc_ids.exclude?(p['id']) }
 
       # Update Existing SPARC Protocol Records
+      puts "\n\nUpdating existing SPARC protocols"
+      bar = ProgressBar.new(existing_sparc_protocols.count)
+
       existing_sparc_protocols.each do |protocol|
         existing_protocol = sparc_protocols.detect{ |p| p.sparc_id == protocol['id'] }
 
@@ -148,11 +150,13 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, protocols.count/10) if count % (protocols.count/10)
-        count += 1
+        bar.increment! rescue nil
       end
 
       # Create New SPARC Protocol Records
+      puts "\n\nCreating new SPARC protocols"
+      bar = ProgressBar.new(new_sparc_protocols.count)
+
       new_sparc_protocols.each do |protocol|
         sparc_protocol = Protocol.new(
           type:             protocol['type'],
@@ -181,9 +185,8 @@ task update_data: :environment do
 
           rm.save(validate: false)
         end
-
-        print progress_bar(count, protocols.count/10) if count % (protocols.count/10)
-        count += 1
+	
+	bar.increment! rescue nil
       end
 
       finish = Time.now
@@ -214,6 +217,9 @@ task update_data: :environment do
       new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
 
       # Update Existing eIRB Protocol Records
+      puts "\n\nUpdating existing eIRB protocols"
+      bar = ProgressBar.new(existing_eirb_studies.count)
+
       existing_eirb_studies.each do |study|
         existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
         existing_protocol.short_title             = study['short_title']
@@ -250,12 +256,14 @@ task update_data: :environment do
 
           rm.save(validate: false)
         end
-
-        print progress_bar(count, eirb_studies.count/10) if count % (eirb_studies.count/10)
-        count += 1
+	
+	bar.increment! rescue nil
       end
 
       # Create New eIRB Protocol Records
+      puts "\n\nCreating new eIRB protocols"
+      bar = ProgressBar.new(new_eirb_studies.count)
+
       new_eirb_studies.each do |study|
         eirb_protocol = Protocol.new(
           type:                     study['type'],
@@ -297,8 +305,7 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, eirb_studies.count/10) if count % (eirb_studies.count/10)
-        count += 1
+	bar.increment! rescue nil
       end
 
       finish = Time.now
@@ -323,6 +330,9 @@ task update_data: :environment do
     new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
 
     # Update Existing COEUS Protocol Records
+    puts "\n\nUpdating existing COEUS protocols"
+    bar = ProgressBar.new(existing_coeus_award_details.count)
+
     existing_coeus_award_details.each do |ad|
       existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad['mit_award_number'] }
 
@@ -335,11 +345,13 @@ task update_data: :environment do
         end
       end
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
     # Create New COEUS Protocol Records
+    puts "\n\nCreating new COEUS protocols"
+    bar = ProgressBar.new(new_coeus_award_details.count)
+
     new_coeus_award_details.each do |ad|
       coeus_protocol = Protocol.new(
         type:                 'COEUS',
@@ -359,8 +371,7 @@ task update_data: :environment do
         )
       end
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
     puts("Updating award numbers from COEUS API: #{awards_hrs.count}")
@@ -370,19 +381,21 @@ task update_data: :environment do
     existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
     new_coeus_awards_hrs      = awards_hrs.select{ |ah| existing_award_numbers.exclude?(ah['mit_award_number']) }
 
+    puts "\n\nUpdating COEUS award numbers"
+    bar = ProgressBar.new(existing_coeus_awards_hrs.count)
+
     existing_coeus_awards_hrs.each do |ah|
       existing_protocol                       = coeus_protocols.detect{ |p| p.mit_award_number == ah['mit_award_number'] }
       existing_protocol.coeus_protocol_number = ah['protocol_number']
 
       existing_protocol.save(validate: false)
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
     new_coeus_awards_hrs.each do |ah|
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      #print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
+      #count += 1
     end
 
     finish = Time.now
@@ -405,8 +418,16 @@ task update_data: :environment do
 
     $status_notifier.ping "Cronjob has completed successfully."
     $status_notifier.ping "Duration: #{(script_finish - script_start).to_i} Seconds"
+    
+    ## turn on auditing 
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
   rescue => error
     puts error.inspect
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
 
     $error_notifier.ping "Cronjob has failed unexpectedly."
     $error_notifier.ping error.inspect
