@@ -339,7 +339,7 @@ task update_data: :environment do
       if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
         unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }
           ResearchMasterCoeusRelation.create(
-            protocol:         coeus_protocol,
+            protocol:         existing_protocol,
             research_master:  rm
           )
         end
