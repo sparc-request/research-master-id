@@ -6,7 +6,7 @@ task update_data: :environment do
     Protocol.auditing_enabled = false
     ResearchMaster.auditing_enabled = false
     User.auditing_enabled = false
-    
+
     script_start      = Time.now
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
@@ -36,7 +36,7 @@ task update_data: :environment do
 
     def update_eirb_study_pi(rm, first_name, last_name, email, net_id)
       net_id.slice!('@musc.edu')
-      
+
       pi = nil
 
       unless pi = $users.detect{ |u| u.net_id == net_id }
@@ -185,7 +185,7 @@ task update_data: :environment do
 
           rm.save(validate: false)
         end
-	
+
 	bar.increment! rescue nil
       end
 
@@ -244,7 +244,7 @@ task update_data: :environment do
 
         if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
           rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date 
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
           if validated_states.include?(study['state'])
             rm.eirb_validated = true
@@ -256,7 +256,7 @@ task update_data: :environment do
 
           rm.save(validate: false)
         end
-	
+
 	bar.increment! rescue nil
       end
 
@@ -292,7 +292,7 @@ task update_data: :environment do
 
         if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
           rm.eirb_protocol_id       = eirb_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date 
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
           if validated_states.include?(study['state'])
             rm.eirb_validated = true
@@ -318,14 +318,14 @@ task update_data: :environment do
 
     puts("\n\nBeginning COEUS API data import...")
     puts("Total number of protocols from COEUS API: #{award_details.count}")
-    
+
     start                   = Time.now
     count                   = 1
     created_coeus_protocols = []
 
     # Preload eIRB Protocols to improve efficiency
     coeus_protocols               = Protocol.where(type: 'COEUS')
-    existing_award_numbers        = eirb_protocols.pluck(:mit_award_number)
+    existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
     existing_coeus_award_details  = award_details.select{ |ad| existing_award_numbers.include?(ad['mit_award_number']) }
     new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
 
@@ -418,8 +418,8 @@ task update_data: :environment do
 
     $status_notifier.ping "Cronjob has completed successfully."
     $status_notifier.ping "Duration: #{(script_finish - script_start).to_i} Seconds"
-    
-    ## turn on auditing 
+
+    ## turn on auditing
     Protocol.auditing_enabled = true
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
