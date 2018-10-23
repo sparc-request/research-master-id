@@ -186,7 +186,7 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-	bar.increment! rescue nil
+        bar.increment! rescue nil
       end
 
       finish = Time.now
@@ -257,7 +257,7 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-	bar.increment! rescue nil
+        bar.increment! rescue nil
       end
 
       # Create New eIRB Protocol Records
@@ -305,7 +305,7 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-	bar.increment! rescue nil
+        bar.increment! rescue nil
       end
 
       finish = Time.now
