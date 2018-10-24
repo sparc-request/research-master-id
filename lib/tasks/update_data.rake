@@ -60,6 +60,7 @@ task update_data: :environment do
   print("Fetching from COEUS_API... ")
   award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
   awards_hrs = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
+  prism_users = HTTParty.get("#{coeus_api}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
   puts("Done")
 
   puts("\nError retrieving protocols from SPARC_API: #{protocols}") if protocols.is_a? String
@@ -246,7 +247,16 @@ task update_data: :environment do
     end
     print(progress_bar(count, awards_hrs.count/10)) if count % (awards_hrs.count/10)
   end
-
+  puts("Updating users from COEUS API: #{prism_users.count}")
+  count = 1
+  prism_users.each do |user|
+    if User.exists?(net_id: user['netid'])
+      user_to_update = User.find_by(net_id: user['netid'])
+      user_to_update.update_attribute(:department_id, Department.find_or_create_by(name: user['department']).id)
+    end
+    print(progress_bar(count, prism_users.count/10)) if count % (prism_users.count/10)
+    count += 1
+  end
 
   puts("")
   puts("Done!")

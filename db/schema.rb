@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180723173135) do
+ActiveRecord::Schema.define(version: 20181024164019) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20180723173135) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "audits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer "auditable_id"
     t.string "auditable_type"
     t.integer "associated_id"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20180723173135) do
     t.string "email", default: "", null: false
     t.string "net_id"
     t.string "name"
+    t.bigint "department_id"
     t.boolean "admin"
     t.boolean "developer"
     t.string "encrypted_password", default: "", null: false
@@ -142,6 +143,7 @@ ActiveRecord::Schema.define(version: 20180723173135) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -150,4 +152,5 @@ ActiveRecord::Schema.define(version: 20180723173135) do
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_masters", "users", column: "creator_id"
   add_foreign_key "research_masters", "users", column: "pi_id"
+  add_foreign_key "users", "departments"
 end
