@@ -67,53 +67,59 @@ task update_data: :environment do
           end
         end
       elsif ENV.fetch('ENVIRONMENT') == 'production'
-        log "PI record failed to update Research Master record"
-        log "#{pi.inspect}"
-        log "#{pi.errors.full_messages}"
+        log ":heavy_exclamation_mark: PI record failed to update Research Master record"
+        log "- #{pi.inspect}"
+        log "- #{pi.errors.full_messages}"
       end
     end
 
-    log "Cronjob has started."
+    log "*Cronjob has started.*"
 
-    log "Beginning data retrieval from APIs..."
+    log "- *Beginning data retrieval from APIs...*"
 
     sparc_api       = ENV.fetch("SPARC_API")
     eirb_api        = ENV.fetch("EIRB_API")
     eirb_api_token  = ENV.fetch("EIRB_API_TOKEN")
     coeus_api       = ENV.fetch("COEUS_API")
 
-    log "Fetching from SPARC_API..."
+    log "--- *Fetching from SPARC_API...*"
 
     start     = Time.now
     protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish    = Time.now
 
-    log "Done (#{(finish - start).to_i} Seconds)"
+    if protocols.is_a?(String)
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    else
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
+    end
 
-    log "Fetching from EIRB_API..."
+    log "--- *Fetching from EIRB_API...*"
 
     start         = Time.now
-    eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
+    eirb_studies  = HTTParty.get("#{eirdb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
     finish        = Time.now
 
-    log "Done (#{(finish - start).to_i} Seconds)"
+    if eirb_studies.is_a?(String)
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
+    else
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    end
 
-    log "Fetching from COEUS_API..."
+    log "--- *Fetching from COEUS_API...*"
 
     start         = Time.now
     award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
     awards_hrs    = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish        = Time.now
 
-    log "Done (#{(finish - start).to_i} Seconds)"
+    log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
 
-    if protocols.is_a?(String)
-      log ("\nError retrieving protocols from SPARC_API: #{protocols}")
-    else
+    unless protocols.is_a?(String)
       ResearchMaster.update_all(sparc_protocol_id: nil)
 
-      log "\nBeginning SPARC_API data import..."
-      log "Total number of protocols from SPARC_API: #{protocols.count}"
+      log "- *Beginning SPARC_API data import...*"
+      log "--- Total number of protocols from SPARC_API: #{protocols.count}"
 
       start                   = Time.now
       count                   = 1
@@ -127,7 +133,7 @@ task update_data: :environment do
       new_sparc_protocols       = protocols.select{ |p| existing_sparc_ids.exclude?(p['id']) }
 
       # Update Existing SPARC Protocol Records
-      log "\nUpdating existing SPARC protocols"
+      log "--- Updating existing SPARC protocols"
       bar = ProgressBar.new(existing_sparc_protocols.count)
 
       existing_sparc_protocols.each do |protocol|
@@ -157,7 +163,7 @@ task update_data: :environment do
       end
 
       # Create New SPARC Protocol Records
-      log "\nCreating new SPARC protocols"
+      log "--- Creating new SPARC protocols"
       bar = ProgressBar.new(new_sparc_protocols.count)
 
       new_sparc_protocols.each do |protocol|
@@ -194,19 +200,17 @@ task update_data: :environment do
 
       finish = Time.now
 
-      log "Done!"
-      log "New protocols total: #{created_sparc_protocols.count}"
-      log "New primary pis total: #{created_sparc_pis.count}"
-      log "Finished SPARC_API data import (#{(finish - start).to_i} Seconds)."
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished SPARC_API data import* (#{(finish - start).to_i} Seconds)."
     end
 
-    if eirb_studies.is_a?(String)
-     log "Error retrieving protocols from EIRB_API: #{eirb_studies}"
-    else eirb_studies.is_a?(String)
+    unless eirb_studies.is_a?(String)
       ResearchMaster.update_all(eirb_validated: false)
 
-      log "\nBeginning EIRB_API data import..."
-      log "Total number of protocols from EIRB_API: #{eirb_studies.count}"
+      log "- *Beginning EIRB_API data import...*"
+      log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
 
       start                   = Time.now
       count                   = 1
@@ -222,7 +226,7 @@ task update_data: :environment do
       new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
 
       # Update Existing eIRB Protocol Records
-      log "\nUpdating existing eIRB protocols"
+      log "--- Updating existing eIRB protocols"
       bar = ProgressBar.new(existing_eirb_studies.count)
 
       existing_eirb_studies.each do |study|
@@ -266,7 +270,7 @@ task update_data: :environment do
       end
 
       # Create New eIRB Protocol Records
-      log "\n\nCreating new eIRB protocols"
+      log "--- Creating new eIRB protocols"
       bar = ProgressBar.new(new_eirb_studies.count)
 
       new_eirb_studies.each do |study|
@@ -315,14 +319,14 @@ task update_data: :environment do
 
       finish = Time.now
 
-      log "Done!"
-      log "New protocols total: #{created_sparc_protocols.count}"
-      log "New primary pis total: #{created_sparc_pis.count}"
-      log "Finished EIRB_API data import (#{(finish - start).to_i} Seconds)."
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
     end
 
-    log "\nBeginning COEUS API data import..."
-    log "Total number of protocols from COEUS API: #{award_details.count}"
+    log "- *Beginning COEUS API data import...*"
+    log "--- Total number of protocols from COEUS API: #{award_details.count}"
 
     start                   = Time.now
     count                   = 1
@@ -335,7 +339,7 @@ task update_data: :environment do
     new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
 
     # Update Existing COEUS Protocol Records
-    log "\nUpdating existing COEUS protocols"
+    log "--- Updating existing COEUS protocols"
     bar = ProgressBar.new(existing_coeus_award_details.count)
 
     existing_coeus_award_details.each do |ad|
@@ -354,7 +358,7 @@ task update_data: :environment do
     end
 
     # Create New COEUS Protocol Records
-    log "\n\nCreating new COEUS protocols"
+    log "--- Creating new COEUS protocols"
     bar = ProgressBar.new(new_coeus_award_details.count)
 
     new_coeus_award_details.each do |ad|
@@ -381,14 +385,13 @@ task update_data: :environment do
       bar.increment! rescue nil
     end
 
-    log "Updating award numbers from COEUS API: #{awards_hrs.count}"
+    log "--- Updating award numbers from COEUS API: #{awards_hrs.count}"
 
     count = 1
 
     existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
-    new_coeus_awards_hrs      = awards_hrs.select{ |ah| existing_award_numbers.exclude?(ah['mit_award_number']) }
 
-    log "\n\nUpdating COEUS award numbers"
+    log "--- Updating COEUS award numbers"
     bar = ProgressBar.new(existing_coeus_awards_hrs.count)
 
     existing_coeus_awards_hrs.each do |ah|
@@ -400,30 +403,26 @@ task update_data: :environment do
       bar.increment! rescue nil
     end
 
-    new_coeus_awards_hrs.each do |ah|
-      #print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      #count += 1
-    end
-
     finish = Time.now
 
-    log "Done!"
-    log "New protocols total: #{created_coeus_protocols.count}"
-    log "Finished COEUS_API data import (#{(finish - start).to_i} Seconds)."
+    log "--- :heavy_check_mark: *Done!*"
+    log "--- *New protocols total:* #{created_coeus_protocols.count}"
+    log "--- *Finished COEUS_API data import* (#{(finish - start).to_i} Seconds)."
 
     total_protocols = created_sparc_protocols + created_eirb_protocols + created_coeus_protocols
     total_pis       = created_sparc_pis + created_eirb_pis
 
-    log "\nNew protocols total: #{total_protocols.count}"
-    log "New primary pis total: #{total_pis.count}"
-    log "New protocol ids: #{total_protocols}"
-    log "New primary pi ids: #{total_pis}"
+    log "*Overview*"
+    log "- *New protocols total:* #{total_protocols.count}"
+    log "- *New primary pis total:* #{total_pis.count}"
+    log "- *New protocol ids:* #{total_protocols}"
+    log "- *New primary pi ids:* #{total_pis}"
 
     script_finish = Time.now
 
-    log "Script Duration: #{(script_finish - script_start).to_i} Seconds."
+    log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-    log "Cronjob has completed successfully."
+    log ":heavy_check_mark: *Cronjob has completed successfully.*"
 
     ## turn on auditing
     Protocol.auditing_enabled = true
@@ -434,7 +433,7 @@ task update_data: :environment do
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
 
-    log "Cronjob has failed unexpectedly."
+    log ":heavy_exclamation_mark: *Cronjob has failed unexpectedly.*"
     log error.inspect
   end
 end
