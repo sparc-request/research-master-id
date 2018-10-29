@@ -2,12 +2,14 @@ require 'dotenv/tasks'
 
 task update_data: :environment do
   begin
+    ## turn off auditing for the duration of this script
+    Protocol.auditing_enabled = false
+    ResearchMaster.auditing_enabled = false
+    User.auditing_enabled = false
+
     script_start      = Time.now
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
-    $error_notifier    = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
-
-    $status_notifier.ping "Cronjob has started."
 
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
@@ -16,10 +18,9 @@ task update_data: :environment do
     $departments       = Department.all
     $users             = User.all
 
-    def progress_bar(count, increment)
-      bar = "Progress: |"
-      bar += ("=" * (count/increment)).ljust(10)
-      bar += "| #{count/increment*10}%\r"
+    def log message
+      puts "#{message}\n"
+      $status_notifier.ping message
     end
 
     def find_or_create_department(pi_department)
@@ -37,7 +38,7 @@ task update_data: :environment do
 
     def update_eirb_study_pi(rm, first_name, last_name, email, net_id)
       net_id.slice!('@musc.edu')
-      
+
       pi = nil
 
       unless pi = $users.detect{ |u| u.net_id == net_id }
@@ -59,59 +60,66 @@ task update_data: :environment do
             PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
           rescue
             if ENV.fetch('ENVIRONMENT') == 'production'
-              $error_notifier.ping "PI email failed to deliver"
-              $error_notifier.ping "#{pi.inspect}"
-              $error_notifier.ping "#{pi.errors.full_messages}"
+              log "PI email failed to deliver"
+              log "#{pi.inspect}"
+              log "#{pi.errors.full_messages}"
             end
           end
         end
       elsif ENV.fetch('ENVIRONMENT') == 'production'
-        $error_notifier.ping "PI record failed to update Research Master record"
-        $error_notifier.ping "#{pi.inspect}"
-        $error_notifier.ping "#{pi.errors.full_messages}"
+        log ":heavy_exclamation_mark: PI record failed to update Research Master record"
+        log "- #{pi.inspect}"
+        log "- #{pi.errors.full_messages}"
       end
     end
 
-    puts("\nBeginning data retrieval from APIs...")
+    log "*Cronjob has started.*"
+
+    log "- *Beginning data retrieval from APIs...*"
 
     sparc_api       = ENV.fetch("SPARC_API")
     eirb_api        = ENV.fetch("EIRB_API")
     eirb_api_token  = ENV.fetch("EIRB_API_TOKEN")
     coeus_api       = ENV.fetch("COEUS_API")
 
-    print "Fetching from SPARC_API... "
+    log "--- *Fetching from SPARC_API...*"
 
     start     = Time.now
     protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish    = Time.now
 
-    print "Done (#{(finish - start).to_i} Seconds)\n"
+    if protocols.is_a?(String)
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    else
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
+    end
 
-    print "Fetching from EIRB_API..."
+    log "--- *Fetching from EIRB_API...*"
 
     start         = Time.now
-    eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
+    eirb_studies  = HTTParty.get("#{eirdb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
     finish        = Time.now
 
-    print "Done (#{(finish - start).to_i} Seconds)\n"
+    if eirb_studies.is_a?(String)
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
+    else
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    end
 
-    print "Fetching from COEUS_API... "
+    log "--- *Fetching from COEUS_API...*"
 
     start         = Time.now
     award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
     awards_hrs    = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish        = Time.now
 
-    print "Done (#{(finish - start).to_i} Seconds)\n"
-
-    puts("\nError retrieving protocols from SPARC_API: #{protocols}")   if protocols.is_a?(String)
-    puts("\nError retrieving protocols from EIRB_API: #{eirb_studies}") if eirb_studies.is_a?(String)
+    log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
 
     unless protocols.is_a?(String)
       ResearchMaster.update_all(sparc_protocol_id: nil)
 
-      puts("\n\nBeginning SPARC_API data import...")
-      puts("Total number of protocols from SPARC_API: #{protocols.count}")
+      log "- *Beginning SPARC_API data import...*"
+      log "--- Total number of protocols from SPARC_API: #{protocols.count}"
 
       start                   = Time.now
       count                   = 1
@@ -125,6 +133,9 @@ task update_data: :environment do
       new_sparc_protocols       = protocols.select{ |p| existing_sparc_ids.exclude?(p['id']) }
 
       # Update Existing SPARC Protocol Records
+      log "--- Updating existing SPARC protocols"
+      bar = ProgressBar.new(existing_sparc_protocols.count)
+
       existing_sparc_protocols.each do |protocol|
         existing_protocol = sparc_protocols.detect{ |p| p.sparc_id == protocol['id'] }
 
@@ -148,11 +159,13 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, protocols.count/10) if count % (protocols.count/10)
-        count += 1
+        bar.increment! rescue nil
       end
 
       # Create New SPARC Protocol Records
+      log "--- Creating new SPARC protocols"
+      bar = ProgressBar.new(new_sparc_protocols.count)
+
       new_sparc_protocols.each do |protocol|
         sparc_protocol = Protocol.new(
           type:             protocol['type'],
@@ -182,23 +195,22 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, protocols.count/10) if count % (protocols.count/10)
-        count += 1
+        bar.increment! rescue nil
       end
 
       finish = Time.now
 
-      puts("\nDone!")
-      puts("\nNew protocols total: #{created_sparc_protocols.count}")
-      puts("New primary pis total: #{created_sparc_pis.count}")
-      puts("Finished SPARC_API data import (#{(finish - start).to_i} Seconds).")
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished SPARC_API data import* (#{(finish - start).to_i} Seconds)."
     end
 
     unless eirb_studies.is_a?(String)
       ResearchMaster.update_all(eirb_validated: false)
 
-      puts("\n\nBeginning EIRB_API data import...")
-      puts("Total number of protocols from EIRB_API: #{eirb_studies.count}")
+      log "- *Beginning EIRB_API data import...*"
+      log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
 
       start                   = Time.now
       count                   = 1
@@ -214,6 +226,9 @@ task update_data: :environment do
       new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
 
       # Update Existing eIRB Protocol Records
+      log "--- Updating existing eIRB protocols"
+      bar = ProgressBar.new(existing_eirb_studies.count)
+
       existing_eirb_studies.each do |study|
         existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
         existing_protocol.short_title             = study['short_title']
@@ -238,7 +253,7 @@ task update_data: :environment do
 
         if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
           rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date 
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
           if validated_states.include?(study['state'])
             rm.eirb_validated = true
@@ -251,11 +266,13 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, eirb_studies.count/10) if count % (eirb_studies.count/10)
-        count += 1
+        bar.increment! rescue nil
       end
 
       # Create New eIRB Protocol Records
+      log "--- Creating new eIRB protocols"
+      bar = ProgressBar.new(new_eirb_studies.count)
+
       new_eirb_studies.each do |study|
         eirb_protocol = Protocol.new(
           type:                     study['type'],
@@ -284,7 +301,7 @@ task update_data: :environment do
 
         if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
           rm.eirb_protocol_id       = eirb_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date 
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
           if validated_states.include?(study['state'])
             rm.eirb_validated = true
@@ -297,49 +314,53 @@ task update_data: :environment do
           rm.save(validate: false)
         end
 
-        print progress_bar(count, eirb_studies.count/10) if count % (eirb_studies.count/10)
-        count += 1
+        bar.increment! rescue nil
       end
 
       finish = Time.now
 
-      puts("\nDone!")
-      puts("\nNew protocols total: #{created_sparc_protocols.count}")
-      puts("New primary pis total: #{created_sparc_pis.count}")
-      puts("Finished EIRB_API data import (#{(finish - start).to_i} Seconds).")
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
     end
 
-    puts("\n\nBeginning COEUS API data import...")
-    puts("Total number of protocols from COEUS API: #{award_details.count}")
-    
+    log "- *Beginning COEUS API data import...*"
+    log "--- Total number of protocols from COEUS API: #{award_details.count}"
+
     start                   = Time.now
     count                   = 1
     created_coeus_protocols = []
 
     # Preload eIRB Protocols to improve efficiency
     coeus_protocols               = Protocol.where(type: 'COEUS')
-    existing_award_numbers        = eirb_protocols.pluck(:mit_award_number)
+    existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
     existing_coeus_award_details  = award_details.select{ |ad| existing_award_numbers.include?(ad['mit_award_number']) }
     new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
 
     # Update Existing COEUS Protocol Records
+    log "--- Updating existing COEUS protocols"
+    bar = ProgressBar.new(existing_coeus_award_details.count)
+
     existing_coeus_award_details.each do |ad|
       existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad['mit_award_number'] }
 
       if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
         unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }
           ResearchMasterCoeusRelation.create(
-            protocol:         coeus_protocol,
+            protocol:         existing_protocol,
             research_master:  rm
           )
         end
       end
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
     # Create New COEUS Protocol Records
+    log "--- Creating new COEUS protocols"
+    bar = ProgressBar.new(new_coeus_award_details.count)
+
     new_coeus_award_details.each do |ad|
       coeus_protocol = Protocol.new(
         type:                 'COEUS',
@@ -350,25 +371,28 @@ task update_data: :environment do
         coeus_project_id:     ad['coeus_project_id']
       )
 
-      created_coeus_protocols.append(coeus_protocol.id) if coeus_protocol.save
+      if coeus_protocol.save
+        created_coeus_protocols.append(coeus_protocol.id)
 
-      if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
-        ResearchMasterCoeusRelation.create(
-          protocol:         coeus_protocol,
-          research_master:  rm
-        )
+        if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
+          ResearchMasterCoeusRelation.create(
+            protocol:         coeus_protocol,
+            research_master:  rm
+          )
+        end
       end
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
-    puts("Updating award numbers from COEUS API: #{awards_hrs.count}")
+    log "--- Updating award numbers from COEUS API: #{awards_hrs.count}"
 
     count = 1
 
     existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
-    new_coeus_awards_hrs      = awards_hrs.select{ |ah| existing_award_numbers.exclude?(ah['mit_award_number']) }
+
+    log "--- Updating COEUS award numbers"
+    bar = ProgressBar.new(existing_coeus_awards_hrs.count)
 
     existing_coeus_awards_hrs.each do |ah|
       existing_protocol                       = coeus_protocols.detect{ |p| p.mit_award_number == ah['mit_award_number'] }
@@ -376,39 +400,40 @@ task update_data: :environment do
 
       existing_protocol.save(validate: false)
 
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
-    end
-
-    new_coeus_awards_hrs.each do |ah|
-      print progress_bar(count, (award_details.count + awards_hrs.count)/10) if count % (award_details.count/10)
-      count += 1
+      bar.increment! rescue nil
     end
 
     finish = Time.now
 
-    puts("\nDone!")
-    puts("\nNew protocols total: #{created_coeus_protocols.count}")
-    puts("Finished COEUS_API data import (#{(finish - start).to_i} Seconds).")
+    log "--- :heavy_check_mark: *Done!*"
+    log "--- *New protocols total:* #{created_coeus_protocols.count}"
+    log "--- *Finished COEUS_API data import* (#{(finish - start).to_i} Seconds)."
 
     total_protocols = created_sparc_protocols + created_eirb_protocols + created_coeus_protocols
     total_pis       = created_sparc_pis + created_eirb_pis
 
-    puts("\n\nNew protocols total: #{total_protocols.count}")
-    puts("New primary pis total: #{total_pis.count}")
-    puts("New protocol ids: #{total_protocols}")
-    puts("New primary pi ids: #{total_pis}")
+    log "*Overview*"
+    log "- *New protocols total:* #{total_protocols.count}"
+    log "- *New primary pis total:* #{total_pis.count}"
+    log "- *New protocol ids:* #{total_protocols}"
+    log "- *New primary pi ids:* #{total_pis}"
 
     script_finish = Time.now
 
-    puts("\nScript Duration: #{(script_finish - script_start).to_i} Seconds.")
+    log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-    $status_notifier.ping "Cronjob has completed successfully."
-    $status_notifier.ping "Duration: #{(script_finish - script_start).to_i} Seconds"
+    log ":heavy_check_mark: *Cronjob has completed successfully.*"
+
+    ## turn on auditing
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
   rescue => error
-    puts error.inspect
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
 
-    $error_notifier.ping "Cronjob has failed unexpectedly."
-    $error_notifier.ping error.inspect
+    log ":heavy_exclamation_mark: *Cronjob has failed unexpectedly.*"
+    log error.inspect
   end
 end
