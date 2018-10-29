@@ -58,7 +58,6 @@ task update_from_sparc: :environment do
       log "--- Total number of protocols from SPARC_API: #{protocols.count}"
 
       start                   = Time.now
-      count                   = 1
       created_sparc_protocols = []
       created_sparc_pis       = []
 
