@@ -83,16 +83,14 @@ task update_from_eirb: :environment do
     log "--- *Fetching from EIRB_API...*"
 
     start         = Time.now
-    eirb_studies  = HTTParty.get("#{eirdb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
+    eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
     finish        = Time.now
 
     if eirb_studies.is_a?(String)
       log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
     else
       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
-    end
 
-    unless eirb_studies.is_a?(String)
       ResearchMaster.update_all(eirb_validated: false)
 
       log "- *Beginning EIRB_API data import...*"
