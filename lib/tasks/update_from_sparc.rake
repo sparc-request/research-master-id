@@ -49,12 +49,9 @@ task update_from_sparc: :environment do
     finish    = Time.now
 
     if protocols.is_a?(String)
-      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
-    else
       log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
-    end
-
-    unless protocols.is_a?(String)
+    else
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
       ResearchMaster.update_all(sparc_protocol_id: nil)
 
       log "- *Beginning SPARC_API data import...*"
