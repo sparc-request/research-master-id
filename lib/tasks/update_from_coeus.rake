@@ -38,6 +38,12 @@ task update_from_coeus: :environment do
 
     log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
 
+    log "- *Beginning COEUS API data import...*"
+    log "--- Total number of protocols from COEUS API: #{award_details.count}"
+
+    start                   = Time.now
+    created_coeus_protocols = []
+
     # Preload COEUS Protocols to improve efficiency
     coeus_protocols               = Protocol.where(type: 'COEUS')
     existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
@@ -93,8 +99,6 @@ task update_from_coeus: :environment do
     end
 
     log "--- Updating award numbers from COEUS API: #{awards_hrs.count}"
-
-    count = 1
 
     existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
 
