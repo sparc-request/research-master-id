@@ -37,9 +37,9 @@ module ApplicationHelper
   def display_all_system_colors(research_master)
     returning_html = content_tag(:span)
 
-    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: blue', data: { toggle: 'tooltip' }, title: 'SPARC') if research_master.sparc_protocol_id?
-    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: green', data: { toggle: 'tooltip' }, title: 'EIRB') if research_master.eirb_protocol_id?
-    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop', style: 'color: red', data: { toggle: 'tooltip' }, title: 'COEUS') if research_master.coeus_protocols.any?
+    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop text-primary', data: { toggle: 'tooltip' }, title: 'SPARC') if research_master.sparc_protocol_id?
+    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop text-success', data: { toggle: 'tooltip' }, title: 'EIRB') if research_master.eirb_protocol_id?
+    returning_html += content_tag(:span,'', class: 'glyphicon glyphicon-stop text-danger', data: { toggle: 'tooltip' }, title: 'COEUS') if research_master.coeus_protocols.any?
 
     returning_html
   end
