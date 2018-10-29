@@ -134,16 +134,16 @@ task update_from_eirb: :environment do
           existing_protocol.primary_pi.save(validate: false)
         end
 
-        if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
+        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
           rm.eirb_protocol_id       = existing_protocol.id
           rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
-          if validated_states.include?(study['state'])
+          if $validated_states.include?(study['state'])
             rm.eirb_validated = true
-            rm.short_tile     = study['short_title']
+            rm.short_title     = study['short_title']
             rm.long_title     = study['title']
 
-            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'], users)
+            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'])
           end
 
           rm.save(validate: false)
@@ -182,16 +182,16 @@ task update_from_eirb: :environment do
           created_eirb_pis.append(pi.id) if pi.save
         end
 
-        if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
+        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
           rm.eirb_protocol_id       = eirb_protocol.id
           rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
 
-          if validated_states.include?(study['state'])
+          if $validated_states.include?(study['state'])
             rm.eirb_validated = true
-            rm.short_tile     = study['short_title']
+            rm.short_title     = study['short_title']
             rm.long_title     = study['title']
 
-            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'], users)
+            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'])
           end
 
           rm.save(validate: false)

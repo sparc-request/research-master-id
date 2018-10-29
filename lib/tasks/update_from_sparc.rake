@@ -87,7 +87,7 @@ task update_from_sparc: :environment do
           existing_protocol.primary_pi.save(validate: false)
         end
 
-        if protocol['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+        if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
           rm.sparc_protocol_id      = existing_protocol.id
           rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
 
@@ -123,7 +123,7 @@ task update_from_sparc: :environment do
           created_sparc_pis.append(pi.id) if pi.save
         end
 
-        if protocol['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+        if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
           rm.sparc_protocol_id      = sparc_protocol.id
           rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
 
