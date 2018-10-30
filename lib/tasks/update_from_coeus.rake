@@ -34,6 +34,7 @@ task update_from_coeus: :environment do
     start         = Time.now
     award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
     awards_hrs    = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    prism_users   = HTTParty.get("#{coeus_api}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish        = Time.now
 
     log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
@@ -112,6 +113,19 @@ task update_from_coeus: :environment do
       existing_protocol.save(validate: false)
 
       bar.increment! rescue nil
+    end
+
+    log "--- Updating users from COEUS API: #{prism_users.count}"
+
+    bar = ProgressBar.new(prism_users.count)
+    
+    prism_users.each do |user|
+      if User.exists?(net_id: user['netid'])
+        user_to_update = User.find_by(net_id: user['netid'])
+        user_to_update.update_attribute(:department, user['department'])
+      end
+      
+      bar.increment! rescue nil 
     end
 
     finish = Time.now
