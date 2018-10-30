@@ -393,7 +393,7 @@ task update_data: :environment do
     prism_users.each do |user|
       if User.exists?(net_id: user['netid'])
         user_to_update = User.find_by(net_id: user['netid'])
-        user_to_update.update_attribute(:department_id, Department.find_or_create_by(name: user['department']).id)
+        user_to_update.update_attribute(:department, user['department'])
       end
       print(progress_bar(count, prism_users.count/10)) if count % (prism_users.count/10)
       count += 1
