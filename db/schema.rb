@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181024164019) do
+ActiveRecord::Schema.define(version: 20181030134336) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -129,7 +129,7 @@ ActiveRecord::Schema.define(version: 20181024164019) do
     t.string "email", default: "", null: false
     t.string "net_id"
     t.string "name"
-    t.bigint "department_id"
+    t.string "department"
     t.boolean "admin"
     t.boolean "developer"
     t.string "encrypted_password", default: "", null: false
@@ -143,7 +143,6 @@ ActiveRecord::Schema.define(version: 20181024164019) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["department_id"], name: "index_users_on_department_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -152,5 +151,4 @@ ActiveRecord::Schema.define(version: 20181024164019) do
   add_foreign_key "primary_pis", "protocols"
   add_foreign_key "research_masters", "users", column: "creator_id"
   add_foreign_key "research_masters", "users", column: "pi_id"
-  add_foreign_key "users", "departments"
 end
