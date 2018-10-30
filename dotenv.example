@@ -9,3 +9,4 @@ EIRB_URL='http://eirb.healthsciencessc.org'
 EPDS_URL='http://erma.musc.edu/cgi-bin/grants_pi/admin/index.cgi'
 ABOUT_URL=’http://horseshoe.musc.edu/research/rmid'
 EIRB_API_TOKEN=
+CRONJOB_STATUS_WEBHOOK=https://hooks.slack.com/services/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
