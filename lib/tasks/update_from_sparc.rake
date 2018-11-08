@@ -11,10 +11,8 @@ task update_from_sparc: :environment do
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
-    $rmc_relations     = ResearchMasterCoeusRelation.all
     $departments       = Department.all
     $users             = User.all
 
@@ -77,21 +75,21 @@ task update_from_sparc: :environment do
         existing_protocol.short_title = protocol['short_title']
         existing_protocol.long_title  = protocol['title']
 
-        existing_protocol.save(validate: false)
+        existing_protocol.save(validate: false) if existing_protocol.changed?
 
-        if existing_protocol.primary_pi
-          existing_protocol.primary_pi.first_name = protocol['first_name']
-          existing_protocol.primary_pi.last_name  = protocol['last_name']
-          existing_protocol.primary_pi.department = find_or_create_department(protocol['pi_department'])
+        if ppi = existing_protocol.primary_pi
+          ppi.first_name = protocol['first_name']
+          ppi.last_name  = protocol['last_name']
+          ppi.department = find_or_create_department(protocol['pi_department'])
 
-          existing_protocol.primary_pi.save(validate: false)
+          ppi.save(validate: false) if ppi.changed?
         end
 
         if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
           rm.sparc_protocol_id      = existing_protocol.id
           rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
 
-          rm.save(validate: false)
+          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil
@@ -127,7 +125,7 @@ task update_from_sparc: :environment do
           rm.sparc_protocol_id      = sparc_protocol.id
           rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
 
-          rm.save(validate: false)
+          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil

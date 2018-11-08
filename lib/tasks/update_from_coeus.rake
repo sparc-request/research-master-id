@@ -11,12 +11,9 @@ task update_from_coeus: :environment do
 
     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $rmc_relations     = ResearchMasterCoeusRelation.all
-    $departments       = Department.all
-    $users             = User.all
 
     def log message
       puts "#{message}\n"
@@ -109,7 +106,7 @@ task update_from_coeus: :environment do
       existing_protocol                       = coeus_protocols.detect{ |p| p.mit_award_number == ah['mit_award_number'] }
       existing_protocol.coeus_protocol_number = ah['protocol_number']
 
-      existing_protocol.save(validate: false)
+      existing_protocol.save(validate: false) if existing_protocol.changed?
 
       bar.increment! rescue nil
     end

@@ -14,7 +14,6 @@ task update_from_eirb: :environment do
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
-    $rmc_relations     = ResearchMasterCoeusRelation.all
     $departments       = Department.all
     $users             = User.all
 
@@ -122,16 +121,16 @@ task update_from_eirb: :environment do
         existing_protocol.date_approved           = study['date_approved']
         existing_protocol.date_expiration         = study['date_expiration']
 
-        existing_protocol.save(validate: false)
+        existing_protocol.save(validate: false) if existing_protocol.changed?
 
-        if existing_protocol.eirb_state != 'Completed' && existing_protocol.primary_pi
-          existing_protocol.primary_pi.first_name = study['first_name']
-          existing_protocol.primary_pi.last_name  = study['last_name']
-          existing_protocol.primary_pi.email      = study['pi_email']
-          existing_protocol.primary_pi.net_id     = study['pi_net_id']
-          existing_protocol.primary_pi.department = find_or_create_department(study['pi_department'])
+        if existing_protocol.eirb_state != 'Completed' && ppi = existing_protocol.primary_pi
+          ppi.first_name = study['first_name']
+          ppi.last_name  = study['last_name']
+          ppi.email      = study['pi_email']
+          ppi.net_id     = study['pi_net_id']
+          ppi.department = find_or_create_department(study['pi_department'])
 
-          existing_protocol.primary_pi.save(validate: false)
+          ppi.save(validate: false) if ppi.changed?
         end
 
         if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
@@ -143,10 +142,10 @@ task update_from_eirb: :environment do
             rm.short_title     = study['short_title']
             rm.long_title     = study['title']
 
-            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'])
+            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id']) unless study['state'] == 'Completed'
           end
 
-          rm.save(validate: false)
+          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil
@@ -194,7 +193,7 @@ task update_from_eirb: :environment do
             update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'])
           end
 
-          rm.save(validate: false)
+          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil
