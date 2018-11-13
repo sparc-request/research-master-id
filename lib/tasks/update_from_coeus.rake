@@ -14,6 +14,7 @@ task update_from_coeus: :environment do
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $rmc_relations     = ResearchMasterCoeusRelation.all
+    $users             = User.all
 
     def log message
       puts "#{message}\n"
