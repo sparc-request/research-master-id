@@ -344,6 +344,7 @@ task update_data: :environment do
 
     existing_coeus_award_details.each do |ad|
       existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad['mit_award_number'] }
+      existing_protocol.update_attributes(coeus_project_id: ad['coeus_project_id'])
 
       if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
         unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }
