@@ -120,8 +120,7 @@ task update_from_coeus: :environment do
     bar = ProgressBar.new(prism_users.count)
     
     prism_users.each do |user|
-      if User.exists?(net_id: user['netid'])
-        user_to_update = User.find_by(net_id: user['netid'])
+      if user_to_update = $users.detect{ |u| u.net_id == user['netid']
         user_to_update.update_attribute(:department, user['department'])
       end
       
