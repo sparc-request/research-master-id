@@ -5,7 +5,7 @@ task update_user_department: :environment do
   $users      = User.all
 
   prism_users.each do |user|
-    if user_to_update = $users.detect{ |u| u.net_id == user['netid']
+    if user_to_update = $users.detect{ |u| u.net_id == user['netid'] }
       user_to_update.update_attribute(:department, user['department'])
     end
   end
