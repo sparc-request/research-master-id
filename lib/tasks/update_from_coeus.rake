@@ -116,13 +116,13 @@ task update_from_coeus: :environment do
     log "--- Updating users from COEUS API: #{prism_users.count}"
 
     bar = ProgressBar.new(prism_users.count)
-    
+
     prism_users.each do |user|
-      if user_to_update = $users.detect{ |u| u.net_id == user['netid']
+      if user_to_update = $users.detect{ |u| u.net_id == user['netid']}
         user_to_update.update_attribute(:department, user['department'])
       end
-      
-      bar.increment! rescue nil 
+
+      bar.increment! rescue nil
     end
 
     finish = Time.now
