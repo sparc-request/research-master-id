@@ -14,12 +14,17 @@ class LdapSearch
     end
   end
 
-  def info_query(name)
+  def info_query(name, prism_users=[])
     ldap = connect_to_ldap
     names = []
     composite_filter = (filter_query('cn', "#{name}*") | filter_query('mail', "#{name}*")) & filter_query('mail', "*") | filter_query('sn', "#{name}*")
     ldap.search(:base => ldap.base, :filter => composite_filter) do |entry|
-      new_array = entry[:cn] + entry[:mail]
+      department = prism_query(entry[:uid], prism_users)
+      if department != []
+        new_array = entry[:cn] + entry[:mail] + department
+      else
+        new_array = entry[:cn] + entry[:mail] 
+      end
       names.push(new_array)
     end
     names.sort
@@ -51,6 +56,17 @@ class LdapSearch
 
   def filter_query(parameter, query)
     Net::LDAP::Filter.eq(parameter, query)
+  end
+
+  def prism_query(netid, prism_users)
+    department = []
+    prism_users.each do |user|
+      if user['netid'] == netid.first
+        department << user['department']
+      end
+    end
+
+    department
   end
 end
 
