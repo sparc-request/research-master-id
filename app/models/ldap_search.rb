@@ -20,11 +20,7 @@ class LdapSearch
     composite_filter = (filter_query('cn', "#{name}*") | filter_query('mail', "#{name}*")) & filter_query('mail', "*") | filter_query('sn', "#{name}*")
     ldap.search(:base => ldap.base, :filter => composite_filter) do |entry|
       department = prism_query(entry[:uid], prism_users)
-      if department != []
-        new_array = entry[:cn] + entry[:mail] + department
-      else
-        new_array = entry[:cn] + entry[:mail] 
-      end
+      new_array = (department != []) ? (entry[:cn] + entry[:mail] + department) : (entry[:cn] + entry[:mail])
       names.push(new_array)
     end
     names.sort
