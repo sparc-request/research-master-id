@@ -11,6 +11,8 @@ $ ->
       $('.submit-rm-record').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', false)
       $('#research_master_pi_name').val('')
+      $('#research_master_department').val('')
+      $('#research_master_department').prop('disabled', false)
       $('#research_master_pi_name').typeahead('val','')
 
     $('#research_master_pi_name').on 'blur', ->
@@ -21,6 +23,9 @@ $ ->
       $(this).typeahead('val', selection.name)
       $('#pi_name').val(selection.name)
       $('#pi_email').val(selection.email)
+      if selection.department != null
+        $('#research_master_department').val(selection.department)
+        $('#research_master_department').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', true)
       $('.submit-rm-record').prop('disabled', false)
 
