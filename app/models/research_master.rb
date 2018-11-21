@@ -7,8 +7,8 @@ class ResearchMaster < ApplicationRecord
 
   belongs_to :creator, class_name: "User"
   belongs_to :pi, class_name: "User"
-  belongs_to :sparc_protocol, class_name: :Protocol
-  belongs_to :eirb_protocol, class_name: :Protocol
+  belongs_to :sparc_protocol, class_name: :Protocol, optional: true
+  belongs_to :eirb_protocol, class_name: :Protocol, optional: true
 
   has_many :research_master_coeus_relations
   has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
