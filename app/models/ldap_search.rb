@@ -1,5 +1,9 @@
 class LdapSearch
 
+  def self.prism_users
+    @prism_users ||= HTTParty.get("#{ENV.fetch("COEUS_API")}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
+  end
+
   def email_query(uid)
     ldap = connect_to_ldap
     ldap.search(:base => ldap.base, :filter => filter_query('uid', uid)) do |entry|
@@ -14,12 +18,12 @@ class LdapSearch
     end
   end
 
-  def info_query(name, prism_users=[])
+  def info_query(name)
     ldap = connect_to_ldap
     names = []
     composite_filter = (filter_query('cn', "#{name}*") | filter_query('mail', "#{name}*")) & filter_query('mail', "*") | filter_query('sn', "#{name}*")
     ldap.search(:base => ldap.base, :filter => composite_filter) do |entry|
-      department = prism_query(entry[:uid], prism_users)
+      department = prism_query(entry[:uid], LdapSearch.prism_users)
       new_array = (department != nil) ? (entry[:cn] + entry[:mail] + [department]) : (entry[:cn] + entry[:mail])
       names.push(new_array)
     end
