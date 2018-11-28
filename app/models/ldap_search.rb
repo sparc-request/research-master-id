@@ -1,9 +1,7 @@
 class LdapSearch
 
-  @prism_users = HTTParty.get("#{ENV.fetch("COEUS_API")}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
-
   def self.prism_users
-    @prism_users
+    @prism_users ||= HTTParty.get("#{ENV.fetch("COEUS_API")}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
   end
 
   def email_query(uid)
