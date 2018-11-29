@@ -16,7 +16,7 @@ task find_missing_netids: :environment do
   end
 
   puts "Filling in new netids from ldap..."
-   User.all.each do |user|
+  User.all.each do |user|
     net_id = ldap_search.net_id_query(user.email)
     user.update_attribute(:net_id, net_id)
   end
