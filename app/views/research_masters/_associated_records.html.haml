@@ -1,6 +1,7 @@
 .panel.panel-primary
   .panel-heading
     Associated Protocols
+    = "(RMID: #{params[:id]})"
   .panel-body
     - if @sparc_protocol.nil? && @eirb_protocol.nil? && !@coeus_records.present?
       %h1.text-center
@@ -8,7 +9,7 @@
     - else
       %table.table.table-striped.table-bordered.table-hover
         %thead
-          %th
+          %th{:style => "width: 90px;"}
             Type
           %th
             ID
@@ -20,6 +21,7 @@
             - unless @sparc_protocol.nil?
               %tr
                 %td
+                  = display_system_color("SPARC")
                   SPARC
                 %td
                   = @sparc_protocol.sparc_id
@@ -33,6 +35,7 @@
             - unless @eirb_protocol.nil?
               %tr
                 %td
+                  = display_system_color("EIRB")
                   EIRB
                 %td
                   = @eirb_protocol.eirb_id
@@ -46,6 +49,7 @@
             - @coeus_records.find_each do |cr|
               %tr
                 %td
+                  = display_system_color("COEUS")
                   = cr.type
                 %td
                   = cr.mit_award_number

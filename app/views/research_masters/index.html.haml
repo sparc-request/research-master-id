@@ -71,6 +71,8 @@
       %th
         = sort_link(@q, :id, 'RMID')
       %th
+        = ""
+      %th
         = sort_link(@q, :pi_name, 'PI Name')
       %th
         = sort_link(@q, :department, 'Department')
@@ -104,6 +106,6 @@
           Associated Protocols
       .modal-body
       .modal-footer
-        %button{class: 'btn btn-default', data: { dismiss: 'modal' } } 
+        %button{class: 'btn btn-default', data: { dismiss: 'modal' } }
           Close
 = render "research_masters/new_research_master_modal"

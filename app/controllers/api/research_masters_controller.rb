@@ -1,16 +1,18 @@
 class Api::ResearchMastersController < Api::BaseController
 
   def index
-    @research_masters = ResearchMaster.all
+    @research_masters = ResearchMaster.eager_load(:eirb_protocol, :coeus_protocols).all
+
     respond_to do |format|
-      format.json { render json: @research_masters }
+      format.json
     end
   end
 
   def show
     @research_master = ResearchMaster.find(params[:id])
+
     respond_to do |format|
-      format.json { render json: @research_master }
+      format.json
     end
   end
 end

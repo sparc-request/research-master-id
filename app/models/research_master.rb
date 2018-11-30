@@ -1,12 +1,18 @@
 class ResearchMaster < ApplicationRecord
   audited
+
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
+
   belongs_to :creator, class_name: "User"
   belongs_to :pi, class_name: "User"
+  belongs_to :sparc_protocol, class_name: :Protocol, optional: true
+  belongs_to :eirb_protocol, class_name: :Protocol, optional: true
+
   has_many :research_master_coeus_relations
-  has_many :protocols, through: :research_master_coeus_relations
+  has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
+
   paginates_per 50
 
   validates :department,

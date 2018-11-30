@@ -1,258 +1,454 @@
 require 'dotenv/tasks'
 
 task update_data: :environment do
-  notifier = Slack::Notifier.new(ENV.fetch('SLACK_WEBHOOK_URL'))
+  begin
+    ## turn off auditing for the duration of this script
+    Protocol.auditing_enabled = false
+    ResearchMaster.auditing_enabled = false
+    User.auditing_enabled = false
 
-  def create_and_filter_eirb_study(study, new_protocols)
-    eirb_study = Protocol.new(type: study['type'],
-                                 short_title: study['short_title'] || "",
-                                 long_title: study['title'] || "",
-                                 eirb_id: study['pro_number'],
-                                 eirb_institution_id: study['institution_id'],
-                                 eirb_state: study['state'],
-                                 date_initially_approved: study['date_initially_approved'],
-                                 date_approved: study['date_approved'],
-                                 date_expiration: study['date_expiration']
-                                )
-    new_protocols.append(eirb_study.id) if eirb_study.save
-    eirb_study
-  end
+    script_start      = Time.now
 
-  def progress_bar(count, increment)
-    bar = "Progress: "
-    bar += "=" * (count/increment)
-    bar += "#{count/increment}0%\r"
-  end
+    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-  save_errors = ""
+    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    $friendly_token    = Devise.friendly_token
+    $research_masters  = ResearchMaster.eager_load(:pi).all
+    $rmc_relations     = ResearchMasterCoeusRelation.all
+    $departments       = Department.all
+    $users             = User.all
 
-  ResearchMaster.all.each do |rm|
-    rm.update_attribute(:eirb_validated, false)
-    validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
-    unless rm.eirb_protocol_id.nil?
-      protocol = Protocol.find(rm.eirb_protocol_id)
-      if validated_states.include?(protocol.eirb_state)
-        rm.update_attribute(:eirb_validated, true)
-        rm.update_attribute(:short_title, protocol.short_title)
-        rm.update_attribute(:long_title, protocol.long_title)
-      else
-        rm.update_attribute(:eirb_validated, false)
-      end
+    def log message
+      puts "#{message}\n"
+      $status_notifier.ping message
     end
-  end
-  puts("\nBeginning data retrieval from APIs...")
 
-  sparc_api = ENV.fetch("SPARC_API")
-  eirb_api =  ENV.fetch("EIRB_API")
-  eirb_api_token = ENV.fetch("EIRB_API_TOKEN")
-  coeus_api = ENV.fetch("COEUS_API")
+    def find_or_create_department(pi_department)
+      name = pi_department || 'N/A'
+      dept = nil
 
-  print("Fetching from SPARC_API... ")
-  protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
-  puts("Done")
-
-  print("Fetching from EIRB_API... ")
-  eirb_studies = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true",
-                              timeout: 500, headers: {'Content-Type' => 'application/json',
-                              "Authorization" => "Token token=\"#{eirb_api_token}\""})
-  puts("Done")
-
-  print("Fetching from COEUS_API... ")
-  award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
-  awards_hrs = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
-  puts("Done")
-
-  puts("\nError retrieving protocols from SPARC_API: #{protocols}") if protocols.is_a? String
-  puts("\nError retrieving protocols from EIRB_API: #{eirb_studies}") if eirb_studies.is_a? String
-
-  puts("\n\nBeginning SPARC_API data import...")
-  puts("Total number of protocols from SPARC_API: #{protocols.count}")
-  count = 1
-  new_sparc_protocols = []
-  new_sparc_pis = []
-  ResearchMaster.all.each do |rm|
-    rm.update_attribute(:sparc_protocol_id, nil)
-  end
-  protocols.each do |protocol|
-    unless Protocol.exists?(sparc_id: protocol['id'])
-      sparc_protocol = Protocol.new(type: protocol['type'],
-                                       short_title: protocol['short_title'],
-                                       long_title: protocol['title'],
-                                       sparc_id: protocol['id'],
-                                       sparc_pro_number: protocol['pro_number']
-                                      )
-      new_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
-      if protocol['first_name'] || protocol['last_name']
-        pi = PrimaryPi.find_or_initialize_by(first_name: protocol['first_name'],
-                                            last_name: protocol['last_name'],
-                                            department: Department.find_or_create_by(name: protocol['pi_department'].nil? ? 'N/A' : protocol['pi_department']),
-                                            protocol: sparc_protocol)
-        new_sparc_pis.append(pi.id) if pi.save
-      end
-    else
-      existing_protocol = Protocol.find_by(sparc_id: protocol['id'])
-      existing_protocol.update_attribute(:short_title, protocol['short_title'])
-      existing_protocol.update_attribute(:long_title, protocol['title'])
-      unless existing_protocol.primary_pi.nil?
-        existing_protocol.primary_pi.update_attribute(:first_name, protocol['first_name'])
-        existing_protocol.primary_pi.update_attribute(:last_name, protocol['last_name'])
-        existing_protocol.primary_pi.update_attribute(:department, Department.find_or_create_by(name: protocol['pi_department'].nil? ? 'N/A' : protocol['pi_department']))
-      end
-    end
-    unless protocol['research_master_id'].nil?
-      rm = ResearchMaster.find_by(id: protocol['research_master_id'])
-      unless rm.nil?
-        rm.update_attribute(:sparc_protocol_id, Protocol.find_by(sparc_id: protocol['id']).id)
-        if rm.sparc_association_date.nil?
-          rm.update_attribute(:sparc_association_date, DateTime.current)
-        end
-      end
-    end
-    print(progress_bar(count, protocols.count/10)) if count % (protocols.count/10)
-    count += 1
-  end
-  puts("")
-  puts("Done!")
-  puts("New protocols total: #{new_sparc_protocols.count}")
-  puts("New primary pis total: #{new_sparc_pis.count}")
-  puts("Finished SPARC_API data import.")
-
-  puts("\n\nBeginning EIRB_API data import...")
-  puts("Total number of protocols from EIRB_API: #{eirb_studies.count}")
-  count = 1
-  new_eirb_protocols = []
-  new_eirb_pis = []
-  ResearchMaster.all.each do |rm|
-    rm.update_attribute(:eirb_protocol_id, nil)
-  end
-  eirb_studies.each do |study|
-    if Protocol.exists?(eirb_id: study['pro_number'])
-      ################update eirb protocol####################
-      protocol = Protocol.find_by(eirb_id: study['pro_number'])
-      protocol.update_attribute(:short_title, study['short_title'])
-      protocol.update_attribute(:long_title, study['title'])
-      protocol.update_attribute(:eirb_state, study['state'])
-      protocol.update_attribute(:eirb_institution_id, study['institution_id'])
-      protocol.update_attribute(:date_initially_approved, study['date_initially_approved'])
-      protocol.update_attribute(:date_approved, study['date_approved'])
-      protocol.update_attribute(:date_expiration, study['date_expiration'])
-      ###############update eirb protocol##########################
-
-      ###############update eirb pi##############################
-      pi = PrimaryPi.find_or_create_by(protocol_id: protocol.id)
-      pi.update_attribute(:first_name, study['first_name'])
-      pi.update_attribute(:last_name, study['last_name'])
-      pi.update_attribute(:email, study['pi_email'])
-      pi.update_attribute(:net_id, study['pi_net_id'])
-      ###############update eirb pi###########################
-    else
-      #############new eirb protocols#######################
-      eirb_study = create_and_filter_eirb_study(study, new_eirb_protocols)
-      if study['first_name'] || study['last_name']
-        pi = PrimaryPi.find_or_initialize_by(
-          first_name: study['first_name'],
-          last_name: study['last_name'],
-          department: Department.find_or_create_by(name: study['pi_department'].nil? ? 'N/A' : study['pi_department']),
-          protocol: eirb_study
+      unless dept = $departments.detect{ |d| d.name == name }
+        dept = Department.create(
+          name: name
         )
-        new_eirb_pis.append(pi.id) if pi.save
       end
-      ############new eirb protocols######################
+
+      dept
     end
-    unless study['research_master_id'].nil?
-      validated_states = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
-      rm = ResearchMaster.find_by(id: study['research_master_id'])
-      unless rm.nil?
-        if Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').present?
-          rm.update_attribute(:eirb_protocol_id, Protocol.where(eirb_id: study['pro_number'], type: 'EIRB').first.id)
-          if rm.eirb_association_date.nil?
-            rm.update_attribute(:eirb_association_date, DateTime.current)
-          end
-        end
-        if validated_states.include?(study['state'])
-          rm.update_attribute(:short_title, study['short_title'])
-          rm.update_attribute(:long_title, study['title'])
-          rm.update_attribute(:eirb_validated, true)
-          friendly_token = Devise.friendly_token
-          pi = User.find_or_create_by(net_id: study['pi_net_id'].remove('@musc.edu')) do |user|
-            user.email = study['pi_email']
-            user.name = "#{study['first_name']} #{study['last_name']}"
-            user.password = friendly_token
-            user.password_confirmation = friendly_token
-          end
-          existing_pi = rm.pi
 
-          # update pi only if the pi record is valid
-          if pi.valid?
-            rm.pi_id = pi.id
+    def update_eirb_study_pi(rm, first_name, last_name, email, net_id)
+      net_id.slice!('@musc.edu')
 
-            if rm.pi_id_changed? && rm.pi_id.present?
-              rm.save(validate: false)
-              unless existing_pi.nil?
-                begin
-                  PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
-                rescue
-                  if ENV.fetch('ENVIRONMENT') == 'production'
-                    notifier.ping "PI email failed to deliver"
-                    notifier.ping "#{pi.inspect}"
-                    notifier.ping "#{pi.errors.full_messages}"
-                  end
-                end
-              end
-            end
-          else
+      pi = nil
+
+      unless pi = $users.detect{ |u| u.net_id == net_id }
+        pi = User.create(
+          email:                  email,
+          net_id:                 net_id,
+          name:                   "#{first_name} #{last_name}",
+          password:               $friendly_token,
+          password_confirmation:  $friendly_token
+        )
+      end
+
+      if pi.valid?
+        existing_pi = rm.pi
+        rm.pi_id    = pi.id
+
+        if rm.pi_id && rm.pi_id_changed? && existing_pi
+          begin
+            PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
+          rescue
             if ENV.fetch('ENVIRONMENT') == 'production'
-              notifier.ping "PI record failed to update Research Master record"
-              notifier.ping "#{pi.inspect}"
-              notifier.ping "#{pi.errors.full_messages}"
+              log "PI email failed to deliver"
+              log "#{pi.inspect}"
+              log "#{pi.errors.full_messages}"
             end
           end
         end
+      elsif ENV.fetch('ENVIRONMENT') == 'production'
+        log ":heavy_exclamation_mark: PI record failed to update Research Master record"
+        log "- #{pi.inspect}"
+        log "- #{pi.errors.full_messages}"
       end
     end
-    print(progress_bar(count, eirb_studies.count/10)) if count % (eirb_studies.count/10)
-    count += 1
-  end
-  puts("Finished EIRB_API data import.")
 
-  puts("\n\nBeginning COEUS API data import...")
-  puts("Total number of protocols from COEUS API: #{award_details.count}")
-  count = 1
-  award_details.each do |ad|
-    unless Protocol.exists?(mit_award_number: ad['mit_award_number'])
-      Protocol.create(
-        type: 'COEUS',
-        mit_award_number: ad['mit_award_number'],
-        sequence_number: ad['sequence_number'],
-        title: ad['title'],
-        entity_award_number: ad['entity_award_number']
+    log "*Cronjob has started.*"
+
+    log "- *Beginning data retrieval from APIs...*"
+
+    sparc_api       = ENV.fetch("SPARC_API")
+    eirb_api        = ENV.fetch("EIRB_API")
+    eirb_api_token  = ENV.fetch("EIRB_API_TOKEN")
+    coeus_api       = ENV.fetch("COEUS_API")
+
+    log "--- *Fetching from SPARC_API...*"
+
+    start     = Time.now
+    protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    finish    = Time.now
+
+    if protocols.is_a?(String)
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    else
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
+    end
+
+    log "--- *Fetching from EIRB_API...*"
+
+    start         = Time.now
+    eirb_studies  = HTTParty.get("#{eirdb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
+    finish        = Time.now
+
+    if eirb_studies.is_a?(String)
+      log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
+    else
+      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    end
+
+    log "--- *Fetching from COEUS_API...*"
+
+    start         = Time.now
+    award_details = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    awards_hrs    = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    prism_users   = HTTParty.get("#{coeus_api}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    finish        = Time.now
+
+    log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+
+    unless protocols.is_a?(String)
+      ResearchMaster.update_all(sparc_protocol_id: nil)
+
+      log "- *Beginning SPARC_API data import...*"
+      log "--- Total number of protocols from SPARC_API: #{protocols.count}"
+
+      start                   = Time.now
+      count                   = 1
+      created_sparc_protocols = []
+      created_sparc_pis       = []
+
+      # Preload SPARC Protocols to improve efficiency
+      sparc_protocols           = Protocol.eager_load(:primary_pi).where(type: 'SPARC')
+      existing_sparc_ids        = sparc_protocols.pluck(:sparc_id)
+      existing_sparc_protocols  = protocols.select{ |p| existing_sparc_ids.include?(p['id']) }
+      new_sparc_protocols       = protocols.select{ |p| existing_sparc_ids.exclude?(p['id']) }
+
+      # Update Existing SPARC Protocol Records
+      log "--- Updating existing SPARC protocols"
+      bar = ProgressBar.new(existing_sparc_protocols.count)
+
+      existing_sparc_protocols.each do |protocol|
+        existing_protocol = sparc_protocols.detect{ |p| p.sparc_id == protocol['id'] }
+
+        existing_protocol.short_title = protocol['short_title']
+        existing_protocol.long_title  = protocol['title']
+
+        existing_protocol.save(validate: false)
+
+        if existing_protocol.primary_pi
+          existing_protocol.primary_pi.first_name = protocol['first_name']
+          existing_protocol.primary_pi.last_name  = protocol['last_name']
+          existing_protocol.primary_pi.department = find_or_create_department(protocol['pi_department'])
+
+          existing_protocol.primary_pi.save(validate: false)
+        end
+
+        if protocol['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+          rm.sparc_protocol_id      = existing_protocol.id
+          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+
+          rm.save(validate: false)
+        end
+
+        bar.increment! rescue nil
+      end
+
+      # Create New SPARC Protocol Records
+      log "--- Creating new SPARC protocols"
+      bar = ProgressBar.new(new_sparc_protocols.count)
+
+      new_sparc_protocols.each do |protocol|
+        sparc_protocol = Protocol.new(
+          type:             protocol['type'],
+          short_title:      protocol['short_title'],
+          long_title:       protocol['title'],
+          sparc_id:         protocol['id'],
+          sparc_pro_number: protocol['pro_number']
+        )
+
+        created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
+
+        if protocol['first_name'] || protocol['last_name']
+          pi = PrimaryPi.new(
+            first_name: protocol['first_name'],
+            last_name:  protocol['last_name'],
+            department: find_or_create_department(protocol['pi_department']),
+            protocol:   sparc_protocol
+          )
+
+          created_sparc_pis.append(pi.id) if pi.save
+        end
+
+        if protocol['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+          rm.sparc_protocol_id      = sparc_protocol.id
+          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+
+          rm.save(validate: false)
+        end
+
+        bar.increment! rescue nil
+      end
+
+      finish = Time.now
+
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished SPARC_API data import* (#{(finish - start).to_i} Seconds)."
+    end
+
+    unless eirb_studies.is_a?(String)
+      ResearchMaster.update_all(eirb_validated: false)
+
+      log "- *Beginning EIRB_API data import...*"
+      log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
+
+      start                   = Time.now
+      count                   = 1
+      created_eirb_protocols  = []
+      created_eirb_pis        = []
+
+      ResearchMaster.update_all(eirb_protocol_id: nil)
+
+      # Preload eIRB Protocols to improve efficiency
+      eirb_protocols        = Protocol.eager_load(:primary_pi).where(type: 'EIRB')
+      existing_eirb_ids     = eirb_protocols.pluck(:eirb_id)
+      existing_eirb_studies = eirb_studies.select{ |s| existing_eirb_ids.include?(s['pro_number']) }
+      new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
+
+      # Update Existing eIRB Protocol Records
+      log "--- Updating existing eIRB protocols"
+      bar = ProgressBar.new(existing_eirb_studies.count)
+
+      existing_eirb_studies.each do |study|
+        existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
+        existing_protocol.short_title             = study['short_title']
+        existing_protocol.long_title              = study['title']
+        existing_protocol.eirb_state              = study['state']
+        existing_protocol.eirb_institution_id     = study['institution_id']
+        existing_protocol.date_initially_approved = study['date_initially_approved']
+        existing_protocol.date_approved           = study['date_approved']
+        existing_protocol.date_expiration         = study['date_expiration']
+
+        existing_protocol.save(validate: false)
+
+        if existing_protocol.eirb_state == 'Completed' && existing_protocol.primary_pi
+          existing_protocol.primary_pi.first_name = study['first_name']
+          existing_protocol.primary_pi.last_name  = study['last_name']
+          existing_protocol.primary_pi.email      = study['pi_email']
+          existing_protocol.primary_pi.net_id     = study['pi_net_id']
+          existing_protocol.primary_pi.department = find_or_create_department(study['pi_department'])
+
+          existing_protocol.primary_pi.save(validate: false)
+        end
+
+        if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
+          rm.eirb_protocol_id       = existing_protocol.id
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
+
+          if validated_states.include?(study['state'])
+            rm.eirb_validated = true
+            rm.short_tile     = study['short_title']
+            rm.long_title     = study['title']
+
+            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'], users)
+          end
+
+          rm.save(validate: false)
+        end
+
+        bar.increment! rescue nil
+      end
+
+      # Create New eIRB Protocol Records
+      log "--- Creating new eIRB protocols"
+      bar = ProgressBar.new(new_eirb_studies.count)
+
+      new_eirb_studies.each do |study|
+        eirb_protocol = Protocol.new(
+          type:                     study['type'],
+          short_title:              study['short_title'] || "",
+          long_title:               study['title'] || "",
+          eirb_id:                  study['pro_number'],
+          eirb_institution_id:      study['institution_id'],
+          eirb_state:               study['state'],
+          date_initially_approved:  study['date_initially_approved'],
+          date_approved:            study['date_approved'],
+          date_expiration:          study['date_expiration']
+        )
+
+        created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
+
+        if study['first_name'] || study['last_name']
+          pi = PrimaryPi.new(
+            first_name: study['first_name'],
+            last_name:  study['last_name'],
+            department: find_or_create_department(study['pi_department']),
+            protocol:   eirb_protocol
+          )
+
+          created_eirb_pis.append(pi.id) if pi.save
+        end
+
+        if study['research_master_id'] && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'] }
+          rm.eirb_protocol_id       = eirb_protocol.id
+          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
+
+          if validated_states.include?(study['state'])
+            rm.eirb_validated = true
+            rm.short_tile     = study['short_title']
+            rm.long_title     = study['title']
+
+            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'], users)
+          end
+
+          rm.save(validate: false)
+        end
+
+        bar.increment! rescue nil
+      end
+
+      finish = Time.now
+
+      log "--- :heavy_check_mark: *Done!*"
+      log "--- *New protocols total:* #{created_sparc_protocols.count}"
+      log "--- *New primary pis total:* #{created_sparc_pis.count}"
+      log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
+    end
+
+    log "- *Beginning COEUS API data import...*"
+    log "--- Total number of protocols from COEUS API: #{award_details.count}"
+
+    start                   = Time.now
+    count                   = 1
+    created_coeus_protocols = []
+
+    # Preload eIRB Protocols to improve efficiency
+    coeus_protocols               = Protocol.where(type: 'COEUS')
+    existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
+    existing_coeus_award_details  = award_details.select{ |ad| existing_award_numbers.include?(ad['mit_award_number']) }
+    new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
+
+    # Update Existing COEUS Protocol Records
+    log "--- Updating existing COEUS protocols"
+    bar = ProgressBar.new(existing_coeus_award_details.count)
+
+    existing_coeus_award_details.each do |ad|
+      existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad['mit_award_number'] }
+      existing_protocol.update_attributes(coeus_project_id: ad['coeus_project_id'])
+
+      if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
+        unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }
+          ResearchMasterCoeusRelation.create(
+            protocol:         existing_protocol,
+            research_master:  rm
+          )
+        end
+      end
+
+      bar.increment! rescue nil
+    end
+
+    # Create New COEUS Protocol Records
+    log "--- Creating new COEUS protocols"
+    bar = ProgressBar.new(new_coeus_award_details.count)
+
+    new_coeus_award_details.each do |ad|
+      coeus_protocol = Protocol.new(
+        type:                 'COEUS',
+        title:                ad['title'],
+        mit_award_number:     ad['mit_award_number'],
+        sequence_number:      ad['sequence_number'],
+        entity_award_number:  ad['entity_award_number'],
+        coeus_project_id:     ad['coeus_project_id']
       )
-    end
-    if ResearchMaster.exists?(ad['rmid'])
-      ResearchMasterCoeusRelation.find_or_create_by(protocol: Protocol.find_by(mit_award_number: ad['mit_award_number'])) do |rmcr|
-        rmcr.research_master_id = ad['rmid']
+
+      if coeus_protocol.save
+        created_coeus_protocols.append(coeus_protocol.id)
+
+        if ad['rmid'] && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
+          ResearchMasterCoeusRelation.create(
+            protocol:         coeus_protocol,
+            research_master:  rm
+          )
+        end
       end
+
+      bar.increment! rescue nil
     end
-    print(progress_bar(count, award_details.count/10)) if count % (award_details.count/10)
-    count += 1
-  end
-  puts("Updating protocols from COEUS API: #{awards_hrs.count}")
-  count = 1
-  awards_hrs.each do |ah|
-    if Protocol.exists?(mit_award_number: ah['mit_award_number'])
-      protocol = Protocol.find_by(mit_award_number: ah['mit_award_number'])
-      protocol.update_attribute(:coeus_protocol_number, ah['protocol_number'])
+
+    log "--- Updating award numbers from COEUS API: #{awards_hrs.count}"
+
+    count = 1
+
+    existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
+
+    log "--- Updating COEUS award numbers"
+    bar = ProgressBar.new(existing_coeus_awards_hrs.count)
+
+    existing_coeus_awards_hrs.each do |ah|
+      existing_protocol                       = coeus_protocols.detect{ |p| p.mit_award_number == ah['mit_award_number'] }
+      existing_protocol.coeus_protocol_number = ah['protocol_number']
+
+      existing_protocol.save(validate: false)
+
+      bar.increment! rescue nil
     end
-    print(progress_bar(count, awards_hrs.count/10)) if count % (awards_hrs.count/10)
+
+    puts("Updating users from COEUS API: #{prism_users.count}")
+
+    count = 1
+    
+    prism_users.each do |user|
+      if User.exists?(net_id: user['netid'])
+        user_to_update = User.find_by(net_id: user['netid'])
+        user_to_update.update_attribute(:department, user['department'])
+      end
+      print(progress_bar(count, prism_users.count/10)) if count % (prism_users.count/10)
+      count += 1
+    end
+
+    finish = Time.now
+
+    log "--- :heavy_check_mark: *Done!*"
+    log "--- *New protocols total:* #{created_coeus_protocols.count}"
+    log "--- *Finished COEUS_API data import* (#{(finish - start).to_i} Seconds)."
+
+    total_protocols = created_sparc_protocols + created_eirb_protocols + created_coeus_protocols
+    total_pis       = created_sparc_pis + created_eirb_pis
+
+    log "*Overview*"
+    log "- *New protocols total:* #{total_protocols.count}"
+    log "- *New primary pis total:* #{total_pis.count}"
+    log "- *New protocol ids:* #{total_protocols}"
+    log "- *New primary pi ids:* #{total_pis}"
+
+    script_finish = Time.now
+
+    log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
+
+    log ":heavy_check_mark: *Cronjob has completed successfully.*"
+
+    ## turn on auditing
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
+  rescue => error
+    Protocol.auditing_enabled = true
+    ResearchMaster.auditing_enabled = true
+    User.auditing_enabled = true
+
+    log ":heavy_exclamation_mark: *Cronjob has failed unexpectedly.*"
+    log error.inspect
   end
-
-
-  puts("")
-  puts("Done!")
-  puts("Finished COEUS_API data import.")
-
-  puts("New protocols total: #{new_eirb_protocols.count}")
-  puts("New primary pis total: #{new_eirb_pis.count}")
-  puts("New protocol ids: #{new_eirb_protocols + new_sparc_protocols}")
-  puts("New primary pi ids: #{new_eirb_pis + new_sparc_pis}")
 end
