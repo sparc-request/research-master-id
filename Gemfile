@@ -32,6 +32,7 @@ gem 'kaminari', '~> 1.0', '>= 1.0.1'
 gem 'delayed_job_active_record'
 gem 'daemons', '~> 1.2', '>= 1.2.4'
 gem "letter_opener", :group => :development
+gem "progress_bar"
 
 group :development, :test do
   gem 'byebug'
@@ -57,4 +58,4 @@ group :test do
 end
 
 ### custom gem for data sanitization ###
-gem 'sanitized_data',  git: 'git@github.com:HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'

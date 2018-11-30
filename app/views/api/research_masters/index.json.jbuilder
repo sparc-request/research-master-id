@@ -1,4 +1,4 @@
-json.array! @validated_research_masters do |rm|
+json.array! @research_masters do |rm|
   json.id                       rm.id
   json.short_title              rm.short_title
   json.long_title               rm.long_title
