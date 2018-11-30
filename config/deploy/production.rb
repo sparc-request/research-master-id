@@ -4,6 +4,8 @@
 # You can define all roles on a single server, or split them:
 
 server 'bmic-rmid-v.mdc.musc.edu', user: 'wih205', roles: %w{app db web}
+
+set :repo_url, 'git@rmid_github:HSSC/research-master-id.git'
 # server 'example.com', user: 'deploy', roles: %w{app db web}, my_property: :my_value
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
