@@ -10,31 +10,33 @@
       = hidden_field_tag 'pi_name', (f.object.pi.present? ? f.object.pi.name : nil)
       = hidden_field_tag 'pi_email', (f.object.pi.present? ? f.object.pi.email : nil)
       = hidden_field_tag 'pi_department', nil
-      .form-group
-        %label{class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
-          = t(:research_masters)[:new][:fields][:pi_name]
-        \*
-        .col-xs-10
-          .input-group
-            = text_field_tag 'pi_name_text_field', (f.object.pi.present? ? f.object.pi.name : ''), class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name], id: 'research_master_pi_name'
-            %span.input-group-btn
-              = link_to 'Reset', 'javascript:void(0);',
-                class: 'btn btn-default reset-pi-name'
-      .form-group
-        = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
-        = mark_required(@research_master, :department)
-        .col-xs-10
-          = f.text_field :department, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:department]
-      .form-group
-        = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
-        = mark_required(@research_master, :long_title)
-        .col-xs-10
-          = f.text_field :long_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:long_title]
-      .form-group
-        = f.label :short_title, t(:research_masters)[:new][:fields][:short_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:short_title]
-        = mark_required(@research_master, :short_title)
-        .col-xs-10
-          = f.text_field :short_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:short_title]
+
+      -if @research_master.eirb_validated = false
+        .form-group
+          %label{class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
+            = t(:research_masters)[:new][:fields][:pi_name]
+          \*
+          .col-xs-10
+            .input-group
+              = text_field_tag 'pi_name_text_field', (f.object.pi.present? ? f.object.pi.name : ''), class: 'form-control',  placeholder: t(:research_masters)[:new][:placeholders][:pi_name], id: 'research_master_pi_name'
+              %span.input-group-btn
+                = link_to 'Reset', 'javascript:void(0);',
+                  class: 'btn btn-default reset-pi-name'
+        .form-group
+          = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
+          = mark_required(@research_master, :department)
+          .col-xs-10
+            = f.text_field :department, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:department]
+        .form-group
+          = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
+          = mark_required(@research_master, :long_title)
+          .col-xs-10
+            = f.text_field :long_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:long_title]
+        .form-group
+          = f.label :short_title, t(:research_masters)[:new][:fields][:short_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:short_title]
+          = mark_required(@research_master, :short_title)
+          .col-xs-10
+            = f.text_field :short_title, class: 'form-control', placeholder: t(:research_masters)[:new][:placeholders][:short_title]
       .form-group
         = f.label :funding_source, t(:research_masters)[:new][:fields][:funding_source], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:funding_source]
         = mark_required(@research_master, :funding_source)
