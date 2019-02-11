@@ -35,6 +35,8 @@ gem "letter_opener", :group => :development
 gem "progress_bar"
 
 group :development, :test do
+  gem 'net-ssh'
+  gem 'net-scp'
   gem 'byebug'
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails', '~> 4.5.0'
