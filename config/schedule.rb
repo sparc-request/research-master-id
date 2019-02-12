@@ -1,5 +1,6 @@
 every 1.hour, :roles => [:app] do
   rake 'update_from_sparc'
+  rake 'delayed_job_monitor'
 end
 
 
