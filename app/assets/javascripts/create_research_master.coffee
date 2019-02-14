@@ -8,12 +8,13 @@ $ ->
       $('.submit-rm-record').prop('disabled', true)
 
     $('.reset-pi-name').on 'click', ->
-      $('.submit-rm-record').prop('disabled', true)
-      $('#research_master_pi_name').prop('disabled', false)
-      $('#research_master_pi_name').val('')
-      $('#research_master_department').val('')
-      $('#research_master_department').prop('disabled', false)
-      $('#research_master_pi_name').typeahead('val','')
+      unless $(this).attr("disabled") == 'disabled'
+        $('.submit-rm-record').prop('disabled', true)
+        $('#research_master_pi_name').prop('disabled', false)
+        $('#research_master_pi_name').val('')
+        $('#research_master_department').val('')
+        $('#research_master_department').prop('disabled', false)
+        $('#research_master_pi_name').typeahead('val','')
 
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''
@@ -30,5 +31,5 @@ $ ->
       $('.submit-rm-record').prop('disabled', false)
 
     $('.research-master-form').bind 'submit', ->
-      $(this).find(':input').prop('disabled', false)
+      $(this).find(':input').not('.eirb_locked').prop('disabled', false)
 
