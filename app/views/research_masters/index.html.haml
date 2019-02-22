@@ -44,10 +44,10 @@
                 %button.btn.btn-danger.clear-selection
                   %i.glyphicon.glyphicon-remove-circle
         .form-group
-          = f.label :department_cont, t(:research_masters)[:index][:search_fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:department]
+          = f.label :pi_department_cont, t(:research_masters)[:index][:search_fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:department]
           .col-xs-10
             .input-group
-              = f.search_field :department_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:department]
+              = f.search_field :pi_department_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:department]
               .input-group-btn
                 %button.btn.btn-danger.clear-selection
                   %i.glyphicon.glyphicon-remove-circle
