@@ -49,6 +49,7 @@
               = f.radio_button :funding_source, 'External'
               External
       .form-group
+        = f.hidden_field :research_type, value: nil
         = f.label :research_type, t(:research_masters)[:new][:fields][:research_type], class: 'col-xs-2 control-label'
         = mark_required(@research_master, :research_type)
         .col-xs-10
