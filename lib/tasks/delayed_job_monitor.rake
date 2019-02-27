@@ -4,7 +4,7 @@ require 'dotenv/tasks'
 
 task delayed_job_monitor: :environment do
   # https://hooks.slack.com/services/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
-  delayed_job_webhook = ENV.fetch("DELAYED_JOB_WEBHOOK")
+  delayed_job_webhook = ENV.fetch("DELAYED_JOB_WEBHOOK", nil)
 
   if delayed_job_webhook.present?
     notifier = Slack::Notifier.new(delayed_job_webhook)
