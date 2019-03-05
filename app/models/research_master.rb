@@ -15,8 +15,7 @@ class ResearchMaster < ApplicationRecord
 
   paginates_per 50
 
-  validates :department,
-    :long_title,
+  validates :long_title,
     :short_title,
     :funding_source,
     presence: true
@@ -24,19 +23,13 @@ class ResearchMaster < ApplicationRecord
   validates_length_of :short_title, maximum: 255
 
   validates :pi_id,
-    uniqueness: { scope: [:department, :long_title],
+    uniqueness: { scope: [:long_title],
     message: 'There is an existing Research Master record with the same
-    Department and Long Title' }
-
-  validates :department,
-    uniqueness: { scope: [:pi_id, :long_title],
-    message: 'There is an existing Research Master record with the same PI Name
-    and Long Title' }
+    Long Title' }
 
   validates :long_title,
-    uniqueness: { scope: [:pi_id, :department],
-    message: 'There is an existing Research Master record with the same PI Name
-    and Department' }
+    uniqueness: { scope: [:pi_id],
+    message: 'There is an existing Research Master record with the same PI Name' }
 
   #to-do: Do we still need these validations since we included SanitizedData?
   #validates_format_of :long_title, with: /^[a-zA-Z\d\s.%\/$*<>!@#^\[\]{};:"'?&()-_=+]*$/,
