@@ -25,7 +25,7 @@
         = f.label :department, t(:research_masters)[:new][:fields][:department], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
         = mark_required(@research_master, :department)
         .col-xs-10
-          = f.text_field :department, class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: @research_master.eirb_validated
+          = text_field_tag :department, (f.object.pi.present? ? f.object.pi.department : ''), class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: @research_master.eirb_validated
       .form-group
         = f.label :long_title, t(:research_masters)[:new][:fields][:long_title], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
         = mark_required(@research_master, :long_title)
