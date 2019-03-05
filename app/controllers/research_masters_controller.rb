@@ -41,10 +41,7 @@ class ResearchMastersController < ApplicationController
   def update
     @research_master = ResearchMaster.find(params[:id])
     @research_master.assign_attributes(research_master_params)
-    @research_master.pi = find_or_create_pi(params[:pi_email],
-                                            params[:pi_name],
-                                            Devise.friendly_token,
-                                           )
+    @research_master.pi = find_or_create_pi
     respond_to do |format|
       if @research_master.save
         format.js
@@ -57,10 +54,7 @@ class ResearchMastersController < ApplicationController
   def create
     @research_master = ResearchMaster.new(research_master_params)
     @research_master.creator = current_user
-    @research_master.pi = find_or_create_pi(params[:pi_email],
-                                            params[:pi_name],
-                                            Devise.friendly_token,
-                                           )
+    @research_master.pi = find_or_create_pi
     respond_to do |format|
       if @research_master.save
         SendEmailsJob.perform_later(@research_master.pi,
@@ -92,11 +86,11 @@ class ResearchMastersController < ApplicationController
     @research_masters = @q.result.includes(:pi).page(params[:page])
   end
 
-  def find_or_create_pi(email, name, password)
+  def find_or_create_pi(email=params[:pi_email], name=params[:pi_name], department=params[:pi_department], password=Devise.friendly_token)
     if email.present?
       user = User.create_with(password: password, password_confirmation: password).
         find_or_create_by(email: email)
-      user.update_attribute(:name, name)
+      user.update_attributes(name: name, department: department)
       user
     end
   end
