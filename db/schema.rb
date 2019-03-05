@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030134336) do
+ActiveRecord::Schema.define(version: 20190222145341) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -107,7 +107,6 @@ ActiveRecord::Schema.define(version: 20181030134336) do
   end
 
   create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "department"
     t.text "long_title"
     t.string "short_title"
     t.string "funding_source"
