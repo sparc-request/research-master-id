@@ -20,19 +20,21 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     ldap_search = LdapSearch.new
-    unless auth.uid.nil?
-      email = auth.uid
-    else
-      email = ldap_search.employee_number_query(auth.info.employeeNumber)
-    end
+    email       = auth.info.email.blank? ? auth.uid : auth.info.email
+
     where(email: email).first_or_create! do |user|
       user.password = Devise.friendly_token[0,20]
-      user.net_id = ldap_search.net_id_query(email)
+      user.net_id   = auth.uid
+      user.name     = [auth.info.first_name, auth.info.last_name].join(' ')
     end
   end
 
   def research_masters
     ResearchMaster.where("creator_id = ? OR pi_id = ?", self.id, self.id)
+  end
+
+  def prism_user?
+    LdapSearch.prism_users.any?{ |u| u['netid'] == self.net_id }
   end
 end
 
