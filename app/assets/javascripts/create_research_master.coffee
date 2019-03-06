@@ -9,12 +9,14 @@ $ ->
 
     $('.reset-pi-name').on 'click', ->
       unless $(this).attr("disabled") == 'disabled'
-        $('.submit-rm-record').prop('disabled', true)
+        $('#pi_name').val('')
+        $('#pi_email').val('')
         $('#research_master_pi_name').prop('disabled', false)
         $('#research_master_pi_name').val('')
-        $('#research_master_department').val('')
-        $('#research_master_department').prop('disabled', false)
         $('#research_master_pi_name').typeahead('val','')
+        $('#pi_department').val('')
+        $('#pi_department').prop('disabled', false)
+        $('.submit-rm-record').prop('disabled', true)
 
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''
@@ -25,8 +27,9 @@ $ ->
       $('#pi_name').val(selection.name)
       $('#pi_email').val(selection.email)
       if selection.department != null
-        $('#research_master_department').val(selection.department)
-        $('#research_master_department').prop('disabled', true)
+        $('#pi_department').val(selection.department)
+      if selection.prism_user
+        $('#pi_department').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', true)
       $('.submit-rm-record').prop('disabled', false)
 

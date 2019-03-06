@@ -4,18 +4,15 @@ task find_missing_pis: :environment do
   ldap_search = LdapSearch.new
 
   rms.each do |rm|
-    user = User.find_by(name: rm.pi_name)
-    if user.present?
+    if user = User.find_by(name: rm.pi_name)
       rm.update_attribute(:pi_id, user.id)
     else
-      search = ldap_search.info_query(rm.pi_name)
-      if search.present?
-        if User.exists?(email: search.first[1])
-          found_user = User.find_by(email: search.first[1])
+      if search = ldap_search.info_query(rm.pi_name).try(&:first)
+        if found_user = User.find_by(email: search[:email])
           rm.update_attribute(:pi_id, found_user.id)
         else
           pwd = Devise.friendly_token
-          new_user = User.create_with(name: search.first[0], password: pwd, password_confirmation: pwd).find_or_create_by(email: search.first[1])
+          new_user = User.create_with(name: search[:name], department: search[:department], password: pwd, password_confirmation: pwd).find_or_create_by(email: search[:email])
           rm.update_attribute(:pi_id, new_user.id)
         end
       end
