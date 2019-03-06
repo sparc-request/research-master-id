@@ -37,4 +37,3 @@ class User < ApplicationRecord
     LdapSearch.prism_users.any?{ |u| u['netid'] == self.net_id }
   end
 end
-

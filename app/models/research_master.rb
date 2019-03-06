@@ -45,8 +45,4 @@ class ResearchMaster < ApplicationRecord
   def self.validated
     where(eirb_validated: true)
   end
-
-  def clinical_research?
-    ['clinical_research_billable', 'clinical_research_non_billable'].include?(self.research_type)
-  end
 end

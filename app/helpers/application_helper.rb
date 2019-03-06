@@ -44,4 +44,10 @@ module ApplicationHelper
     returning_html
   end
 
+  def research_type_options_hash
+    {
+      "Non-Clinical Research" => [ ["Basic Science Research", "basic_science_research"] ],
+      "Clinical Research" => [["Clinical Science (Billable)", "clinical_research_billable"], ["Clinical Science (Non-billable)", "clinical_research_non_billable"]]
+    }
+  end
 end
