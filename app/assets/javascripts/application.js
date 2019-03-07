@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap/dist/js/bootstrap.min
+//= require bootstrap-select
 //= require sweetalert.min
 //= require typeahead
 //= require js-cookie
