@@ -44,7 +44,7 @@
       .form-group
         = f.label :research_type, t(:research_masters)[:new][:fields][:research_type] + mark_required(@research_master, :research_type), class: 'col-xs-3 control-label'
         .col-xs-9
-          = f.select :research_type, grouped_options_for_select(research_type_options_hash, @research_master.research_type), {prompt: "Select Research Type"}, class: "form-control"
+          = f.select :research_type, grouped_options_for_select(research_type_options_hash, @research_master.research_type), {prompt: t(:research_masters)[:new][:fields][:research_type_dropdown]}, class: "form-control"
         = f.hidden_field :sparc_protocol_id, value: @research_master.sparc_protocol_id
         = f.hidden_field :eirb_protocol_id, value: @research_master.eirb_protocol_id
     .modal-footer
