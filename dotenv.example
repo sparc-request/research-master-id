@@ -16,3 +16,6 @@ CRONJOB_STATUS_WEBHOOK=https://hooks.slack.com/services/T03ALDB7/BDPMP20Y/2aWDnj
 REMOTE_HOST=rmid.musc.edu
 REMOTE_USERNAME=anc63
 REMOTE_HOST_APPLICATION_FOLDER=/var/www/rails/research_master_id/current
+DELAYED_JOB_WEBHOOK=https://hooks.slack.com/services/T03ALDSB7/BG5S03D8B/5pYjtYFcmofzjTMe
+ADS_USERNAME=abc
+ADS_PASSWORD=123
