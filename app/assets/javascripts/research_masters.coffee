@@ -6,7 +6,7 @@ removeCookie = (name) ->
 
 $ ->
   $("[data-toggle='tooltip']").tooltip()
-  
+
   if Cookies.get('showMoreCookie') == '1'
     $('#optional-search-fields').show()
     $('#show_more').attr('checked', 'checked')
@@ -45,12 +45,3 @@ $ ->
       addCookie('showMoreCookie', 1)
     else
       removeCookie('showMoreCookie')
-
-  $(document).on 'click', '.research-radio', ->
-    $(this).prop('checked', true)
-    $('.research-radio').not(this).prop('checked', false)
-
-    if $(this).prop('name') == 'clinical_research'
-      $('.clinical-research-dependent').show()
-    else
-      $('.clinical-research-dependent').hide()
