@@ -80,6 +80,7 @@ en:
         short_title: "Short Title"
         funding_source: "Funding Source"
         research_type: "Research Type"
+        research_type_dropdown: "Select Research Type"
       placeholders:
         pi_name: "Search for PI Name"
         department: "Department"
