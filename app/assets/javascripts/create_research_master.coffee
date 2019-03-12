@@ -25,7 +25,12 @@ $ ->
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
       $(this).typeahead('val', selection.name)
       $('#pi_name').val(selection.name)
+      $('#pi_netid').val(selection.netid)
       $('#pi_email').val(selection.email)
+      $('#pi_first_name').val(selection.first_name)
+      $('#pi_last_name').val(selection.last_name)
+      $('#pi_middle_initial').val(selection.middle_initial)
+      $('#pi_pvid').val(selection.pvid)
       if selection.department != null
         $('#pi_department').val(selection.department)
       if selection.prism_user

@@ -8,7 +8,12 @@
         = "#{@research_master.new_record? ? 'New' : 'Edit' } Research Master Record"
     .modal-body
       = hidden_field_tag 'pi_name', (f.object.pi.present? ? f.object.pi.name : nil)
+      = hidden_field_tag 'pi_netid', (f.object.pi.present? ? f.object.pi.net_id : nil)
       = hidden_field_tag 'pi_email', (f.object.pi.present? ? f.object.pi.email : nil)
+      = hidden_field_tag 'pi_first_name', (f.object.pi.present? ? f.object.pi.first_name : nil)
+      = hidden_field_tag 'pi_last_name', (f.object.pi.present? ? f.object.pi.last_name : nil)
+      = hidden_field_tag 'pi_middle_initial', (f.object.pi.present? ? f.object.pi.middle_initial : nil)
+      = hidden_field_tag 'pi_pvid', (f.object.pi.present? ? f.object.pi.pvid : nil)
       .form-group
         %label{class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
           = t(:research_masters)[:new][:fields][:pi_name] + " *"
