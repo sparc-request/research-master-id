@@ -86,11 +86,22 @@ class ResearchMastersController < ApplicationController
     @research_masters = @q.result.includes(:pi).page(params[:page])
   end
 
-  def find_or_create_pi(email=params[:pi_email], name=params[:pi_name], department=params[:pi_department], password=Devise.friendly_token)
+  def find_or_create_pi
+    password = Devise.friendly_token
+
+    email = params[:pi_email]
+    name = params[:pi_name]
+    netid = params[:pi_netid]
+    department = params[:pi_department]
+    first_name = params[:pi_first_name]
+    last_name = params[:pi_last_name]
+    middle_initial = params[:pi_middle_initial]
+    pvid = params[:pi_pvid]
+
     if email.present?
       user = User.create_with(password: password, password_confirmation: password).
         find_or_create_by(email: email)
-      user.update_attributes(name: name, department: department)
+      user.update_attributes(name: name, net_id: netid, department: department, first_name: first_name, last_name: last_name, middle_initial: middle_initial, pvid: pvid)
       user
     end
   end
