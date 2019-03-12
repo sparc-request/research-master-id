@@ -11,11 +11,13 @@ class LdapSearch
 
     ldaps.each do |key,ldap|
       ldap.search(:base => ldap.base, :filter => filter) do |entry|
-        user = { first_name: entry[:givenname].first, last_name: entry[:sn].first, mail: nil, netid: nil }
+        next if key == 'musc' && entry[:muscactiveaccount].include?('FALSE') # skip inactive accounts
+        user = { first_name: entry[:givenname].first, last_name: entry[:sn].first, middle_initial: nil, mail: nil, netid: nil, pvid: entry[:muscpvid].first }
 
         if key == 'musc'
           user[:mail] = entry[:mail].first
           user[:netid] = entry['muscaccountname'].first
+          user[:middle_initial] = entry['middlename'].first
         elsif key == 'affiliate'
           user[:mail] = entry[:userprincipalname].first
           user[:netid] = entry['samaccountname'].first
@@ -26,27 +28,38 @@ class LdapSearch
     end
   end
 
-  def info_query(name)
+  def info_query(name, active_only=true, netid_only=false)
     ldaps             = connect_to_ldap
     user_info         = []
 
     # MUSC givenname, sn, mail, muscaccountname
     # Affiliate givenname, sn, userprincipalname, samaccountname
-    fields = ['givenname', 'sn', 'mail', 'userprincipalname', 'muscaccountname', 'samaccountname']
+    if netid_only
+      fields = ['muscaccountname', 'samaccountname']
+    else
+      fields = ['givenname', 'sn', 'mail', 'userprincipalname', 'muscaccountname', 'samaccountname']
+    end
 
     filter = fields.map { |f| Net::LDAP::Filter.eq(f, name) }.inject(:|)
 
     ldaps.each do |key,ldap|
       ldap.search(:base => ldap.base, :filter => filter) do |entry|
-        next if key == 'musc' && (entry[:muscactiveaccount].include?('FALSE') || entry[:mail].blank?)  # skip inactive accounts or ones without an e-mail address
-        entry_info = { name: "#{entry[:givenname].first} #{entry[:sn].first}" }
+        next if active_only && key == 'musc' && (entry[:muscactiveaccount].include?('FALSE') || entry[:mail].blank?)  # skip inactive accounts or ones without an e-mail address
+        entry_info = { name: nil, first_name: entry[:givenname].first, last_name: entry[:sn].first, middle_initial: nil, email: nil, netid: nil, pvid: entry[:muscpvid].first, active: true, affiliate: false}
 
         if key == 'musc'
+          entry_info[:name] = "#{entry[:givenname].first} #{entry[:middlename].first} #{entry[:sn].first}"
+          entry_info[:middle_initial] = entry['middlename'].first
           entry_info[:email] = entry[:mail].first
           entry_info[:netid] = entry[:muscaccountname].first
+          if !active_only
+            entry_info[:active] = entry[:muscactiveaccount].include?('FALSE') ? false : true
+          end
         elsif key == 'affiliate'
+          entry_info[:name] = "#{entry[:givenname].first} #{entry[:sn].first}"
           entry_info[:email] = entry[:userprincipalname].first
           entry_info[:netid] = entry[:samaccountname].first
+          entry_info[:affiliate] = true
         end
 
         if department = prism_query(entry_info[:netid], LdapSearch.prism_users)
