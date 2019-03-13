@@ -21,7 +21,8 @@ class User < ApplicationRecord
   def self.from_omniauth(auth)
     ldap_search = LdapSearch.new
     user = ldap_search.employee_number_query(auth.info.employeeNumber)
-    where(email: user[:mail]).first_or_create(password: Devise.friendly_token[0,20], net_id: user[:netid], name: [user[:first_name], user[:last_name]].join(' '))
+    where(email: user[:mail]).first_or_create(password: Devise.friendly_token[0,20], net_id: user[:netid], name: [user[:first_name], user[:last_name]].join(' '), first_name: user[:first_name],
+                                             last_name: user[:last_name], middle_initial: user[:middle_initial], pvid: user[:pvid])
   end
 
   def research_masters

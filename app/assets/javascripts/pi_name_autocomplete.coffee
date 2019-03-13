@@ -1,6 +1,6 @@
 $ ->
   $('#q_pi_name_cont').typeahead {
-    minLength: 3
+    minLength: 2
     highlight: true
     hint: true
   },
@@ -14,7 +14,7 @@ $ ->
     $(this).typeahead('val', selection.name)
 
   $('#q_primary_pi_name_cont').typeahead {
-    minLength: 3
+    minLength: 2
     highlight: true
     hint: true
   },
@@ -29,7 +29,7 @@ $ ->
 
   $('#newResearchMasterModal').on 'shown.bs.modal', ->
     $('#research_master_pi_name').typeahead {
-      minLength: 3
+      minLength: 2
       highlight: true
       hint: true
     },
