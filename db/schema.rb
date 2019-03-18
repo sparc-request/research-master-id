@@ -74,10 +74,11 @@ ActiveRecord::Schema.define(version: 20190312175634) do
     t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id"
   end
 
-  create_table "protocols", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "protocols", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "type"
     t.text "short_title"
     t.text "long_title"
+    t.bigint "primary_pi_id"
     t.integer "sparc_id"
     t.integer "coeus_id"
     t.string "eirb_id"
