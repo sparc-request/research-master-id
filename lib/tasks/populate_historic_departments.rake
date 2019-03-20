@@ -1,22 +1,6 @@
 task populate_historic_departments: :environment do
 
-  def prompt(*args)
-    print(*args)
-    STDIN.gets.strip
-  end
-
-  def get_file(error=false)
-    puts "No import file specified or the file specified does not exist in db/imports" if error
-    file = prompt "Please specify the file name to import from tmp (must be a CSV): "
-
-    while file.blank? or not File.exists?(Rails.root.join("tmp", file))
-      file = get_file(true)
-    end
-
-    file
-  end
-
-  input_file = Rails.root.join("tmp", get_file)
+  input_file = Rails.root.join("tmp", users_departments.csv)
 
   continue = prompt('Preparing to modify the users. Are you sure you want to continue? (y/n): ')
 
