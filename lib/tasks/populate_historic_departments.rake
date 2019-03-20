@@ -18,7 +18,7 @@ task populate_historic_departments: :environment do
 
   input_file = Rails.root.join("tmp", get_file)
 
-  continue = prompt('Preparing to modify the services. Are you sure you want to continue? (y/n): ')
+  continue = prompt('Preparing to modify the users. Are you sure you want to continue? (y/n): ')
 
   if continue == 'y' || continue == 'Y'
     CSV.foreach(input_file, headers: true, :encoding => 'windows-1251:utf-8') do |row|
