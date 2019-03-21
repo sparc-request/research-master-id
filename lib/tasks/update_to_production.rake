@@ -48,10 +48,18 @@ task update_to_production: :environment do
   Rake::Task["db:create"].invoke
 
   puts "Loading data"
-  `mysql -u #{local_db_config['username']} -p#{local_db_config['password']} -h #{local_db_config['host']} #{local_db_config['database']} < #{Rails.root.join("tmp/production_rmid.sql")}`
+  if local_db_config['password']
+    `mysql -u #{local_db_config['username']} -p#{local_db_config['password']} -h #{local_db_config['host']} #{local_db_config['database']} < #{Rails.root.join("tmp/production_rmid.sql")}`
+  else
+    `mysql -u #{local_db_config['username']} -h #{local_db_config['host']} #{local_db_config['database']} < #{Rails.root.join("tmp/production_rmid.sql")}`
+  end
 
   puts "Setting schema environment"
   `bin/rails db:environment:set RAILS_ENV=#{Rails.env}`
 
-  puts "#### Last thing to do is use Capistrano to restart the server, we will not automate this ####"
+  puts "Migrate local database"
+  Rake::Task["db:migrate"].invoke
+
+  puts "Restart passenger"
+  `touch tmp/restart.txt`
 end
