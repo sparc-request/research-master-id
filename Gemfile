@@ -33,10 +33,10 @@ gem 'delayed_job_active_record'
 gem 'daemons', '~> 1.2', '>= 1.2.4'
 gem "letter_opener", :group => :development
 gem "progress_bar"
+gem 'net-ssh'
+gem 'net-scp'
 
 group :development, :test do
-  gem 'net-ssh'
-  gem 'net-scp'
   gem 'byebug'
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails', '~> 4.5.0'

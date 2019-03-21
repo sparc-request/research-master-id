@@ -26,7 +26,7 @@
       .form-group
         = label_tag :pi_department, t(:research_masters)[:new][:fields][:department] + mark_required(@research_master, :pi_department), class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
         .col-xs-9
-          = text_field_tag :pi_department, (f.object.pi.present? ? f.object.pi.department : ''), class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: @research_master.eirb_validated || f.object.pi.try(:prism_user?)
+          = text_field_tag :pi_department, (f.object.pi.present? ? f.object.pi.department : ''), class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: (@research_master.eirb_validated || f.object.pi.try(:prism_user?) || @research_master.pi.try(:current_prism_user?))
       .form-group
         = f.label :long_title, t(:research_masters)[:new][:fields][:long_title] + mark_required(@research_master, :long_title), class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
         .col-xs-9
