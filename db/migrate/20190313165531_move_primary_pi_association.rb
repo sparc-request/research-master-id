@@ -40,13 +40,13 @@ class MovePrimaryPiAssociation < ActiveRecord::Migration[5.1]
           elsif user = new_or_found_users[primary_pi.name]
             protocol.update_attribute(:primary_pi_id, user.id)
           # Cross-check with the SPARC API to find the net_id
-          elsif (sparc_protocol = sparc_protocols.detect{ |sp| sp['id'] == protocol.sparc_id }) && sparc_protocol['first_name'] == primary_pi.first_name && sparc_protocol['last_name'] == primary_pi.last_name && (ldap_results = LdapSearch.new.info_query(sparc_protocol['ldap_uid'].gsub('@musc.edu', ''), true, true)) && ldap_results.count == 1
+          elsif (sparc_protocol = sparc_protocols.detect{ |sp| sp['id'] == protocol.sparc_id }) && sparc_protocol['first_name'] == primary_pi.first_name && sparc_protocol['last_name'] == primary_pi.last_name && (ldap_results = LdapSearch.new.info_query(sparc_protocol['ldap_uid'].try(:gsub, '@musc.edu', ''), true, true)) && ldap_results.count == 1
             record  = ldap_results.first
             user    = User.where(email: record[:email]).first_or_create(password: Devise.friendly_token[0,20], net_id: record[:netid], name: [record[:first_name], record[:last_name]].join(' '), first_name: record[:first_name], last_name: record[:last_name], middle_initial: record[:middle_initial], pvid: record[:pvid])
             new_or_found_users[user.name] = user # Cache the user for future calls to avoid repeated LDAP checks
             protocol.update_attribute(:primary_pi_id, user.id)
           # Cross-check with the eIRB API to find the net_id
-          elsif (eirb_study = eirb_studies.detect{ |es| es['pro_number'] == protocol.eirb_id }) && eirb_study['first_name'] == primary_pi.first_name && eirb_study['last_name'] == primary_pi.last_name && (ldap_results = LdapSearch.new.info_query(eirb_study['pi_net_id'].gsub('@musc.edu', ''), true, true)) && ldap_results.count == 1
+          elsif (eirb_study = eirb_studies.detect{ |es| es['pro_number'] == protocol.eirb_id }) && eirb_study['first_name'] == primary_pi.first_name && eirb_study['last_name'] == primary_pi.last_name && (ldap_results = LdapSearch.new.info_query(eirb_study['pi_net_id'].try(:gsub, '@musc.edu', ''), true, true)) && ldap_results.count == 1
             record  = ldap_results.first
             user    = User.where(email: record[:email]).first_or_create(password: Devise.friendly_token[0,20], net_id: record[:netid], name: [record[:first_name], record[:last_name]].join(' '), first_name: record[:first_name], last_name: record[:last_name], middle_initial: record[:middle_initial], pvid: record[:pvid])
             new_or_found_users[user.name] = user # Cache the user for future calls to avoid repeated LDAP checks
