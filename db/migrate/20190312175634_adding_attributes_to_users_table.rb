@@ -17,7 +17,12 @@ class AddingAttributesToUsersTable < ActiveRecord::Migration[5.1]
         bad_results << user.id
       else
         user_data = results.first
-        user.update_attributes(first_name: user_data[:first_name], last_name: user_data[:last_name], middle_initial: user_data[:middle_initial], pvid: user_data[:pvid])
+        user.update_attributes(
+          name: user_data[:name],
+          first_name: user_data[:first_name],
+          last_name: user_data[:last_name],
+          middle_initial: user_data[:middle_initial],
+          pvid: user_data[:pvid])
       end
     end
 
@@ -30,9 +35,6 @@ class AddingAttributesToUsersTable < ActiveRecord::Migration[5.1]
     puts "#"*50
     puts "#"*50
     puts "#"*50
-
-
-
   end
 
   def down
