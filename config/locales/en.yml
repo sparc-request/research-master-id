@@ -44,7 +44,7 @@ en:
     step2:
       label: "Step 2:"
       text: "When you are certain the study does not have an existing RMID number, click on the “Create a Research Master ID” button at the bottom of the page to create a new record. Upon successful creation, please retain the RMID for use in other systems."
-    additional_information: "For additional information, please refer to the <a href='http://academicdepartments.musc.edu/sctr/tools_links/toolkit_setup.html' target='_blank'>Research Toolkit</a>. For questions or support, please contact the SUCCESS Center at <strong>(843) 792-8300</strong> or <a href='mailto:success@musc.edu'>success@musc.edu</a>."
+    additional_information: "For questions or support, please contact the SUCCESS Center at <strong>(843) 792-8300</strong> or <a href='mailto:rmid@musc.edu'>rmid@musc.edu</a>."
 
   research_masters:
     index:
@@ -80,6 +80,7 @@ en:
         short_title: "Short Title"
         funding_source: "Funding Source"
         research_type: "Research Type"
+        research_type_dropdown: "Select Research Type"
       placeholders:
         pi_name: "Search for PI Name"
         department: "Department"

@@ -3,13 +3,16 @@ class Ability
 
   def initialize(user)
     if user.admin?
-      can :update, ResearchMaster, eirb_validated: false
+      can :update, ResearchMaster
       can :destroy, ResearchMaster
     end
 
-    can :update, ResearchMaster, creator_id: user.id, eirb_validated: false
-
+    can :update, ResearchMaster, creator_id: user.id
     can :destroy, ResearchMaster, eirb_validated: false, creator_id: user.id
+
+    can :update, ResearchMaster, pi_id: user.id
+    can :destroy, ResearchMaster, eirb_validated: false, pi_id: user.id
+
 
     # Define abilities for the passed in user here. For example:
     #
