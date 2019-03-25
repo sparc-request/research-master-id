@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181030134336) do
+ActiveRecord::Schema.define(version: 20190312175634) do
 
   create_table "api_keys", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "access_token"
@@ -74,10 +74,11 @@ ActiveRecord::Schema.define(version: 20181030134336) do
     t.index ["protocol_id"], name: "index_primary_pis_on_protocol_id"
   end
 
-  create_table "protocols", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "protocols", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "type"
     t.text "short_title"
     t.text "long_title"
+    t.bigint "primary_pi_id"
     t.integer "sparc_id"
     t.integer "coeus_id"
     t.string "eirb_id"
@@ -107,7 +108,6 @@ ActiveRecord::Schema.define(version: 20181030134336) do
   end
 
   create_table "research_masters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "department"
     t.text "long_title"
     t.string "short_title"
     t.string "funding_source"
@@ -129,9 +129,14 @@ ActiveRecord::Schema.define(version: 20181030134336) do
     t.string "email", default: "", null: false
     t.string "net_id"
     t.string "name"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_initial"
+    t.integer "pvid"
     t.string "department"
     t.boolean "admin"
     t.boolean "developer"
+    t.boolean "current_prism_user"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
