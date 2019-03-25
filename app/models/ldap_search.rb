@@ -80,7 +80,7 @@ class LdapSearch
   private
 
   def connect_to_ldap()
-    host = 'ads.musc.edu'
+    host = '128.23.180.126'
     port = 636
     encryption = 'simple_tls'
     auth = { method: :simple, username: ENV.fetch('ADS_USERNAME'), password: ENV.fetch('ADS_PASSWORD') }
