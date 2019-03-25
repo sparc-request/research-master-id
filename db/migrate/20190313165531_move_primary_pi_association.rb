@@ -29,7 +29,9 @@ class MovePrimaryPiAssociation < ActiveRecord::Migration[5.1]
         new_or_found_users = {}
         not_found_users = {}
 
-        bar = ProgressBar.new(PrimaryPi.count)
+        if Rails.env != 'production'
+          bar = ProgressBar.new(PrimaryPi.count)
+        end
 
         PrimaryPi.all.each do |primary_pi|
           protocol = Protocol.find(primary_pi.protocol_id)
@@ -71,7 +73,9 @@ class MovePrimaryPiAssociation < ActiveRecord::Migration[5.1]
             end
           end
 
-          bar.increment! rescue nil
+          if Rails.env != 'production'
+            bar.increment! rescue nil
+          end
         end
 
         if missing_pis.any?
