@@ -13,25 +13,11 @@ task update_from_sparc: :environment do
 
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
-    $departments       = Department.all
     $users             = User.all
 
     def log message
       puts "#{message}\n"
       $status_notifier.ping message
-    end
-
-    def find_or_create_department(pi_department)
-      name = pi_department || 'N/A'
-      dept = nil
-
-      unless dept = $departments.detect{ |d| d.name == name }
-        dept = Department.create(
-          name: name
-        )
-      end
-
-      dept
     end
 
     log "*Cronjob (SPARC) has started.*"
@@ -57,6 +43,7 @@ task update_from_sparc: :environment do
 
       start                   = Time.now
       created_sparc_protocols = []
+      updated_sparc_protocols = []
       created_sparc_pis       = []
 
       # Preload SPARC Protocols to improve efficiency
@@ -75,14 +62,27 @@ task update_from_sparc: :environment do
         existing_protocol.short_title = protocol['short_title']
         existing_protocol.long_title  = protocol['title']
 
-        existing_protocol.save(validate: false) if existing_protocol.changed?
+        if protocol['ldap_uid']
+          net_id = protocol['ldap_uid'].slice('@musc.edu')
+          if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            existing_protocol.primary_pi_id = u.id
+          else
+            u = User.new(
+              net_id: net_id,
+              email: protocol['email'],
+              first_name: protocol['first_name'],
+              last_name: protocol['last_name'],
+              password: $friendly_token,
+              password_confirmation:  $friendly_token
+            )
+            u.save(validate: false)
+            created_sparc_pis.append(u.id)
+          end
+        end
 
-        if ppi = existing_protocol.primary_pi
-          ppi.first_name = protocol['first_name']
-          ppi.last_name  = protocol['last_name']
-          ppi.department = find_or_create_department(protocol['pi_department'])
-
-          ppi.save(validate: false) if ppi.changed?
+        if existing_protocol.changed?
+          existing_protocol.save(validate: false)
+          updated_sparc_protocols.append(existing_protocol.id)
         end
 
         if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
@@ -108,18 +108,25 @@ task update_from_sparc: :environment do
           sparc_pro_number: protocol['pro_number']
         )
 
-        created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
-
-        if protocol['first_name'] || protocol['last_name']
-          pi = PrimaryPi.new(
-            first_name: protocol['first_name'],
-            last_name:  protocol['last_name'],
-            department: find_or_create_department(protocol['pi_department']),
-            protocol:   sparc_protocol
-          )
-
-          created_sparc_pis.append(pi.id) if pi.save
+        if protocol['ldap_uid']
+          net_id = protocol['ldap_uid'].slice('@musc.edu')
+          if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            sparc_protocol.primary_pi_id = u.id
+          else
+            u = User.new(
+              net_id: net_id,
+              email: protocol['email'],
+              first_name: protocol['first_name'],
+              last_name: protocol['last_name'],
+              password: $friendly_token,
+              password_confirmation:  $friendly_token
+            )
+            u.save(validate: false)
+            created_sparc_pis.append(u.id)
+          end
         end
+
+        created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
         if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
           rm.sparc_protocol_id      = sparc_protocol.id
@@ -134,6 +141,7 @@ task update_from_sparc: :environment do
       finish = Time.now
 
       log "--- :heavy_check_mark: *Done!*"
+      log "--- *Updated protocols total:* #{updated_sparc_protocols.count}"
       log "--- *New protocols total:* #{created_sparc_protocols.count}"
       log "--- *New primary pis total:* #{created_sparc_pis.count}"
       log "--- *New primary pi ids:* #{created_sparc_pis}"
