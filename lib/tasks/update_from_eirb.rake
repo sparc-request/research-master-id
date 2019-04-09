@@ -14,62 +14,11 @@ task update_from_eirb: :environment do
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
-    $departments       = Department.all
     $users             = User.all
 
     def log message
       puts "#{message}\n"
       $status_notifier.ping message
-    end
-
-    def find_or_create_department(pi_department)
-      name = pi_department || 'N/A'
-      dept = nil
-
-      unless dept = $departments.detect{ |d| d.name == name }
-        dept = Department.create(
-          name: name
-        )
-      end
-
-      dept
-    end
-
-    def update_eirb_study_pi(rm, first_name, last_name, email, net_id)
-      net_id.slice!('@musc.edu')
-
-      pi = nil
-
-      unless pi = $users.detect{ |u| u.net_id == net_id }
-        pi = User.create(
-          email:                  email,
-          net_id:                 net_id,
-          name:                   "#{first_name} #{last_name}",
-          password:               $friendly_token,
-          password_confirmation:  $friendly_token
-        )
-      end
-
-      if pi.valid?
-        existing_pi = rm.pi
-        rm.pi_id    = pi.id
-
-        if rm.pi_id && rm.pi_id_changed? && existing_pi
-          begin
-            PiMailer.notify_pis(rm, existing_pi, rm.pi, rm.creator).deliver_now
-          rescue
-            if ENV.fetch('ENVIRONMENT') == 'production'
-              log "PI email failed to deliver"
-              log "#{pi.inspect}"
-              log "#{pi.errors.full_messages}"
-            end
-          end
-        end
-      elsif ENV.fetch('ENVIRONMENT') == 'production'
-        log ":heavy_exclamation_mark: PI record failed to update Research Master record"
-        log "- #{pi.inspect}"
-        log "- #{pi.errors.full_messages}"
-      end
     end
 
     log "*Cronjob (EIRB) has started.*"
@@ -96,8 +45,8 @@ task update_from_eirb: :environment do
       log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
 
       start                   = Time.now
+      updated_eirb_protocols  = []
       created_eirb_protocols  = []
-      created_eirb_pis        = []
 
       ResearchMaster.update_all(eirb_protocol_id: nil)
 
@@ -121,28 +70,19 @@ task update_from_eirb: :environment do
         existing_protocol.date_approved           = study['date_approved']
         existing_protocol.date_expiration         = study['date_expiration']
 
-        existing_protocol.save(validate: false) if existing_protocol.changed?
-
-        if existing_protocol.eirb_state != 'Completed' && ppi = existing_protocol.primary_pi
-          ppi.first_name = study['first_name']
-          ppi.last_name  = study['last_name']
-          ppi.email      = study['pi_email']
-          ppi.net_id     = study['pi_net_id']
-          ppi.department = find_or_create_department(study['pi_department'])
-
-          ppi.save(validate: false) if ppi.changed?
+        if existing_protocol.changed?
+          existing_protocol.save(validate: false)
+          updated_eirb_protocols.append(existing_protocol.id)
         end
 
         if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
           rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
+          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
           if $validated_states.include?(study['state'])
             rm.eirb_validated = true
             rm.short_title     = study['short_title']
             rm.long_title     = study['title']
-
-            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id']) unless study['state'] == 'Completed'
           end
 
           rm.save(validate: false) if rm.changed?
@@ -168,29 +108,23 @@ task update_from_eirb: :environment do
           date_expiration:          study['date_expiration']
         )
 
-        created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
-
-        if study['first_name'] || study['last_name']
-          pi = PrimaryPi.new(
-            first_name: study['first_name'],
-            last_name:  study['last_name'],
-            department: find_or_create_department(study['pi_department']),
-            protocol:   eirb_protocol
-          )
-
-          created_eirb_pis.append(pi.id) if pi.save
+        if study['pi_net_id']
+          net_id = study['pi_net_id'].slice('@musc.edu')
+          if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            eirb_protocol.primary_pi_id = u.id
+          end
         end
+
+        created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
         if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
           rm.eirb_protocol_id       = eirb_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.sparc_association_date
+          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
           if $validated_states.include?(study['state'])
             rm.eirb_validated = true
             rm.short_title     = study['short_title']
             rm.long_title     = study['title']
-
-            update_eirb_study_pi(rm, study['first_name'], study['last_name'], study['email'], study['pi_net_id'])
           end
 
           rm.save(validate: false) if rm.changed?
@@ -202,9 +136,8 @@ task update_from_eirb: :environment do
       finish = Time.now
 
       log "--- :heavy_check_mark: *Done!*"
+      log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
       log "--- *New protocols total:* #{created_eirb_protocols.count}"
-      log "--- *New primary pis total:* #{created_eirb_pis.count}"
-      log "--- *New primary pi ids:* #{created_eirb_pis}"
       log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
     end
 
