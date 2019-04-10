@@ -63,7 +63,9 @@ task update_from_sparc: :environment do
         existing_protocol.long_title  = protocol['title']
 
         if protocol['ldap_uid']
-          net_id = protocol['ldap_uid'].slice('@musc.edu')
+          net_id = protocol['ldap_uid']
+          net_id.slice!('@musc.edu')
+
           if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
             existing_protocol.primary_pi_id = u.id
           else
@@ -109,7 +111,9 @@ task update_from_sparc: :environment do
         )
 
         if protocol['ldap_uid']
-          net_id = protocol['ldap_uid'].slice('@musc.edu')
+          net_id = protocol['ldap_uid']
+          net_id.slice!('@musc.edu')
+
           if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
             sparc_protocol.primary_pi_id = u.id
           else
