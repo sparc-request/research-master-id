@@ -77,8 +77,11 @@ task update_from_sparc: :environment do
               password: $friendly_token,
               password_confirmation:  $friendly_token
             )
-            u.save(validate: false)
-            created_sparc_pis.append(u.id)
+            if u.valid?
+              u.save(validate: false)
+              existing_protocol.primary_pi_id = u.id
+              created_sparc_pis.append(u.id)
+            end
           end
         end
 
@@ -125,8 +128,12 @@ task update_from_sparc: :environment do
               password: $friendly_token,
               password_confirmation:  $friendly_token
             )
-            u.save(validate: false)
-            created_sparc_pis.append(u.id)
+
+            if u.valid?
+              u.save(validate: false)
+              sparc_protocol.primary_pi_id = u.id
+              created_sparc_pis.append(u.id)
+            end
           end
         end
 
