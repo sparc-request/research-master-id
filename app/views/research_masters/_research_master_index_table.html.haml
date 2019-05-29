@@ -31,9 +31,11 @@
         = link_to new_notifications_path(research_master_id: research_master.id), class: 'btn btn-info', remote: true do
           %span.glyphicon.glyphicon-envelope
     %td
-      = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
-        %span.glyphicon.glyphicon-edit
+      .large_tooltip_wrapper{title: (cannot?(:update, research_master) ? "RMID can not be edited because you do not have rights" : "Edit Research Master"), data: {toggle: "tooltip"}}
+        = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
+          %span.glyphicon.glyphicon-edit
     %td
       .btn-group
-        = link_to 'javascript:void(0)', class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
-          %span.glyphicon.glyphicon-remove
+        .large_tooltip_wrapper{title: (cannot?(:destroy, research_master) ? "RMID can not be removed because it has been associated with protocols" : "Remove Research Master"), data: {toggle: "tooltip"}}
+          = link_to 'javascript:void(0)', class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
+            %span.glyphicon.glyphicon-remove
