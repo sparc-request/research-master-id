@@ -8,10 +8,10 @@ class Ability
     end
 
     can :update, ResearchMaster, creator_id: user.id
-    can :destroy, ResearchMaster, eirb_validated: false, creator_id: user.id
+    can :destroy, ResearchMaster, has_attached_data?: false, creator_id: user.id
 
     can :update, ResearchMaster, pi_id: user.id
-    can :destroy, ResearchMaster, eirb_validated: false, pi_id: user.id
+    can :destroy, ResearchMaster, has_attached_data?: false, pi_id: user.id
 
 
     # Define abilities for the passed in user here. For example:

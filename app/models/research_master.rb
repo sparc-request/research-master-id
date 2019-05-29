@@ -45,4 +45,8 @@ class ResearchMaster < ApplicationRecord
   def self.validated
     where(eirb_validated: true)
   end
+
+  def has_attached_data?
+    eirb_validated? or sparc_protocol_id? or coeus_protocols.any?
+  end
 end
