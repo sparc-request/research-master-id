@@ -109,7 +109,8 @@ task update_from_eirb: :environment do
         )
 
         if study['pi_net_id']
-          net_id = study['pi_net_id'].slice('@musc.edu')
+          net_id = study['pi_net_id']
+          net_id.slice!('@musc.edu')
           if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
             eirb_protocol.primary_pi_id = u.id
           end
