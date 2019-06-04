@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User clicks show more fields', js: true do
+RSpec.describe 'User clicks show more fields', js: true do
   scenario 'successfully' do
     create_and_sign_in_user
 
