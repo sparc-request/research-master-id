@@ -96,42 +96,44 @@ task update_from_eirb: :environment do
       bar = ProgressBar.new(new_eirb_studies.count)
 
       new_eirb_studies.each do |study|
-        eirb_protocol = Protocol.new(
-          type:                     study['type'],
-          short_title:              study['short_title'] || "",
-          long_title:               study['title'] || "",
-          eirb_id:                  study['pro_number'],
-          eirb_institution_id:      study['institution_id'],
-          eirb_state:               study['state'],
-          date_initially_approved:  study['date_initially_approved'],
-          date_approved:            study['date_approved'],
-          date_expiration:          study['date_expiration']
-        )
+        if study['research_master_id'].present?
+          eirb_protocol = Protocol.new(
+            type:                     study['type'],
+            short_title:              study['short_title'] || "",
+            long_title:               study['title'] || "",
+            eirb_id:                  study['pro_number'],
+            eirb_institution_id:      study['institution_id'],
+            eirb_state:               study['state'],
+            date_initially_approved:  study['date_initially_approved'],
+            date_approved:            study['date_approved'],
+            date_expiration:          study['date_expiration']
+          )
 
-        if study['pi_net_id']
-          net_id = study['pi_net_id']
-          net_id.slice!('@musc.edu')
-          if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
-            eirb_protocol.primary_pi_id = u.id
-          end
-        end
-
-        created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
-
-        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
-          rm.eirb_protocol_id       = eirb_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-          if $validated_states.include?(study['state'])
-            rm.eirb_validated = true
-            rm.short_title     = study['short_title']
-            rm.long_title     = study['title']
+          if study['pi_net_id']
+            net_id = study['pi_net_id']
+            net_id.slice!('@musc.edu')
+            if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+              eirb_protocol.primary_pi_id = u.id
+            end
           end
 
-          rm.save(validate: false) if rm.changed?
-        end
+          created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-        bar.increment! rescue nil
+          if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+            rm.eirb_protocol_id       = eirb_protocol.id
+            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+
+            if $validated_states.include?(study['state'])
+              rm.eirb_validated = true
+              rm.short_title     = study['short_title']
+              rm.long_title     = study['title']
+            end
+
+            rm.save(validate: false) if rm.changed?
+          end
+
+          bar.increment! rescue nil
+        end
       end
 
       finish = Time.now
