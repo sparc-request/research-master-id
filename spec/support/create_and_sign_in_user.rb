@@ -10,5 +10,5 @@ module CreateAndSignInUser
 end
 
 RSpec.configure do |config|
-  config.include CreateAndSignInUser, type: :feature
+  config.include CreateAndSignInUser
 end

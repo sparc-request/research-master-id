@@ -7,7 +7,6 @@ describe ResearchMasterNotifier do
     it 'should still send an email if rm_pi is nil' do
       user = create(:user)
       rm_id = create(:research_master,
-                     department: 'dept',
                      long_title: 'long',
                      short_title: 'short',
                      funding_source: 'funding',
@@ -24,7 +23,6 @@ describe ResearchMasterNotifier do
     it 'should still send an email if user email is nil' do
       user = create(:user)
       rm_id = create(:research_master,
-                     department: 'dept',
                      long_title: 'long',
                      short_title: 'short',
                      funding_source: 'funding',
@@ -41,7 +39,6 @@ describe ResearchMasterNotifier do
       user = create(:user)
       pi = create(:user)
       rm_id = create(:research_master,
-                     department: 'dept',
                      long_title: 'long',
                      short_title: 'short',
                      funding_source: 'funding',

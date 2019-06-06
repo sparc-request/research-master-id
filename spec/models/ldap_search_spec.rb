@@ -3,36 +3,20 @@ require 'rails_helper'
 describe LdapSearch do
 
   describe '#info_query' do
-    it 'should return my name' do
-      ldap_search = LdapSearch.new
-
-      result = ldap_search.info_query('holt')
-
-      expect(result).to include ['William Holt', 'holtw@musc.edu']
-    end
-
-    it 'should return my email' do
-      ldap_search = LdapSearch.new
-
-      result = ldap_search.info_query('holt')
-
-      expect(result).to include ['William Holt', 'holtw@musc.edu']
-    end
-
-    it 'should not return my name' do
+    it 'should return a users info' do
       ldap_search = LdapSearch.new
 
       result = ldap_search.info_query('cates')
 
-      expect(result).not_to include ['William Holt', 'holtw@musc.edu']
+      expect(result).to include({name: "Andrew M. Cates", first_name: "Andrew", last_name: "Cates", middle_initial: "M.", email: "catesa@musc.edu", netid: "anc63", pvid: "900098838", active: true, affiliate: false})
     end
 
-    it 'should return Jays name' do
+    it 'should not return a non-matching users info' do
       ldap_search = LdapSearch.new
 
-      result = ldap_search.info_query('cates')
+      result = ldap_search.info_query('holt')
 
-      expect(result).to include ['Andrew Cates', 'catesa@musc.edu']
+      expect(result).not_to include({name: "Andrew M. Cates", first_name: "Andrew", last_name: "Cates", middle_initial: "M.", email: "catesa@musc.edu", netid: "anc63", pvid: "900098838", active: true, affiliate: false})
     end
   end
 end
