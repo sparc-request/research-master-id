@@ -14,6 +14,7 @@
       = hidden_field_tag 'pi_last_name', (f.object.pi.present? ? f.object.pi.last_name : nil)
       = hidden_field_tag 'pi_middle_initial', (f.object.pi.present? ? f.object.pi.middle_initial : nil)
       = hidden_field_tag 'pi_pvid', (f.object.pi.present? ? f.object.pi.pvid : nil)
+      = hidden_field_tag 'page', @page
       .form-group
         %label{class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
           = t(:research_masters)[:new][:fields][:pi_name] + " *"

@@ -24,6 +24,7 @@ class ResearchMastersController < ApplicationController
   end
 
   def new
+    @page = params[:page]
     @research_master = ResearchMaster.new
     respond_to do |format|
       format.js
@@ -31,6 +32,7 @@ class ResearchMastersController < ApplicationController
   end
 
   def edit
+    @page = params[:page]
     @research_master = ResearchMaster.find(params[:id])
     authorize! :update, @research_master
     respond_to do |format|
@@ -82,8 +84,9 @@ class ResearchMastersController < ApplicationController
   private
 
   def find_rm_records
+    @page = params[:page]
     @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result.includes(:pi).page(params[:page])
+    @research_masters = @q.result.includes(:pi).page(@page)
   end
 
   def find_or_create_pi

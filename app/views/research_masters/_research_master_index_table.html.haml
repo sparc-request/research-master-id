@@ -32,7 +32,7 @@
           %span.glyphicon.glyphicon-envelope
     %td
       .large_tooltip_wrapper{title: (cannot?(:update, research_master) ? "RMID can not be edited because you do not have rights" : "Edit Research Master"), data: {toggle: "tooltip"}}
-        = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
+        = link_to edit_research_master_path(research_master, page: @page), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
           %span.glyphicon.glyphicon-edit
     %td
       .btn-group
