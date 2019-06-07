@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.8.1'
+lock '3.11.0'
 
 set :application, 'research-master-id'
 set :repo_url, 'git@github.com:HSSC/research-master-id.git'
