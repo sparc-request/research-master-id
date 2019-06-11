@@ -70,9 +70,20 @@ class ResearchMastersController < ApplicationController
     end
   end
 
+  def reason_form
+    @research_master = ResearchMaster.find(params[:research_master_id])
+    @deleted_rmid = DeletedRmid.new()
+  end
+
   def destroy
     @research_master = ResearchMaster.find(params[:id])
+    @rmid_id = @research_master.id
     authorize! :destroy, @research_master
+
+    deleted_rmid = DeletedRmid.new(research_master_params)
+    deleted_rmid.reason = params[:reason]
+    deleted_rmid.save
+
     if @research_master.sparc_protocol_id
       HTTParty.patch(
         "#{ENV.fetch('SPARC_URL')}/protocols/#{Protocol.find(@research_master.sparc_protocol_id).sparc_id}/research_master?access_token=#{ENV.fetch('SPARC_API_TOKEN')}"
