@@ -17,7 +17,7 @@
             = f.label :eirb_id_cont, 'Search by eIRB Pro #', class: 'col-xs-2 control-label'
             .col-xs-10
               .input-group
-                = f.search_field :eirb_id_cont, class: 'form-control', placeholder: 'eIRB ID' 
+                = f.search_field :eirb_id_cont, class: 'form-control', placeholder: 'eIRB ID'
                 .input-group-btn
                   %button.btn.btn-danger.clear-selection
                     %i.glyphicon.glyphicon-remove-circle
@@ -93,4 +93,4 @@
   - else
     %h1.text-center
       You haven't searched for any Protocols
-= render "research_masters/new_research_master_modal"
+= render "research_masters/research_master_modal"

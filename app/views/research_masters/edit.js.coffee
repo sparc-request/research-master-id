@@ -1,3 +1,3 @@
-$('#newResearchMasterModal').modal('show')
-$('#newResearchMasterModal .modal-dialog').html("<%= j render 'form' %>")
-$("#newResearchMasterModal [data-toggle='tooltip']").tooltip()
+$('#ResearchMasterModal').modal('show')
+$('#ResearchMasterModal .modal-dialog').html("<%= j render 'form' %>")
+$("#ResearchMasterModal [data-toggle='tooltip']").tooltip()

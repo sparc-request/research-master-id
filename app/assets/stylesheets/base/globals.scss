@@ -49,3 +49,10 @@
   max-height: 300px;
   overflow-y: auto;
 }
+
+.input-group.reason_box {
+  width: 350px;
+  textarea {
+    height: 100px;
+  }
+}
