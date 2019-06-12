@@ -1,0 +1,40 @@
+%tr{ class: 'rm-row', id: "research_master_#{research_master.id}" }
+  %td.research-master{ data: { id: research_master.id } }
+    = research_master.id
+  %td.research-master{ data: { id: research_master.id } }
+    = display_all_system_colors(research_master)
+  %td.research-master{ data: { id: research_master.id } }
+    = research_master.pi.name
+  %td.research-master{ data: { id: research_master.id } }
+    = research_master.pi.department
+  %td.research-master{ data: { id: research_master.id } }
+    - if research_master.eirb_validated?
+      %h6.text-success
+        Updated to corresponding eIRB Protocol Title
+      = research_master.long_title
+    - else
+      = research_master.long_title
+  %td.research-master{ data: { id: research_master.id } }
+    - if research_master.eirb_validated?
+      %h6.text-success
+        Updated to corresponding eIRB Protocol Short Title
+      = research_master.short_title
+    - else
+      = research_master.short_title
+  %td.research-master{ data: { id: research_master.id } }
+    = research_master.funding_source
+  %td.research-master{ data: { id: research_master.id } }
+    = display_research_type(research_master.research_type)
+  - if current_user.admin?
+    %td
+      = link_to new_notifications_path(research_master_id: research_master.id), class: 'btn btn-info', remote: true do
+        %span.glyphicon.glyphicon-envelope
+  %td
+    .large_tooltip_wrapper{title: (cannot?(:update, research_master) ? "RMID can not be edited because you do not have rights" : "Edit Research Master"), data: {toggle: "tooltip"}}
+      = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
+        %span.glyphicon.glyphicon-edit
+  %td
+    .btn-group
+      .large_tooltip_wrapper{title: (cannot?(:destroy, research_master) ? "RMID can not be removed because you do not have rights, or it has been associated with protocols" : "Remove Research Master"), data: {toggle: "tooltip"}}
+        = link_to research_master_reason_form_path(research_master), remote: true, class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
+          %span.glyphicon.glyphicon-remove

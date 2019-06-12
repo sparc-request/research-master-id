@@ -1,7 +1,7 @@
 class ResearchMastersController < ApplicationController
   layout 'main'
   protect_from_forgery except: [:show, :new, :edit]
-  before_action :find_rm_records, only: [:index, :create, :update]
+  before_action :find_rm_records, only: [:index]
 
   def index
     respond_to do |format|
@@ -24,7 +24,6 @@ class ResearchMastersController < ApplicationController
   end
 
   def new
-    @page = params[:page]
     @research_master = ResearchMaster.new
     respond_to do |format|
       format.js
@@ -32,7 +31,6 @@ class ResearchMastersController < ApplicationController
   end
 
   def edit
-    @page = params[:page]
     @research_master = ResearchMaster.find(params[:id])
     authorize! :update, @research_master
     respond_to do |format|
@@ -95,7 +93,6 @@ class ResearchMastersController < ApplicationController
   private
 
   def find_rm_records
-    @page = params[:page]
     @q = ResearchMaster.ransack(params[:q])
     @research_masters = @q.result.includes(:pi).page(@page)
   end
