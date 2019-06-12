@@ -6,6 +6,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, omniauth_providers: [:shibboleth]
 
+  has_many :deleted_rmids
 
   attr_accessor :login
 

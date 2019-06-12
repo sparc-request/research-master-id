@@ -1,0 +1,30 @@
+= form_for @research_master, method: :delete, html: { class: 'form-horizontal' }, remote: true do |f|
+  .modal-content
+    .modal-header
+      %button{ class: 'close', data: { dismiss: 'modal' } }
+        %span
+          &times;
+      %h4.modal-title Why is this RMID being removed?
+    .modal-body
+      = f.hidden_field 'original_id', value: @research_master.id
+      = f.hidden_field 'long_title', value: @research_master.long_title
+      = f.hidden_field 'short_title', value: @research_master.short_title
+      = f.hidden_field 'creator_id', value: @research_master.creator_id
+      = f.hidden_field 'pi_id', value: @research_master.pi_id
+      = f.hidden_field 'sparc_protocol_id', value: @research_master.sparc_protocol_id
+      = f.hidden_field 'eirb_protocol_id', value: @research_master.eirb_protocol_id
+      = f.hidden_field 'research_type', value: @research_master.research_type
+      = f.hidden_field 'user_id', value: current_user.id
+
+      .form-group
+        %label{class: 'col-xs-3 control-label'}
+          = t(:research_masters)[:reason][:reason]
+        .col-xs-9
+          .input-group.reason_box
+            = text_area_tag 'reason', '', class: "form-control"
+
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+        Close
+      = f.submit 'Submit', class: 'btn btn-primary'
+
