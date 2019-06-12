@@ -36,6 +36,6 @@
           %span.glyphicon.glyphicon-edit
     %td
       .btn-group
-        .large_tooltip_wrapper{title: (cannot?(:destroy, research_master) ? "RMID can not be removed because it has been associated with protocols" : "Remove Research Master"), data: {toggle: "tooltip"}}
-          = link_to 'javascript:void(0)', class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
+        .large_tooltip_wrapper{title: (cannot?(:destroy, research_master) ? "RMID can not be removed because you do not have rights, or it has been associated with protocols" : "Remove Research Master"), data: {toggle: "tooltip"}}
+          = link_to research_master_reason_form_path(research_master), remote: true, class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
             %span.glyphicon.glyphicon-remove
