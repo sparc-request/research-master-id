@@ -40,8 +40,8 @@ describe ResearchMastersController, type: :controller do
     end
 
     it 'should set instance variables' do
-      protocol_one = create(:protocol, type: 'SPARC')
-      protocol_two = create(:protocol, type: 'EIRB')
+      protocol_one = create(:protocol, type: 'SPARC', primary_pi: create(:user, name: 'pi'))
+      protocol_two = create(:protocol, type: 'EIRB', primary_pi: create(:user, name: 'pi'))
       user = create(:user)
       rm = create(:research_master,
                   sparc_protocol_id: protocol_one.id,
@@ -111,7 +111,6 @@ describe ResearchMastersController, type: :controller do
       expect { post :create,
         params: {
           research_master: {
-            department: 'department',
             long_title: 'long title',
             short_title: 'short',
             funding_source: 'source',

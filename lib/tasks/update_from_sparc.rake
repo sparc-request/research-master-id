@@ -105,48 +105,50 @@ task update_from_sparc: :environment do
       bar = ProgressBar.new(new_sparc_protocols.count)
 
       new_sparc_protocols.each do |protocol|
-        sparc_protocol = Protocol.new(
-          type:             protocol['type'],
-          short_title:      protocol['short_title'],
-          long_title:       protocol['title'],
-          sparc_id:         protocol['id'],
-          sparc_pro_number: protocol['pro_number']
-        )
+        if protocol['research_master_id'].present?
+          sparc_protocol = Protocol.new(
+            type:             protocol['type'],
+            short_title:      protocol['short_title'],
+            long_title:       protocol['title'],
+            sparc_id:         protocol['id'],
+            sparc_pro_number: protocol['pro_number']
+          )
 
-        if protocol['ldap_uid']
-          net_id = protocol['ldap_uid']
-          net_id.slice!('@musc.edu')
+          if protocol['ldap_uid']
+            net_id = protocol['ldap_uid']
+            net_id.slice!('@musc.edu')
 
-          if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
-            sparc_protocol.primary_pi_id = u.id
-          else
-            u = User.new(
-              net_id: net_id,
-              email: protocol['email'],
-              first_name: protocol['first_name'],
-              last_name: protocol['last_name'],
-              password: $friendly_token,
-              password_confirmation:  $friendly_token
-            )
-
-            if u.valid?
-              u.save(validate: false)
+            if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
               sparc_protocol.primary_pi_id = u.id
-              created_sparc_pis.append(u.id)
+            else
+              u = User.new(
+                net_id: net_id,
+                email: protocol['email'],
+                first_name: protocol['first_name'],
+                last_name: protocol['last_name'],
+                password: $friendly_token,
+                password_confirmation:  $friendly_token
+              )
+
+              if u.valid?
+                u.save(validate: false)
+                sparc_protocol.primary_pi_id = u.id
+                created_sparc_pis.append(u.id)
+              end
             end
           end
+
+          created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
+
+          if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+            rm.sparc_protocol_id      = sparc_protocol.id
+            rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+
+            rm.save(validate: false) if rm.changed?
+          end
+
+          bar.increment! rescue nil
         end
-
-        created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
-
-        if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
-          rm.sparc_protocol_id      = sparc_protocol.id
-          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
-
-          rm.save(validate: false) if rm.changed?
-        end
-
-        bar.increment! rescue nil
       end
 
       finish = Time.now

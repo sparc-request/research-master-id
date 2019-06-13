@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Developer should proceed to API portal', js: true do
+RSpec.describe 'Developer should proceed to API portal', js: true do
   before :each do
     create_and_sign_in_user
     user = User.first

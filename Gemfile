@@ -38,8 +38,9 @@ gem 'net-scp'
 
 group :development, :test do
   gem 'byebug'
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails'
   gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'puma', '~> 3.12'
 end
 
 group :development do
@@ -54,9 +55,8 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
-  gem 'database_cleaner'
   gem 'capybara'
-  gem 'capybara-webkit'
+  gem 'webdrivers'
   gem 'rails-controller-testing'
 end
 

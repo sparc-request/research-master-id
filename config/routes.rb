@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   root 'research_masters#index'
 
-  resources :research_masters
+  resources :research_masters do
+    match 'reason_form' => 'research_masters#reason_form', via: [:get]
+  end
 
   resource :notifications
 

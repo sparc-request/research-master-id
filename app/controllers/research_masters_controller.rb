@@ -1,7 +1,7 @@
 class ResearchMastersController < ApplicationController
   layout 'main'
   protect_from_forgery except: [:show, :new, :edit]
-  before_action :find_rm_records, only: [:index, :create, :update]
+  before_action :find_rm_records, only: [:index]
 
   def index
     respond_to do |format|
@@ -68,9 +68,20 @@ class ResearchMastersController < ApplicationController
     end
   end
 
+  def reason_form
+    @research_master = ResearchMaster.find(params[:research_master_id])
+    @deleted_rmid = DeletedRmid.new()
+  end
+
   def destroy
     @research_master = ResearchMaster.find(params[:id])
+    @rmid_id = @research_master.id
     authorize! :destroy, @research_master
+
+    deleted_rmid = DeletedRmid.new(research_master_params)
+    deleted_rmid.reason = params[:reason]
+    deleted_rmid.save
+
     if @research_master.sparc_protocol_id
       HTTParty.patch(
         "#{ENV.fetch('SPARC_URL')}/protocols/#{Protocol.find(@research_master.sparc_protocol_id).sparc_id}/research_master?access_token=#{ENV.fetch('SPARC_API_TOKEN')}"
@@ -83,7 +94,7 @@ class ResearchMastersController < ApplicationController
 
   def find_rm_records
     @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result.includes(:pi).page(params[:page])
+    @research_masters = @q.result.includes(:pi).page(@page)
   end
 
   def find_or_create_pi
