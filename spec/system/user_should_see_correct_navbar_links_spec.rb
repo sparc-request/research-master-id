@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User should see correct navbar links', js: true do
+RSpec.describe 'User should see correct navbar links', js: true do
 
   scenario 'developer' do
     create_and_sign_in_user

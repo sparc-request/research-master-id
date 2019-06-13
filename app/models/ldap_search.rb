@@ -40,7 +40,7 @@ class LdapSearch
       fields = ['givenname', 'sn', 'mail', 'userprincipalname', 'muscaccountname', 'samaccountname']
     end
 
-    filter = fields.map { |f| Net::LDAP::Filter.eq(f, name) }.inject(:|)
+    filter = fields.map { |f| Net::LDAP::Filter.eq(f, name + "*") }.inject(:|)
 
     ldaps.each do |key,ldap|
       ldap.search(:base => ldap.base, :filter => filter) do |entry|

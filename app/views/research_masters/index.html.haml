@@ -63,7 +63,7 @@
       Clear Search Form
 .col-xs-6.col-xs-offset-3
   .text-center
-    = link_to 'Create Research Master ID', new_research_master_path, class: 'btn btn-primary btn-block create-research-master', remote: true
+    = link_to 'Create Research Master ID', new_research_master_path(), class: 'btn btn-primary btn-block create-research-master', remote: true
 %div#divider
 %table.table.table-striped.table-hover#research-master-records
   %thead
@@ -95,7 +95,7 @@
       = render "research_master_index_table", research_masters: @research_masters
 .text-center
   = paginate @research_masters
-%div{ class: 'modal fade', id: 'showResearchMasterModal', tabindex: '-1' }
+%div{ class: 'modal fade', id: 'showresearch_master_modal', tabindex: '-1' }
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
@@ -108,4 +108,4 @@
       .modal-footer
         %button{class: 'btn btn-default', data: { dismiss: 'modal' } }
           Close
-= render "research_masters/new_research_master_modal"
+= render "research_masters/research_master_modal"
