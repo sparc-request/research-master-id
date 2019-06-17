@@ -94,7 +94,7 @@ class ResearchMastersController < ApplicationController
 
   def find_rm_records
     @q = ResearchMaster.ransack(params[:q])
-    @research_masters = @q.result.includes(:pi).page(@page)
+    @research_masters = @q.result.includes(:pi).page(params[:page])
   end
 
   def find_or_create_pi
