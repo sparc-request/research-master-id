@@ -16,11 +16,6 @@
               = link_to new_api_api_key_path do
                 API
                 %i.glyphicon.glyphicon-flash
-          - if current_user.admin?
-            %li
-              = link_to protocols_path do
-                Protocols
-                %i.glyphicon.glyphicon-th-list
         %li
           - if user_signed_in?
             - if ENV.fetch('ENVIRONMENT') == 'development'
