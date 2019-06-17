@@ -17,14 +17,21 @@
       = f.hidden_field 'user_id', value: current_user.id
 
       .form-group
-        %label{class: 'col-xs-3 control-label'}
+        %label{class: 'col-xs-4 control-label'}
           = t(:research_masters)[:reason][:reason]
-        .col-xs-9
-          .input-group.reason_box
-            = text_area_tag 'reason', '', class: "form-control"
+        .col-xs-8
+          .input-group
+            = select_tag 'reason', options_for_select([ 'Duplicate Entry', 'Incorrect Entry', 'Other' ]), prompt: "Please select a reason", class: "form-control"
+
+      .form-group
+        %label{class: 'col-xs-4 control-label'}
+          = t(:research_masters)[:reason][:more_details]
+        .col-xs-8
+          .input-group.explanation_box
+            = text_area_tag 'explanation', '', class: "form-control"
 
     .modal-footer
       %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
         Close
-      = f.submit 'Submit', class: 'btn btn-primary'
+      = f.submit 'Submit', disabled: true, class: 'btn btn-primary reason_submit'
 
