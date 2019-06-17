@@ -96,4 +96,5 @@ en:
         clinical_billable: "hospital, outpatient, laboratory or professional billing"
         clinical_non_billable: "not human subjects, chart review, observational or survey only"
     reason:
-      reason: "Reason for removal:"
+      reason: "Reason for removal: *"
+      more_details: "More details:"

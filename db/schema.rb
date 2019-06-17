@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_10_155008) do
+ActiveRecord::Schema.define(version: 2019_06_17_142142) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -65,9 +65,10 @@ ActiveRecord::Schema.define(version: 2019_06_10_155008) do
     t.integer "eirb_protocol_id"
     t.string "research_type"
     t.integer "user_id"
-    t.text "reason"
+    t.string "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "explanation"
   end
 
   create_table "departments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

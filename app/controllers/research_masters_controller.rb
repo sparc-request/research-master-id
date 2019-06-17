@@ -80,6 +80,7 @@ class ResearchMastersController < ApplicationController
 
     deleted_rmid = DeletedRmid.new(research_master_params)
     deleted_rmid.reason = params[:reason]
+    deleted_rmid.explanation = params[:explanation]
     deleted_rmid.save
 
     if @research_master.sparc_protocol_id
