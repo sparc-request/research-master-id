@@ -23,3 +23,11 @@ $ ->
       addCookie('showMoreCookie', 1)
     else
       removeCookie('showMoreCookie')
+
+  $(document).on 'change', 'select#reason', ->
+    if $(this).val() == ''
+      ##Disable submit
+      $('input.reason_submit').attr("disabled", true)
+    else
+      ##Enable submit
+      $('input.reason_submit').removeAttr("disabled")
