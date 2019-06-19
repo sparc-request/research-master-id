@@ -1,0 +1,65 @@
+:css
+  table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+  }
+
+  td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+
+%p A research master record has been removed. Details of removed record below:
+
+%table
+  %tr
+    %th
+      RMID
+    %th
+      = @deleted_rmid.original_id
+  %tr
+    %th
+      PI Name
+    %th
+      = @pi.name
+  %tr
+    %th
+      Short Title
+    %th
+      = @deleted_rmid.short_title
+  %tr
+    %th
+      Long Title
+    %th
+      = @deleted_rmid.long_title
+  %tr
+    %th
+      Research Type
+    %th
+      = @deleted_rmid.research_type.titleize
+  %tr
+    %th
+      Creator
+    %th
+      = @creator.name || @creator.email
+  %tr
+    %th
+      Remover
+    %th
+      = @remover.name || @remover.email
+  %tr
+    %th
+      Selected Reason
+    %th
+      = @deleted_rmid.reason
+  %tr
+    %th
+      Explanation
+    %th
+      = @deleted_rmid.explanation
+%p
+  Please contact the SUCCESS Center at (843) 792-8300 or
+  = mail_to 'rmid@musc.edu'
+  with any questions you may have.
