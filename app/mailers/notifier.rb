@@ -11,4 +11,16 @@ class Notifier < ActionMailer::Base
       from: 'donotreply@musc.edu'
     )
   end
+
+  def removed(deleted_rmid)
+    @deleted_rmid = deleted_rmid
+    @pi = User.find(@deleted_rmid.pi_id)
+    @creator = User.find(@deleted_rmid.creator_id)
+    @remover = User.find(@deleted_rmid.user_id)
+    combined_emails = (@pi.email == @creator.email ? @pi.email : [@pi.email, @creator.email])
+    address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : combined_emails
+    mail(
+      to: address,
+      subject: "Research Master Record Removed (RMID: #{@deleted_rmid.original_id}")
+  end
 end

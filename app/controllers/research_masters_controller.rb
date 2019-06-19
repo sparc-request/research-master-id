@@ -89,6 +89,7 @@ class ResearchMastersController < ApplicationController
       )
     end
     @research_master.destroy
+    SendRemovedEmailJob.perform_later(deleted_rmid)
   end
 
   private
