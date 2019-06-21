@@ -21,6 +21,8 @@ class Notifier < ActionMailer::Base
     address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : combined_emails
     mail(
       to: address,
-      subject: "Research Master Record Removed (RMID: #{@deleted_rmid.original_id}")
+      subject: "Research Master Record Removed (RMID: #{@deleted_rmid.original_id}",
+      from: 'donotreply@musc.edu'
+    )
   end
 end
