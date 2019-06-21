@@ -119,7 +119,7 @@ task update_from_eirb: :environment do
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
             rm.eirb_protocol_id       = eirb_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 

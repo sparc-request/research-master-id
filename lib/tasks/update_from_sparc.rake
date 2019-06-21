@@ -140,7 +140,7 @@ task update_from_sparc: :environment do
 
           created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
-          if protocol['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
+          if rm = $research_masters.detect{ |rm| rm.id == protocol['research_master_id'] }
             rm.sparc_protocol_id      = sparc_protocol.id
             rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
 
