@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     match 'reason_form' => 'research_masters#reason_form', via: [:get]
   end
 
+  match 'deleted_rmids' => 'deleted_rmids#index', via: [:get]
+
   resource :notifications
 
   resource :detail, only: [:show]
