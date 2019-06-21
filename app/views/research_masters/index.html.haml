@@ -5,6 +5,8 @@
       .form-group
         = f.label :pi_name_cont, t(:research_masters)[:index][:search_fields][:pi_name], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:pi_name]
         .col-xs-10
+          .spinner.rmid_search_spinner
+            = image_tag 'spinner_small.gif'
           .input-group
             = f.search_field :pi_name_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:pi_name]
             .input-group-btn
