@@ -1,0 +1,29 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th RMID
+      %th Long Title
+      %th Short Title
+      %th Creator Name
+      %th PI Name
+      %th SPARC Protocol ID
+      %th EIRB Protocol ID
+      %th Research Type
+      %th Deleted By
+      %th Reason Chosen
+      %th Explanation
+
+  %tbody
+    - @deleted_rmids.each do |rmid|
+      %tr
+        %td= rmid.original_id
+        %td= rmid.long_title
+        %td= rmid.short_title
+        %td= rmid.creator.name
+        %td= rmid.pi.name
+        %td= rmid.sparc_protocol_id
+        %td= rmid.eirb_protocol_id
+        %td= rmid.research_type.titleize
+        %td= rmid.user.name
+        %td= rmid.reason
+        %td= rmid.explanation

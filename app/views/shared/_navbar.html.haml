@@ -6,6 +6,7 @@
       = link_to 'ePDS', ENV.fetch('EPDS_URL'), class: 'navbar-brand', target: '_blank'
       = link_to 'About RMID', ENV.fetch('ABOUT_URL'),
         class: 'navbar-brand', target: '_blank'
+      = link_to 'Removed RMIDs', "/deleted_rmids", class: 'navbar-brand', target: '_blank'
     #navbar
       %ul.nav.navbar-nav.navbar-right
         - if user_signed_in?
