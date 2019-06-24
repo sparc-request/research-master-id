@@ -12,6 +12,7 @@
       %th Deleted By
       %th Reason Chosen
       %th Explanation
+      %th Deleted Date
 
   %tbody
     - @deleted_rmids.each do |rmid|
@@ -27,3 +28,4 @@
         %td= rmid.user.name
         %td= rmid.reason
         %td= rmid.explanation
+        %td= rmid.created_at.strftime("%D")
