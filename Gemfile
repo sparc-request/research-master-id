@@ -39,7 +39,7 @@ gem 'net-scp'
 group :development, :test do
   gem 'byebug'
   gem 'rspec-rails'
-  gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'factory_girl_rails', '~> 4.9.0'
   gem 'puma', '~> 3.12'
 end
 
