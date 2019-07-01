@@ -7,6 +7,7 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [:shibboleth]
 
   has_many :deleted_rmids
+  has_many :protocols, foreign_key: :primary_pi_id
 
   attr_accessor :login
 
