@@ -28,7 +28,12 @@ task :remove_pvidless_rmidless_users_and_protocols => :environment do
       puts "Skipping ID:#{user.id} Email: #{user.email} Netid: #{user.net_id} because they have RMID records (#{user.research_masters.map(&:id)})"
     else
       puts "Removing data for ID:#{user.id} Email: #{user.email} Netid: #{user.net_id} (protocols count #{user.protocols.count})"
-      user.protocols.destroy
+
+      protocols = user.protocols
+      protocols.each do |protocol|
+        protocol.destroy
+      end
+
       user.destroy
     end
   end
