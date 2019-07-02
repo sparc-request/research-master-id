@@ -28,9 +28,10 @@ task update_from_sparc: :environment do
 
     log "--- *Fetching from SPARC_API...*"
 
-    start     = Time.now
-    protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
-    finish    = Time.now
+    start       = Time.now
+    protocols   = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    finish      = Time.now
+    ldap_search = LdapSearch.new
 
     if protocols.is_a?(String)
       log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
@@ -117,6 +118,7 @@ task update_from_sparc: :environment do
           if protocol['ldap_uid']
             net_id = protocol['ldap_uid']
             net_id.slice!('@musc.edu')
+            pvid = ldap_search.info_query(net_id, false, true)
 
             if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
               sparc_protocol.primary_pi_id = u.id
@@ -126,6 +128,7 @@ task update_from_sparc: :environment do
                 email: protocol['email'],
                 first_name: protocol['first_name'],
                 last_name: protocol['last_name'],
+                pvid: pvid.empty? ? nil : pvid[0][:pvid],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
