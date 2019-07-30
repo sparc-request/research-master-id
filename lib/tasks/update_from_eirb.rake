@@ -114,6 +114,20 @@ task update_from_eirb: :environment do
             net_id.slice!('@musc.edu')
             if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
               eirb_protocol.primary_pi_id = u.id
+            else
+              u = User.new(
+                net_id: net_id,
+                email: protocol['pi_email'],
+                first_name: protocol['first_name'],
+                last_name: protocol['last_name'],
+                department: protocol['pi_department'],
+                password: $friendly_token,
+                password_confirmation:  $friendly_token
+              )
+              if u.valid?
+                u.save(validate: false)
+                eirb_protocol.primary_pi_id = u.id
+              end
             end
           end
 
