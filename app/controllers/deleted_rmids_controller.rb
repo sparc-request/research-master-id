@@ -3,8 +3,8 @@ class DeletedRmidsController < ApplicationController
   protect_from_forgery
 
   def index
-    @deleted_rmids = DeletedRmid.all
     @q = DeletedRmid.ransack(params[:q])
+    @deleted_rmids = @q.result
     respond_to do |format|
       format.html
     end
