@@ -3,17 +3,26 @@
     %tr
       %th
         = sort_link(@q, :id, 'RMID')
-      %th Long Title
-      %th Short Title
-      %th Creator Name
-      %th PI Name
-      %th SPARC Protocol ID
-      %th EIRB Protocol ID
-      %th Research Type
-      %th Deleted By
+      %th 
+        = sort_link(@q, :long_title, 'Long Title')
+      %th
+        = sort_link(@q, :short_title, 'Short Title')
+      %th 
+        = sort_link(@q, :creator_name, 'Creator Name')
+      %th 
+        = sort_link(@q, :pi_name, 'PI Name')
+      %th 
+        = sort_link(@q, :sparc_protocol_id, 'SPARC Protocol ID')
+      %th 
+        = sort_link(@q, :eirb_protocol_id, 'EIRB Protocol ID')
+      %th 
+        = sort_link(@q, :research_type, 'Research Type')
+      %th 
+        = sort_link(@q, :user_name, 'Deleted By')
       %th Reason Chosen
       %th Explanation
-      %th Deleted Date
+      %th 
+        = sort_link(@q, :created_at, 'Deleted Date')
 
   %tbody
     - @deleted_rmids.each do |rmid|
