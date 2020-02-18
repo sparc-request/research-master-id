@@ -4,6 +4,7 @@ class DeletedRmidsController < ApplicationController
 
   def index
     @deleted_rmids = DeletedRmid.all
+    @q = DeletedRmid.ransack(params[:q])
     respond_to do |format|
       format.html
     end
