@@ -75,6 +75,7 @@ task update_from_sparc: :environment do
               email: protocol['email'],
               first_name: protocol['first_name'],
               last_name: protocol['last_name'],
+              department: protocol['pi_department'],
               password: $friendly_token,
               password_confirmation:  $friendly_token
             )
@@ -128,6 +129,7 @@ task update_from_sparc: :environment do
                 email: protocol['email'],
                 first_name: protocol['first_name'],
                 last_name: protocol['last_name'],
+                department: protocol['pi_department'],
                 pvid: pvid.empty? ? nil : pvid[0][:pvid],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
