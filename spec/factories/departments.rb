@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :department do
-    name "MyString"
+    name { Faker::Lorem.word }
   end
 
 end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   sequence :department do |n|
     "department-#{n}"
   end
@@ -10,11 +10,10 @@ FactoryGirl.define do
   end
   factory :research_master do
     long_title
-    short_title "short title bra"
-    funding_source "who knows"
-    research_type 'clinical_something'
+    short_title
+    funding_source { Faker::Lorem.word }
+    research_type { Faker::Lorem.word }
     association :creator, factory: :user
     association :pi, factory: :user
   end
 end
-
