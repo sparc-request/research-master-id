@@ -2,7 +2,7 @@
   %thead
     %tr
       %th
-        = sort_link(@q, :id, 'RMID')
+        = sort_link(@q, :original_id, 'RMID')
       %th 
         = sort_link(@q, :long_title, 'Long Title')
       %th
@@ -19,7 +19,8 @@
         = sort_link(@q, :research_type, 'Research Type')
       %th 
         = sort_link(@q, :user_name, 'Deleted By')
-      %th Reason Chosen
+      %th 
+        = sort_link(@q, :reason, 'Reason Chosen')
       %th Explanation
       %th 
         = sort_link(@q, :created_at, 'Deleted Date')
