@@ -76,12 +76,12 @@ task update_from_eirb: :environment do
         end
 
         if study['research_master_id'].present?
-
           if study['pi_net_id']
             net_id = study['pi_net_id']
             net_id.slice!('@musc.edu')
             if u = User.where(net_id: net_id).first
               existing_protocol.primary_pi_id = u.id
+              existing_protocol.save(validate: false)
             else
               u = User.new(
                 net_id: net_id,
@@ -95,6 +95,7 @@ task update_from_eirb: :environment do
               if u.valid?
                 u.save(validate: false)
                 existing_protocol.primary_pi_id = u.id
+                existing_protocol.save(validate: false)
               end
             end
           end
@@ -139,6 +140,7 @@ task update_from_eirb: :environment do
             net_id.slice!('@musc.edu')
             if u = User.where(net_id: net_id).first
               eirb_protocol.primary_pi_id = u.id
+              eirb_protocol.save(validate: false)
             else
               u = User.new(
                 net_id: net_id,
@@ -152,6 +154,7 @@ task update_from_eirb: :environment do
               if u.valid?
                 u.save(validate: false)
                 eirb_protocol.primary_pi_id = u.id
+                eirb_protocol.save(validate: false)
               end
             end
           end
