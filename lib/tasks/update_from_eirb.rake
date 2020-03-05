@@ -75,17 +75,19 @@ task update_from_eirb: :environment do
           updated_eirb_protocols.append(existing_protocol.id)
         end
 
-        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
-          rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+        if study['research_master_id'].present?
+          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+            rm.eirb_protocol_id       = existing_protocol.id
+            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-          if $validated_states.include?(study['state'])
-            rm.eirb_validated = true
-            rm.short_title     = study['short_title']
-            rm.long_title     = study['title']
+            if $validated_states.include?(study['state'])
+              rm.eirb_validated = true
+              rm.short_title     = study['short_title']
+              rm.long_title     = study['title']
+            end
+
+            rm.save(validate: false) if rm.changed?
           end
-
-          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil
