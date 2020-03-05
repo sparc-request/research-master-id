@@ -76,6 +76,29 @@ task update_from_eirb: :environment do
         end
 
         if study['research_master_id'].present?
+
+          if study['pi_net_id']
+            net_id = study['pi_net_id']
+            net_id.slice!('@musc.edu')
+            if u = User.where(net_id: net_id).first
+              existing_protocol.primary_pi_id = u.id
+            else
+              u = User.new(
+                net_id: net_id,
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
+                password: $friendly_token,
+                password_confirmation:  $friendly_token
+              )
+              if u.valid?
+                u.save(validate: false)
+                existing_protocol.primary_pi_id = u.id
+              end
+            end
+          end
+
           if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
             rm.eirb_protocol_id       = existing_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
@@ -114,15 +137,15 @@ task update_from_eirb: :environment do
           if study['pi_net_id']
             net_id = study['pi_net_id']
             net_id.slice!('@musc.edu')
-            if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            if u = User.where(net_id: net_id).first
               eirb_protocol.primary_pi_id = u.id
             else
               u = User.new(
                 net_id: net_id,
-                email: protocol['pi_email'],
-                first_name: protocol['first_name'],
-                last_name: protocol['last_name'],
-                department: protocol['pi_department'],
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
