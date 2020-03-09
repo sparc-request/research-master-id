@@ -75,17 +75,43 @@ task update_from_eirb: :environment do
           updated_eirb_protocols.append(existing_protocol.id)
         end
 
-        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
-          rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-          if $validated_states.include?(study['state'])
-            rm.eirb_validated = true
-            rm.short_title     = study['short_title']
-            rm.long_title     = study['title']
+        if study['research_master_id'].present?
+          if study['pi_net_id']
+            net_id = study['pi_net_id']
+            net_id.slice!('@musc.edu')
+            if u = User.where(net_id: net_id).first
+              existing_protocol.primary_pi_id = u.id
+              existing_protocol.save(validate: false)
+            else
+              u = User.new(
+                net_id: net_id,
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
+                password: $friendly_token,
+                password_confirmation:  $friendly_token
+              )
+              if u.valid?
+                u.save(validate: false)
+                existing_protocol.primary_pi_id = u.id
+                existing_protocol.save(validate: false)
+              end
+            end
           end
 
-          rm.save(validate: false) if rm.changed?
+          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+            rm.eirb_protocol_id       = existing_protocol.id
+            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+
+            if $validated_states.include?(study['state'])
+              rm.eirb_validated = true
+              rm.short_title     = study['short_title']
+              rm.long_title     = study['title']
+            end
+
+            rm.save(validate: false) if rm.changed?
+          end
         end
 
         bar.increment! rescue nil
@@ -112,21 +138,23 @@ task update_from_eirb: :environment do
           if study['pi_net_id']
             net_id = study['pi_net_id']
             net_id.slice!('@musc.edu')
-            if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            if u = User.where(net_id: net_id).first
               eirb_protocol.primary_pi_id = u.id
+              eirb_protocol.save(validate: false)
             else
               u = User.new(
                 net_id: net_id,
-                email: protocol['pi_email'],
-                first_name: protocol['first_name'],
-                last_name: protocol['last_name'],
-                department: protocol['pi_department'],
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
               if u.valid?
                 u.save(validate: false)
                 eirb_protocol.primary_pi_id = u.id
+                eirb_protocol.save(validate: false)
               end
             end
           end
