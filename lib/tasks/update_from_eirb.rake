@@ -100,7 +100,7 @@ task update_from_eirb: :environment do
             end
           end
 
-          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
             rm.eirb_protocol_id       = existing_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
@@ -161,7 +161,7 @@ task update_from_eirb: :environment do
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
             rm.eirb_protocol_id       = eirb_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
