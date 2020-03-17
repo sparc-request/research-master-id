@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "original_id"
     t.string "long_title"
     t.string "short_title"

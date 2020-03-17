@@ -12,6 +12,8 @@ class ResearchMaster < ApplicationRecord
 
   has_many :research_master_coeus_relations
   has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
+  
+  has_many :cayuse_protocols, class_name: :Protocol, optional: true
 
   paginates_per 50
 
