@@ -6,4 +6,7 @@ class Protocol < ApplicationRecord
 
   has_many :research_master_coeus_relations
   has_many :research_masters, through: :research_master_coeus_relations
+
+  has_many :research_master_cayuse_relations
+  has_many :research_masters, through: :research_master_cayuse_relations
 end

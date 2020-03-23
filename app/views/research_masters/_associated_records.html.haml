@@ -3,7 +3,7 @@
     Associated Protocols
     = "(RMID: #{params[:id]})"
   .panel-body
-    - if @sparc_protocol.nil? && @eirb_protocol.nil? && !@coeus_records.present?
+    - if @sparc_protocol.nil? && @eirb_protocol.nil? && !@coeus_records.present? && !@cayuse_records.present?
       %h1.text-center
         No Associated Protocols
     - else
@@ -55,5 +55,16 @@
                   = cr.mit_award_number
                 %td
                   = 'N/A'
+                %td
+                  = cr.title
+            - @cayuse_records.find_each do |cr|
+              %tr
+                %td
+                  = display_system_color("CAYUSE")
+                  = cr.type
+                %td
+                  = cr.cayuse_project_number
+                %td
+                  = cr.cayuse_pi_name
                 %td
                   = cr.title
