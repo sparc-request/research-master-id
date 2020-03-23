@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_27_175622) do
+ActiveRecord::Schema.define(version: 2020_03_17_213117) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "original_id"
     t.string "long_title"
     t.string "short_title"
@@ -81,7 +81,6 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.string "type"
     t.text "short_title"
     t.text "long_title"
-    t.bigint "primary_pi_id"
     t.integer "sparc_id"
     t.integer "coeus_id"
     t.string "eirb_id"
@@ -99,7 +98,17 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "coeus_project_id"
-    t.index ["primary_pi_id"], name: "index_protocols_on_primary_pi_id"
+    t.string "cayuse_project_number"
+    t.string "cayuse_research_team"
+  end
+
+  create_table "research_master_cayuse_relations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "research_master_id", null: false
+    t.bigint "protocol_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_research_master_cayuse_relations_on_protocol_id"
+    t.index ["research_master_id"], name: "index_research_master_cayuse_relations_on_research_master_id"
   end
 
   create_table "research_master_coeus_relations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

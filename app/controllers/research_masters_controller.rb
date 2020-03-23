@@ -18,6 +18,7 @@ class ResearchMastersController < ApplicationController
         @eirb_protocol = Protocol.find(research_master.eirb_protocol_id)
       end
     @coeus_records = research_master.coeus_protocols
+    @cayuse_records = research_master.cayuse_protocols
     respond_to do |format|
       format.js
     end
