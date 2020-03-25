@@ -69,8 +69,7 @@ task update_from_cayuse: :environment do
       existing_protocol = existing_cayuse_protocols.detect{|protocol| protocol.cayuse_project_number == project['PROJECT_NUMBER'] }
 
       #Update both fields that come from cayuse (that could change), just to make sure we catch any changes.
-      existing_protocol.assign_attributes(title: project['PROJECT_TITLE'], cayuse_pi_name: pi_list.join(", "))
-      existing_protocol.save(validate: false)
+      existing_protocol.update_attributes(title: project['PROJECT_TITLE'], cayuse_pi_name: pi_list.join(", "))
 
       #Link any that might have been imported but not linked (do to timing of RMID vs cayuse creation)
       if research_master = $research_masters.detect{ |rm| rm.id == project['RMID'].to_i }
@@ -103,7 +102,7 @@ task update_from_cayuse: :environment do
         cayuse_pi_name:         pi_list.join(", ")
       )
 
-      if cayuse_protocol.save(validate: false)
+      if cayuse_protocol.save
         created_cayuse_protocols.append(cayuse_protocol.id)
 
         if research_master = $research_masters.detect{ |rm| rm.id == project['RMID'].to_i }
