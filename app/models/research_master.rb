@@ -13,6 +13,10 @@ class ResearchMaster < ApplicationRecord
   has_many :research_master_coeus_relations
   has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
 
+  has_many :research_master_cayuse_relations
+  has_many :cayuse_protocols, through: :research_master_cayuse_relations, source: :protocol
+
+
   paginates_per 50
 
   validates :long_title,
