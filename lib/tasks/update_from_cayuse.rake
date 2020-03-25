@@ -135,10 +135,10 @@ task update_from_cayuse: :environment do
 
     ## turn on auditing
     Protocol.auditing_enabled = true
-    ResearchMaster.auditing_enabled = false
+    ResearchMaster.auditing_enabled = true
   rescue => error
     Protocol.auditing_enabled = true
-    ResearchMaster.auditing_enabled = false
+    ResearchMaster.auditing_enabled = true
 
     log ":heavy_exclamation_mark: *Cronjob (CAYUSE) has failed unexpectedly.*"
     log error.inspect
