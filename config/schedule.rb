@@ -10,6 +10,10 @@ every 1.day, at: ['10:40 pm'], :roles => [:app] do
   rake 'update_from_coeus'
 end
 
+every 1.day, at: ['10:50 pm'], :roles => [:app] do
+  rake 'update_from_cayuse'
+end
+
 every 1.hour, :roles => [:app] do
   rake 'delayed_job_monitor'
 end
