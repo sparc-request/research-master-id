@@ -1,4 +1,7 @@
 class ReconfigurePiName < ActiveRecord::Migration[5.0]
+  class PrimaryPi < ApplicationRecord
+  end
+
   def change
     add_column :primary_pis, :last_name, :string, after: :name
     rename_column :primary_pis, :name, :first_name
