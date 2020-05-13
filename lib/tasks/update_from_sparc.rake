@@ -3,17 +3,17 @@ require 'dotenv/tasks'
 task update_from_sparc: :environment do
   begin
     ## turn off auditing for the duration of this script
-    Protocol.auditing_enabled = false
+    Protocol.auditing_enabled       = false
     ResearchMaster.auditing_enabled = false
-    User.auditing_enabled = false
+    User.auditing_enabled           = false
 
     script_start      = Time.now
 
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    $status_notifier  = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-    $friendly_token    = Devise.friendly_token
-    $research_masters  = ResearchMaster.eager_load(:pi).all
-    $users             = User.all
+    $friendly_token   = Devise.friendly_token
+    $research_masters = ResearchMaster.eager_load(:pi).all
+    $users            = User.all
 
     def log message
       puts "#{message}\n"
@@ -24,16 +24,20 @@ task update_from_sparc: :environment do
 
     log "- *Beginning data retrieval from APIs...*"
 
-    sparc_api       = ENV.fetch("SPARC_API")
+    sparc_api = ENV.fetch("SPARC_API")
 
     log "--- *Fetching from SPARC_API...*"
 
     start       = Time.now
-    protocols   = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    protocols   = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
     finish      = Time.now
     ldap_search = LdapSearch.new
 
-    if protocols.is_a?(String)
+    if protocols.code == 401
+      log "----- :heavy_exclamation_mark:  SPARC_API Authorization Failed: #{protocols}"
+    elsif protocols.code == 500
+      log "----- :heavy_exclamation_mark:  SPARC_API Internal Server Error: #{protocols}"
+    elsif protocols.is_a?(String)
       log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
     else
       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
