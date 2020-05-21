@@ -85,7 +85,7 @@ task update_data: :environment do
     log "--- *Fetching from SPARC_API...*"
 
     start     = Time.now
-    protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
+    protocols = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
     finish    = Time.now
 
     if protocols.is_a?(String)
