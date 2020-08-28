@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_17_213117) do
+ActiveRecord::Schema.define(version: 2020_08_28_152243) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_213117) do
 
   create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "original_id"
-    t.string "long_title"
+    t.text "long_title"
     t.string "short_title"
     t.integer "creator_id"
     t.integer "pi_id"
