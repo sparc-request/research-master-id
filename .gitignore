@@ -39,8 +39,6 @@ scratch
 *.war
 *.csv
 config/database.yml
-config/deploy/production.rb
-config/deploy/staging.rb
 /coverage
 .env
 .env.*
