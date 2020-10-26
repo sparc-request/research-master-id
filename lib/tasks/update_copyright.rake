@@ -1,4 +1,4 @@
-# Copyright © 2011-2020 MUSC Foundation for Research Development
+# Copyright © 2020 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -24,10 +24,11 @@ task update_copyright: :environment do
     STDIN.gets.strip
   end
 
-  puts "The SPARCRequest code base will be updated with the following copyright:  'Copyright © 2011-___ MUSC Foundation for Research Development', this script requires the year currently in the code base and the year that you wish to update it to."
+  puts "The SPARCRequest code base will be updated with the following copyright:  'Copyright © ___ MUSC Foundation for Research Development', this script requires the year currently in the code base and the year that you wish to update it to."
 
   copyright_year_needing_to_be_updated = prompt("Please enter the year needing to be updated (the year currently in the code base):  ")
   updated_copyright_year = prompt("Please enter the year you want the code base to be updated to:  ")
+
 
   files_with_more_than_one_copyright = []
   files_updated = []
@@ -38,7 +39,7 @@ task update_copyright: :environment do
   Dir.glob(Rails.root + '**/*{.rb,.haml,.coffee,.example,.rake,.ru,.js,.erb,.scss,.sass,.css}').reject{ |f| f['node_modules']}.each do |file|
 
     ### Query that most files will have ###
-    query = "Copyright © 2011-#{copyright_year_needing_to_be_updated} MUSC Foundation for Research Development"
+    query = "Copyright © #{copyright_year_needing_to_be_updated} MUSC Foundation for Research Development"
     ### Query with some other copyright variation ###
     other_variation_of_query = "Copyright ©"
 
@@ -69,7 +70,7 @@ task update_copyright: :environment do
           files_with_more_than_one_copyright << file
         end
       else # File doesn't have a copyright at all and needs one added
-        header = "# Copyright © 2011-#{updated_copyright_year} MUSC Foundation for Research Development~\n"
+        header = "# Copyright © {updated_copyright_year} MUSC Foundation for Research Development~\n"
         header += "# All rights reserved.~\n\n"
         header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"
         header += "# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~\n\n"
@@ -160,7 +161,7 @@ end
 def write_to_file(file, query, other_variation, updated_copyright_year)
   postfix = find_postfix(file)
 
-  updated_copyright = other_variation ? "Copyright © 2011-#{updated_copyright_year} MUSC Foundation for Research Development#{postfix}" : "Copyright © 2011-#{updated_copyright_year} MUSC Foundation for Research Development"
+  updated_copyright = other_variation ? "Copyright © #{updated_copyright_year} MUSC Foundation for Research Development#{postfix}" : "Copyright © #{updated_copyright_year} MUSC Foundation for Research Development"
 
   code_file = File.readlines(file).first.valid_encoding? ? File.read(file) : File.read(file).encode("UTF-8", "Windows-1252")
 
