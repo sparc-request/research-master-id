@@ -21,8 +21,13 @@
 class DirectoriesController < ApplicationController
 
   def show
-    ldap_search = LdapSearch.new
-    @user_info = ldap_search.info_query(params[:name].chomp(" "))
+    if params[:source] == 'pi_name'
+      db_search = DatabaseSearch.new
+      @user_info = db_search.info_query(params[:name])
+    else
+      ldap_search = LdapSearch.new
+      @user_info = ldap_search.info_query(params[:name].chomp(" "))
+    end
   end
 end
 
