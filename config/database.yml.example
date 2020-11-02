@@ -33,7 +33,7 @@ development:
 # configured for travis-ci
 test:
   adapter: mysql2
-  database: research-master-id_test
+  database: rmid_test
   encoding: utf8
   username: travis
   pool: 5
