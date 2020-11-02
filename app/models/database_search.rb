@@ -1,6 +1,6 @@
 class DatabaseSearch
 
-  def info_query(name_string)
+  def user_query(name_string)
     users             = User.all
     user_info         = []
 

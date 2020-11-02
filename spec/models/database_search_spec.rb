@@ -18,16 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class DirectoriesController < ApplicationController
+require 'rails_helper'
 
-  def show
-    if params[:source] == 'pi_name'
-      db_search = DatabaseSearch.new
-      @user_info = db_search.user_query(params[:name])
-    else
-      ldap_search = LdapSearch.new
-      @user_info = ldap_search.info_query(params[:name].chomp(" "))
+describe DatabaseSearch do
+
+  describe 'user_query' do
+    it 'should return a users info' do
+      user1 = create(:user, name: 'Will Holt')
+      database_search = DatabaseSearch.new
+
+      result = database_search.user_query('holt')
+
+      expect(result).to include({name: 'Will Holt'})
+    end
+
+    it 'should not return a non-matching users info' do
+      database_search = DatabaseSearch.new
+
+      result = database_search.user_query('cates')
+
+      expect(result).not_to include({name: 'Will Holt'})
     end
   end
 end
-
