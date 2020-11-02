@@ -18,7 +18,6 @@ before_script:
   - cp dotenv.example .env
   - mysql -e 'create database research-master-id_test;'
   - RAILS_ENV=test bundle exec rake db:migrate
-  - cd ..
   - rvm use $(< .ruby-version) --install --binary --fuzzy
   - export BUNDLE_GEMFILE=$PWD/Gemfile
   - RAILS_ENV=test bundle exec rake assets:precompile
