@@ -1,5 +1,6 @@
 language: ruby
 cache: bundler
+os: linux
 dist: xenial
 addons:
   firefox: latest
