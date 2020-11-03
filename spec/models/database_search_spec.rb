@@ -24,7 +24,7 @@ describe DatabaseSearch do
 
   describe 'user_query' do
     it 'should return a users info' do
-      user1 = create(:user, name: 'Will Holt')
+      user = create(:user, name: 'Will Holt')
       database_search = DatabaseSearch.new
 
       result = database_search.user_query('holt')
@@ -33,6 +33,7 @@ describe DatabaseSearch do
     end
 
     it 'should not return a non-matching users info' do
+      user = create(:user, name: 'Will Holt')
       database_search = DatabaseSearch.new
 
       result = database_search.user_query('cates')
