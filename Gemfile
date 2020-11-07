@@ -9,7 +9,7 @@ gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
 gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'haml-rails', '~> 1.0'
+gem 'haml-rails', '~> 2.0'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'faker'
@@ -55,8 +55,8 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
-  gem 'capybara'
-  gem 'webdrivers'
+  gem 'site_prism'
+  gem 'webdrivers', '~> 4.4'
   gem 'rails-controller-testing'
 end
 
