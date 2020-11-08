@@ -1,3 +1,23 @@
+# Copyright © 2020 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require 'dotenv/tasks'
 
 task update_from_eirb: :environment do
@@ -75,17 +95,43 @@ task update_from_eirb: :environment do
           updated_eirb_protocols.append(existing_protocol.id)
         end
 
-        if study['research_master_id'].present? && rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
-          rm.eirb_protocol_id       = existing_protocol.id
-          rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-          if $validated_states.include?(study['state'])
-            rm.eirb_validated = true
-            rm.short_title     = study['short_title']
-            rm.long_title     = study['title']
+        if study['research_master_id'].present?
+          if study['pi_net_id']
+            net_id = study['pi_net_id']
+            net_id.slice!('@musc.edu')
+            if u = User.where(net_id: net_id).first
+              existing_protocol.primary_pi_id = u.id
+              existing_protocol.save(validate: false)
+            else
+              u = User.new(
+                net_id: net_id,
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
+                password: $friendly_token,
+                password_confirmation:  $friendly_token
+              )
+              if u.valid?
+                u.save(validate: false)
+                existing_protocol.primary_pi_id = u.id
+                existing_protocol.save(validate: false)
+              end
+            end
           end
 
-          rm.save(validate: false) if rm.changed?
+          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
+            rm.eirb_protocol_id       = existing_protocol.id
+            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+
+            if $validated_states.include?(study['state'])
+              rm.eirb_validated = true
+              rm.short_title     = study['short_title']
+              rm.long_title     = study['title']
+            end
+
+            rm.save(validate: false) if rm.changed?
+          end
         end
 
         bar.increment! rescue nil
@@ -112,28 +158,30 @@ task update_from_eirb: :environment do
           if study['pi_net_id']
             net_id = study['pi_net_id']
             net_id.slice!('@musc.edu')
-            if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
+            if u = User.where(net_id: net_id).first
               eirb_protocol.primary_pi_id = u.id
+              eirb_protocol.save(validate: false)
             else
               u = User.new(
                 net_id: net_id,
-                email: protocol['pi_email'],
-                first_name: protocol['first_name'],
-                last_name: protocol['last_name'],
-                department: protocol['pi_department'],
+                email: study['pi_email'],
+                first_name: study['first_name'],
+                last_name: study['last_name'],
+                department: study['pi_department'],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
               if u.valid?
                 u.save(validate: false)
                 eirb_protocol.primary_pi_id = u.id
+                eirb_protocol.save(validate: false)
               end
             end
           end
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }
+          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
             rm.eirb_protocol_id       = eirb_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
