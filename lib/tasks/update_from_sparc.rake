@@ -1,19 +1,39 @@
+# Copyright © 2020 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require 'dotenv/tasks'
 
 task update_from_sparc: :environment do
   begin
     ## turn off auditing for the duration of this script
-    Protocol.auditing_enabled = false
+    Protocol.auditing_enabled       = false
     ResearchMaster.auditing_enabled = false
-    User.auditing_enabled = false
+    User.auditing_enabled           = false
 
     script_start      = Time.now
 
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    $status_notifier  = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-    $friendly_token    = Devise.friendly_token
-    $research_masters  = ResearchMaster.eager_load(:pi).all
-    $users             = User.all
+    $friendly_token   = Devise.friendly_token
+    $research_masters = ResearchMaster.eager_load(:pi).all
+    $users            = User.all
 
     def log message
       puts "#{message}\n"
@@ -24,15 +44,20 @@ task update_from_sparc: :environment do
 
     log "- *Beginning data retrieval from APIs...*"
 
-    sparc_api       = ENV.fetch("SPARC_API")
+    sparc_api = ENV.fetch("SPARC_API")
 
     log "--- *Fetching from SPARC_API...*"
 
-    start     = Time.now
-    protocols = HTTParty.get("#{sparc_api}/protocols", timeout: 500, headers: {'Content-Type' => 'application/json'})
-    finish    = Time.now
+    start       = Time.now
+    protocols   = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
+    finish      = Time.now
+    ldap_search = LdapSearch.new
 
-    if protocols.is_a?(String)
+    if protocols.code == 401
+      log "----- :heavy_exclamation_mark:  SPARC_API Authorization Failed: #{protocols}"
+    elsif protocols.code == 500
+      log "----- :heavy_exclamation_mark:  SPARC_API Internal Server Error: #{protocols}"
+    elsif protocols.is_a?(String)
       log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
     else
       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
@@ -74,6 +99,7 @@ task update_from_sparc: :environment do
               email: protocol['email'],
               first_name: protocol['first_name'],
               last_name: protocol['last_name'],
+              department: protocol['pi_department'],
               password: $friendly_token,
               password_confirmation:  $friendly_token
             )
@@ -117,6 +143,7 @@ task update_from_sparc: :environment do
           if protocol['ldap_uid']
             net_id = protocol['ldap_uid']
             net_id.slice!('@musc.edu')
+            pvid = ldap_search.info_query(net_id, false, true)
 
             if u = User.where(net_id: net_id).first # this only handles existing users, need to add code to handle creating (does it pull from ADS or not?)
               sparc_protocol.primary_pi_id = u.id
@@ -126,6 +153,8 @@ task update_from_sparc: :environment do
                 email: protocol['email'],
                 first_name: protocol['first_name'],
                 last_name: protocol['last_name'],
+                department: protocol['pi_department'],
+                pvid: pvid.empty? ? nil : pvid[0][:pvid],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
