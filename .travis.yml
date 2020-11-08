@@ -1,13 +1,31 @@
-sudo: false
 language: ruby
 cache: bundler
+os: linux
+dist: xenial
+addons:
+  firefox: latest
+env:
+  - MOZ_HEADLESS=1
+services:
+  - xvfb
+  - mysql
+
 before_install:
-  - export TZ=America/New_York
+  - "export TZ=America/New_York"
 before_script:
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
   - cp config/database.yml.example config/database.yml
-  - mysql -e 'create database research-master-id_test;'
-script:
-  - RAILS_ENV=test bundle exec rake db:migrate
-  - bundle exec rspec
+  - cp dotenv.example .env
+  - mysql -e 'create database rmid_test;'
+  - RAILS_ENV=test bundle exec rake db:schema:load
+  - rvm use $(< .ruby-version) --install --binary --fuzzy
+  - export BUNDLE_GEMFILE=$PWD/Gemfile
+  - RAILS_ENV=test bundle exec rake assets:precompile
+jobs:
+  include:
+    - script:
+      - bundle exec rspec spec/controllers
+      - bundle exec rspec spec/mailers
+      - bundle exec rspec spec/models
+      - bundle exec rspec spec/requests
+      - bundle exec rspec spec/system
