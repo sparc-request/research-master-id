@@ -8,4 +8,11 @@ json.array! @research_masters do |rm|
   json.date_initially_approved  rm.eirb_protocol.try(:date_initially_approved)
   json.date_approved            rm.eirb_protocol.try(:date_approved)
   json.date_expiration          rm.eirb_protocol.try(:date_expiration)
+  json.principal_investigator do
+    json.first_name rm.pi.first_name
+    json.last_name  rm.pi.last_name
+    json.email      rm.pi.email
+    json.net_id     rm.pi.net_id
+    json.department rm.pi.department
+  end
 end
