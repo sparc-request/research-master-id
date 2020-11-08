@@ -1,3 +1,23 @@
+# Copyright © 2020 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +30,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_27_175622) do
+ActiveRecord::Schema.define(version: 2020_08_28_152243) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -55,9 +75,9 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "original_id"
-    t.string "long_title"
+    t.text "long_title"
     t.string "short_title"
     t.integer "creator_id"
     t.integer "pi_id"
@@ -99,7 +119,18 @@ ActiveRecord::Schema.define(version: 2019_06_27_175622) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "coeus_project_id"
+    t.string "cayuse_project_number"
+    t.string "cayuse_pi_name"
     t.index ["primary_pi_id"], name: "index_protocols_on_primary_pi_id"
+  end
+
+  create_table "research_master_cayuse_relations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "research_master_id", null: false
+    t.bigint "protocol_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["protocol_id"], name: "index_research_master_cayuse_relations_on_protocol_id"
+    t.index ["research_master_id"], name: "index_research_master_cayuse_relations_on_research_master_id"
   end
 
   create_table "research_master_coeus_relations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
