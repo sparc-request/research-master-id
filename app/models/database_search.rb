@@ -6,7 +6,7 @@ class DatabaseSearch
 
     users.each do |user|
       if (user.email != nil) && (user.name != nil) && (user.net_id != nil)
-        if user.email.include?(name_string) || user.net_id.include?(name_string) || user.name.downcase.include?(name_string)
+        if user.email.include?(name_string) || user.net_id.include?(name_string) || user.name.downcase.include?(name_string.downcase)
 
           entry_info = { name: nil, email: nil, netid: nil}
 

@@ -24,12 +24,12 @@ describe DatabaseSearch do
 
   describe 'user_query' do
     it 'should return a users info' do
-      user = create(:user, name: 'Will Holt', first_name: 'Will', last_name: 'Holt')
+      user = create(:user, name: 'Will Holt', net_id: 'whi26', email: 'will@musc.edu')
       database_search = DatabaseSearch.new
 
-      result = database_search.user_query('Holt')
+      result = database_search.user_query('Will')
 
-      expect(result).to include({name: 'Will Holt'})
+      expect(result).to include({:email=>"will@musc.edu", :name=>"Will Holt", :netid=>"whi26"})
     end
 
     it 'should not return a non-matching users info' do
