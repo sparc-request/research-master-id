@@ -55,15 +55,6 @@ class ResearchMaster < ApplicationRecord
     uniqueness: { scope: [:pi_id],
     message: 'There is an existing Research Master record with the same PI Name' }
 
-  #to-do: Do we still need these validations since we included SanitizedData?
-  #validates_format_of :long_title, with: /^[a-zA-Z\d\s.%\/$*<>!@#^\[\]{};:"'?&()-_=+]*$/,
-    #message: 'Special characters are not allowed in the Long Title',
-    #multiline: true
-
-  #validates_format_of :short_title, with: /^[a-zA-Z\d\s.%\/$*<>!@#^\[\]{};:"'?&()-_=+]*$/,
-    #message: 'Special characters are not allowed in the Short Title',
-    #multiline: true
-
   validates_presence_of :research_type
 
   def self.validated
