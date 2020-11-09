@@ -140,40 +140,9 @@ RSpec.describe 'User should be able to create a new research master record', js:
       click_button 'Submit'
       wait_for_ajax
 
+      sleep 60
       expect(page).not_to have_css('div.form-group.has-error')
     end
-
-    #it 'should render form errors for special characters in short title' do
-    #  create_and_sign_in_user
-#
-#      find('.create-research-master').click
-#      wait_for_ajax
-#      fill_in 'research_master_pi_name', with: 'Hans'
-#      fill_in 'pi_department', with: 'Franz'
-#      fill_in 'research_master_long_title', with: 'Long Shot'
-#      fill_in 'research_master_short_title', with: '±˙˜ƒ√ç'
-#      choose 'research_master_funding_source_internal'
-#      click_button 'Submit'
-#      wait_for_ajax
-
-#      expect(page).to have_content('Special characters are not allowed in the Short Title')
-#    end
-
-    #it 'should render form errors for special characters in long title' do
-    #  create_and_sign_in_user
-
-    #  find('.create-research-master').click
-    #  wait_for_ajax
-    #  fill_in 'research_master_pi_name', with: 'Hans'
-    #  fill_in 'pi_department', with: 'Franz'
-    #  fill_in 'research_master_long_title', with: '±˙˜ƒ√ç'
-    #  fill_in 'research_master_short_title', with: 'Short Round'
-    #  choose 'research_master_funding_source_internal'
-    #  click_button 'Submit'
-    #  wait_for_ajax
-
-    #  expect(page).to have_content('Special characters are not allowed in the Long Title')
-    #end
   end
 end
 
