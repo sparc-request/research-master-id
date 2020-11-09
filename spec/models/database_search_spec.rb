@@ -24,10 +24,10 @@ describe DatabaseSearch do
 
   describe 'user_query' do
     it 'should return a users info' do
-      user = create(:user, name: 'Will Holt')
+      user = create(:user, name: 'Will Holt', first_name: 'Will', last_name: 'Holt')
       database_search = DatabaseSearch.new
 
-      result = database_search.user_query('holt')
+      result = database_search.user_query('Holt')
 
       expect(result).to include({name: 'Will Holt'})
     end
