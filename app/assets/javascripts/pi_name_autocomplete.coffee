@@ -27,7 +27,7 @@ $ ->
     display: 'display_name'
     limit: 2000
     source: (query, syncResults, asyncResults) ->
-      $.get "/directories.json?name=#{$('#q_pi_name_cont').val()}", (data) ->
+      $.get "/directories.json?name=#{$('#q_pi_name_cont').val()};source=pi_name", (data) ->
         asyncResults(data)
   ).on('typeahead:asyncrequest', ->
     $('.spinner').show()
