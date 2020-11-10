@@ -20,20 +20,27 @@
 
 task update_user_department: :environment do
 
-  # coeus_api   = ENV.fetch("COEUS_API")
-  # prism_users = HTTParty.get("#{coeus_api}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
-  # $users      = User.all
+  coeus_api   = ENV.fetch("COEUS_API")
+  prism_users = HTTParty.get("#{coeus_api}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
+  $users      = User.all
 
-  # prism_users.each do |user|
-  #   if user_to_update = $users.detect{ |u| u.net_id == user['netid'] }
-  #     user_to_update.update_attribute(:department, user['department'])
-  #   end
-  # end
+  prism_users.each do |user|
+    if user_to_update = $users.detect{ |u| u.net_id == user['netid'] }
+      user_to_update.update_attribute(:department, user['department'])
+    end
+  end
 
   ldap_search = LdapSearch.new
+  users = User.all
 
   users.each do |user|
-    ldap_user = ldap_search.info_query(user.net_id, false, true)
-    puts ldap_user.inspect
+    department = ldap_search.info_query(user.net_id, false, true).first[:department]
+    if !department.blank? && (user.department != department)
+      puts "Updating #{user.department} to #{department}"
+      user.department = department
+      user.save(validate: false)
+    else
+      puts "User department matches ldap or ldap department is blank"
+    end
   end
 end
