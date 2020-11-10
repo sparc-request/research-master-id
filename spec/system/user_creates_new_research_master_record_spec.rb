@@ -140,7 +140,6 @@ RSpec.describe 'User should be able to create a new research master record', js:
       click_button 'Submit'
       wait_for_ajax
 
-      sleep 60
       expect(page).not_to have_css('div.form-group.has-error')
     end
   end
