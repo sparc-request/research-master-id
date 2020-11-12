@@ -29,4 +29,18 @@ task update_user_department: :environment do
       user_to_update.update_attribute(:department, user['department'])
     end
   end
+
+  ldap_search = LdapSearch.new
+  users = User.all
+
+  users.each do |user|
+    department = ldap_search.info_query(user.net_id, false, true).first[:department]
+    if !department.blank? && (user.department != department)
+      puts "Updating #{user.department} to #{department}"
+      user.department = department
+      user.save(validate: false)
+    else
+      puts "User department matches ldap or ldap department is blank"
+    end
+  end
 end
