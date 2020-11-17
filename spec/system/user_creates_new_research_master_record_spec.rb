@@ -44,7 +44,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: ''
       fill_in 'research_master_long_title', with: 'Long John'
       fill_in 'research_master_short_title', with: 'Shortstop'
@@ -61,7 +61,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: 'my pills'
       fill_in 'research_master_long_title', with: ''
       fill_in 'research_master_short_title', with: 'Shortstop'
@@ -79,7 +79,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: 'my pills'
       fill_in 'research_master_long_title', with: 'long john'
       fill_in 'research_master_short_title', with: ''
@@ -97,7 +97,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: 'my pills'
       fill_in 'research_master_long_title', with: 'long john'
       fill_in 'research_master_short_title', with: 'short'
@@ -114,7 +114,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: 'my pills'
       fill_in 'research_master_long_title', with: 'long john'
       fill_in 'research_master_short_title', with: 'short'
@@ -131,7 +131,7 @@ RSpec.describe 'User should be able to create a new research master record', js:
 
       find('.create-research-master').click
       wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'billy'
+      fill_in 'research_master_pi_name', with: 'Julia'
       fill_in 'pi_department', with: 'my pills'
       fill_in 'research_master_long_title', with: 'long john'
       fill_in 'research_master_short_title', with: 'short'
