@@ -26,7 +26,7 @@ class DirectoriesController < ApplicationController
       @user_info = db_search.user_query(params[:name])
     else
       ldap_search = LdapSearch.new
-      @user_info = ldap_search.info_query(params[:name].chomp(" "))
+      @user_info = ldap_search.info_query(params[:name].chomp(" "), true, false, params[:search_term])
     end
   end
 end
