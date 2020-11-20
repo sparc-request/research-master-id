@@ -22,7 +22,7 @@ class ResearchMaster < ApplicationRecord
   audited
 
   attr_accessor :search_term
-  
+
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
@@ -64,6 +64,6 @@ class ResearchMaster < ApplicationRecord
   end
 
   def has_attached_data?
-    eirb_validated? or sparc_protocol_id? or coeus_protocols.any?
+    eirb_validated? or sparc_protocol_id? or coeus_protocols.any? or cayuse_protocols.any?
   end
 end

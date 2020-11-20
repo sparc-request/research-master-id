@@ -20,19 +20,28 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin User should be able to remove an RMID', js: true do
+RSpec.describe 'removing an RMID then viewing it', js: true do
+  it 'should see the removed RMID listed on the removed RMIDs page' do
+    create_and_sign_in_user
+    User.first.update_attributes(admin: true)
+    @research_master = create(:research_master)
 
-  describe 'removing an RMID' do
+    visit root_path
+    wait_for_ajax
 
-    before :each do
-      create_and_sign_in_user
-      @research_master = create(:research_master, creator: User.first)
-      visit root_path
-      wait_for_ajax
-    end
+    find('.research-master-delete').click
+    wait_for_ajax
 
-    it "should work" do
-      ##Do stuff
-    end
+    select "Duplicate Entry", :from => "reason"
+    find('input.reason_submit').click
+    wait_for_ajax
+
+    find('button.confirm').click
+    wait_for_ajax
+
+    visit deleted_rmids_path
+    wait_for_ajax
+
+    expect(page).to have_content(@research_master.short_title)
   end
 end
