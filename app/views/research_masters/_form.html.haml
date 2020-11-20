@@ -35,6 +35,24 @@
       = hidden_field_tag 'pi_middle_initial', (f.object.pi.present? ? f.object.pi.middle_initial : nil)
       = hidden_field_tag 'pi_pvid', (f.object.pi.present? ? f.object.pi.pvid : nil)
       .form-group
+        = f.label :search_term, t(:research_masters)[:new][:fields][:search_term], class: 'col-xs-3 control-label', title: t(:research_masters)[:new][:tooltips][:search_term]
+        .col-xs-9
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'name', checked: true, class: 'search-term-options'
+                Name
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'email', class: 'search-term-options'
+                Email
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'netid', class: 'search-term-options'
+                Net ID
+      .form-group
         %label{class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
           = t(:research_masters)[:new][:fields][:pi_name] + " *"
         .col-xs-8

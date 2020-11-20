@@ -48,7 +48,7 @@ class LdapSearch
     end
   end
 
-  def info_query(name, active_only=true, netid_only=false)
+  def info_query(name, active_only=true, netid_only=false, search_term=nil)
     ldaps             = connect_to_ldap
     user_info         = []
 
@@ -57,7 +57,15 @@ class LdapSearch
     if netid_only
       fields = ['muscaccountname', 'samaccountname']
     else
-      fields = ['givenname', 'sn', 'mail', 'userprincipalname', 'muscaccountname', 'samaccountname']
+      if search_term
+        fields = case search_term
+          when 'name' then ['givenname', 'sn']
+          when 'email' then ['mail', 'userprincipalname']
+          else ['muscaccountname', 'samaccountname']
+        end
+      else
+        fields = ['givenname', 'sn', 'mail', 'userprincipalname', 'muscaccountname', 'samaccountname']
+      end
     end
 
     filter = fields.map { |f| Net::LDAP::Filter.eq(f, name + "*") }.inject(:|)
@@ -85,7 +93,7 @@ class LdapSearch
         if department = prism_query(entry_info[:netid], LdapSearch.prism_users)
           entry_info[:department] = department
           entry_info[:prism_user] = true
-        elsif department = User.find_by_net_id(entry_info[:netid]).try(:department)
+        else
           entry_info[:department] = department
           entry_info[:prism_user] = false
         end
