@@ -74,6 +74,7 @@ en:
         tooltip: "To include more search fields"
     new:
       fields:
+        search_term: "Search By:"
         pi_name: "PI Name"
         department: "Department"
         long_title: "Long Title"

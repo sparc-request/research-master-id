@@ -19,6 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $ ->
+
+  searchTermValue = () ->
+    selected = ""
+    search_options = $('.search-term-options')
+    search_options.each ->
+      if $(this).prop("checked")
+        selected = $(this).val()
+
+    return selected
+
   $('#q_pi_name_cont').typeahead( {
     minLength: 3
     highlight: true
@@ -64,7 +74,7 @@ $ ->
       display: 'display_name'
       limit: 2000
       source: (query, syncResults, asyncResults) ->
-        $.get "/directories.json?name=#{$('#research_master_pi_name').val()}", (data) ->
+        $.get "/directories.json?name=#{$('#research_master_pi_name').val()};search_term=#{searchTermValue()}", (data) ->
           asyncResults(data)
     ).on('typeahead:asyncrequest', ->
       $('.spinner').show()
