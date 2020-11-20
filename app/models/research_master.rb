@@ -21,6 +21,8 @@
 class ResearchMaster < ApplicationRecord
   audited
 
+  attr_accessor :search_term
+  
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :squish
   sanitize_setter :short_title, :special_characters, :squish
