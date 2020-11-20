@@ -18,52 +18,30 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class ResearchMaster < ApplicationRecord
-  audited
+require 'rails_helper'
 
-  attr_accessor :search_term
+RSpec.describe 'removing an RMID then viewing it', js: true do
+  it 'should see the removed RMID listed on the removed RMIDs page' do
+    create_and_sign_in_user
+    User.first.update_attributes(admin: true)
+    @research_master = create(:research_master)
 
-  include SanitizedData
-  sanitize_setter :long_title, :special_characters, :squish
-  sanitize_setter :short_title, :special_characters, :squish
+    visit root_path
+    wait_for_ajax
 
-  belongs_to :creator, class_name: "User"
-  belongs_to :pi, class_name: "User"
-  belongs_to :sparc_protocol, class_name: :Protocol, optional: true
-  belongs_to :eirb_protocol, class_name: :Protocol, optional: true
+    find('.research-master-delete').click
+    wait_for_ajax
 
-  has_many :research_master_coeus_relations
-  has_many :coeus_protocols, through: :research_master_coeus_relations, source: :protocol
+    select "Duplicate Entry", :from => "reason"
+    find('input.reason_submit').click
+    wait_for_ajax
 
-  has_many :research_master_cayuse_relations
-  has_many :cayuse_protocols, through: :research_master_cayuse_relations, source: :protocol
+    find('button.confirm').click
+    wait_for_ajax
 
+    visit deleted_rmids_path
+    wait_for_ajax
 
-  paginates_per 50
-
-  validates :long_title,
-    :short_title,
-    :funding_source,
-    presence: true
-
-  validates_length_of :short_title, maximum: 255
-
-  validates :pi_id,
-    uniqueness: { scope: [:long_title],
-    message: 'There is an existing Research Master record with the same
-    Long Title' }
-
-  validates :long_title,
-    uniqueness: { scope: [:pi_id],
-    message: 'There is an existing Research Master record with the same PI Name' }
-
-  validates_presence_of :research_type
-
-  def self.validated
-    where(eirb_validated: true)
-  end
-
-  def has_attached_data?
-    eirb_validated? or sparc_protocol_id? or coeus_protocols.any? or cayuse_protocols.any?
+    expect(page).to have_content(@research_master.short_title)
   end
 end
