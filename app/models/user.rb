@@ -51,7 +51,7 @@ class User < ApplicationRecord
     ResearchMaster.where("creator_id = ? OR pi_id = ?", self.id, self.id)
   end
 
-  def prism_user?
-    LdapSearch.prism_users.any?{ |u| u['netid'] == self.net_id }
+  def interfolio_user?
+    LdapSearch.interfolio_users.any?{ |u| u['netid'] == self.net_id }
   end
 end

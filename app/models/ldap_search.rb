@@ -20,8 +20,8 @@
 
 class LdapSearch
 
-  def self.prism_users
-    @prism_users ||= HTTParty.get("#{ENV.fetch("COEUS_API")}/prism", timeout: 500, headers: {'Content-Type' => 'application/json'})
+  def self.interfolio_users
+    @interfolio_users ||= HTTParty.get("#{ENV.fetch("COEUS_API")}/interfolio", timeout: 500, headers: {'Content-Type' => 'application/json'})
   end
 
   def employee_number_query(employee_number)
@@ -90,12 +90,12 @@ class LdapSearch
           entry_info[:affiliate] = true
         end
 
-        if department = prism_query(entry_info[:netid], LdapSearch.prism_users)
+        if department = interfolio_query(entry_info[:netid], LdapSearch.interfolio_users)
           entry_info[:department] = department
-          entry_info[:prism_user] = true
+          entry_info[:interfolio_user] = true
         else
           entry_info[:department] = department
-          entry_info[:prism_user] = false
+          entry_info[:interfolio_user] = false
         end
 
         user_info << entry_info
@@ -130,8 +130,8 @@ class LdapSearch
     }
   end
 
-  def prism_query(netid, prism_users)
-    if user = prism_users.detect{|user| user["netid"] == netid }
+  def interfolio_query(netid, interfolio_users)
+    if user = interfolio_users.detect{|user| user["netid"] == netid }
       return user['department']
     end
   end

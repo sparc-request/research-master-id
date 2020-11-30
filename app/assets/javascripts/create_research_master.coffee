@@ -53,7 +53,7 @@ $ ->
       $('#pi_pvid').val(selection.pvid)
       if selection.department != null
         $('#pi_department').val(selection.department)
-      if selection.prism_user
+      if selection.interfolio_user
         $('#pi_department').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', true)
       $('.submit-rm-record').prop('disabled', false)
