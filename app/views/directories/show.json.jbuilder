@@ -7,6 +7,6 @@ json.(@user_info) do |ui|
   json.middle_initial  ui[:middle_initial]
   json.pvid            ui[:pvid]
   json.department      ui[:department]
-  json.prism_user      ui[:prism_user]
+  json.interfolio_user ui[:interfolio_user]
   json.display_name    "#{ui[:name]} - #{ui[:email]}"
 end
