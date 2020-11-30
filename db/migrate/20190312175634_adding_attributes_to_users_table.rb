@@ -47,13 +47,7 @@ class AddingAttributesToUsersTable < ActiveRecord::Migration[5.1]
     end
 
     puts "#"*50
-    puts "#"*50
-    puts "#"*50
-    puts "#"*50
     puts bad_results.inspect
-    puts "#"*50
-    puts "#"*50
-    puts "#"*50
     puts "#"*50
   end
 
