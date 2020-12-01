@@ -23,7 +23,7 @@ task populate_historic_departments: :environment do
     user = User.where(id: row['USER ID'].to_i).first
 
     if user
-      unless user.current_prism_user?
+      unless user.current_interfolio_user?
         user.update_attributes(department: row['DEPARTMENT'])
       end
     end

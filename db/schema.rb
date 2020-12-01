@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_04_161753) do
+ActiveRecord::Schema.define(version: 2020_11_30_231824) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -145,7 +145,7 @@ ActiveRecord::Schema.define(version: 2020_11_04_161753) do
     t.string "department"
     t.boolean "admin"
     t.boolean "developer"
-    t.boolean "current_prism_user"
+    t.boolean "current_interfolio_user"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
