@@ -108,8 +108,8 @@ class LdapSearch
   private
 
   def connect_to_ldap()
-    host = '128.23.180.126'
-    port = 636
+    host = ENV.fetch('ADS_HOST')
+    port = ENV.fetch('ADS_PORT')
     encryption = { method: :simple_tls, tls_options: { verify_mode: OpenSSL::SSL::VERIFY_NONE } }
     auth = { method: :simple, username: ENV.fetch('ADS_USERNAME'), password: ENV.fetch('ADS_PASSWORD') }
 
