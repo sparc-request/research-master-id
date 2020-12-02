@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_17_213117) do
+ActiveRecord::Schema.define(version: 2020_11_30_231824) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -55,9 +55,9 @@ ActiveRecord::Schema.define(version: 2020_03_17_213117) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
+  create_table "deleted_rmids", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "original_id"
-    t.string "long_title"
+    t.text "long_title"
     t.string "short_title"
     t.integer "creator_id"
     t.integer "pi_id"
@@ -69,12 +69,6 @@ ActiveRecord::Schema.define(version: 2020_03_17_213117) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "explanation"
-  end
-
-  create_table "departments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "protocols", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -151,7 +145,7 @@ ActiveRecord::Schema.define(version: 2020_03_17_213117) do
     t.string "department"
     t.boolean "admin"
     t.boolean "developer"
-    t.boolean "current_prism_user"
+    t.boolean "current_interfolio_user"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
