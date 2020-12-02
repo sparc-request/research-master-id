@@ -1,3 +1,23 @@
+-# Copyright © 2020 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 = form_for @research_master, html: { class: 'form-horizontal research-master-form' }, remote: true do |f|
   .modal-content
     .modal-header
@@ -15,6 +35,24 @@
       = hidden_field_tag 'pi_middle_initial', (f.object.pi.present? ? f.object.pi.middle_initial : nil)
       = hidden_field_tag 'pi_pvid', (f.object.pi.present? ? f.object.pi.pvid : nil)
       .form-group
+        = f.label :search_term, t(:research_masters)[:new][:fields][:search_term], class: 'col-xs-3 control-label', title: t(:research_masters)[:new][:tooltips][:search_term]
+        .col-xs-9
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'name', checked: true, class: 'search-term-options'
+                Name
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'email', class: 'search-term-options'
+                Email
+          .col-xs-3
+            .radio
+              = f.label :search_term do
+                = f.radio_button :search_term, 'netid', class: 'search-term-options'
+                Net ID
+      .form-group
         %label{class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:pi_name]}
           = t(:research_masters)[:new][:fields][:pi_name] + " *"
         .col-xs-8
@@ -29,7 +67,7 @@
       .form-group
         = label_tag :pi_department, t(:research_masters)[:new][:fields][:department] + mark_required(@research_master, :pi_department), class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:department]
         .col-xs-9
-          = text_field_tag :pi_department, (f.object.pi.present? ? f.object.pi.department : ''), class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: (@research_master.eirb_validated || f.object.pi.try(:prism_user?) || @research_master.pi.try(:current_prism_user?))
+          = text_field_tag :pi_department, (f.object.pi.present? ? f.object.pi.department : ''), class: "form-control #{@research_master.eirb_validated ? 'eirb_locked' : ''}", placeholder: t(:research_masters)[:new][:placeholders][:department], disabled: (@research_master.eirb_validated || f.object.pi.try(:interfolio_user?) || @research_master.pi.try(:current_interfolio_user?))
       .form-group
         = f.label :long_title, t(:research_masters)[:new][:fields][:long_title] + mark_required(@research_master, :long_title), class: 'col-xs-3 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:new][:tooltips][:long_title]
         .col-xs-9
