@@ -24,8 +24,8 @@ class ResearchMaster < ApplicationRecord
   attr_accessor :search_term
 
   include SanitizedData
-  sanitize_setter :long_title, :special_characters, :squish
-  sanitize_setter :short_title, :special_characters, :squish
+  sanitize_setter :long_title, :special_characters, :epic_special_characters, :squish
+  sanitize_setter :short_title, :special_characters, :epic_special_characters, :squish
 
   belongs_to :creator, class_name: "User"
   belongs_to :pi, class_name: "User"
