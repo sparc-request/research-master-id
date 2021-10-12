@@ -40,7 +40,7 @@ group :development, :test do
   gem 'byebug'
   gem 'rspec-rails'
   gem 'factory_girl_rails', '~> 4.9.0'
-  gem 'puma', '~> 3.12'
+  gem 'puma', '~> 4.3'
 end
 
 group :development do
