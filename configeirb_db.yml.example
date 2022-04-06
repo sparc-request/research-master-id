@@ -1,0 +1,9 @@
+development:
+  adapter: sqlserver
+  host: host
+  port: 1433
+  username: user
+  password: password
+  encoding: utf8
+  timeout: 500000
+  database: db
