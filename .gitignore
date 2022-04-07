@@ -39,6 +39,7 @@ scratch
 *.war
 *.csv
 config/database.yml
+config/eirb_db.yml
 /coverage
 .env
 .env.*
