@@ -1,0 +1,9 @@
+development:
+  adapter: sqlserver
+  host: 128.23.181.172
+  port: 1433
+  username: eIRBExtract
+  password: get2eIRB1nfo
+  encoding: utf8
+  timeout: 500000
+  database: TEST

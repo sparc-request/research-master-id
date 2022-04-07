@@ -1,5 +1,16 @@
 source 'https://rubygems.org'
 
+### from sparc_api Gemfile-------------
+# gem 'mysql2', '>= 0.3.13', '< 0.5'
+   # -- Use sqlite3 as db for ActiveRecord
+gem 'sqlite3'
+   # -- Use Puma as app server
+# gem 'puma', '~> 3.0'
+# gem 'active_model_serializers'
+### ------------------------------------
+
+
+
 gem "audited", "~> 4.6"
 gem 'rails', '~> 5.1', '>= 5.1.5'
 gem 'mysql2'
