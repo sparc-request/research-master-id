@@ -47,6 +47,9 @@ gem "progress_bar"
 gem 'net-ssh'
 gem 'net-scp'
 
+gem 'tiny_tds'
+gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
+
 group :development, :test do
   gem 'byebug'
   gem 'rspec-rails'
