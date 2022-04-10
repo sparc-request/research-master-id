@@ -1,0 +1,15 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  username: root
+  password:
+  port: 3306
+  timeout: 5000
+  pool: 5
+  host: 
+development:
+  <<: *default
+  database: sparc-rails_development
+test:
+  <<: *default
+  database: sparc-rails_test
