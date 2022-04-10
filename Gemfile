@@ -5,8 +5,8 @@ source 'https://rubygems.org'
    # -- Use sqlite3 as db for ActiveRecord
 gem 'sqlite3'
    # -- Use Puma as app server
-# gem 'puma', '~> 3.0'
-# gem 'active_model_serializers'
+#gem 'puma', '~> 3.0'
+gem 'active_model_serializers'
 ### ------------------------------------
 
 
