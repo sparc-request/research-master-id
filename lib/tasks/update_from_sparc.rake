@@ -37,7 +37,7 @@ task update_from_sparc: :environment do
 
     def log message
       puts "#{message}\n"
-      $status_notifier.ping message
+     # $status_notifier.ping message
     end
 
     log "*Cronjob (SPARC) has started.*"
