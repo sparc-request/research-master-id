@@ -18,210 +18,214 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'dotenv/tasks'
 
-task update_from_eirb: :environment do
-  begin
-    ## turn off auditing for the duration of this script
-    Protocol.auditing_enabled = false
-    ResearchMaster.auditing_enabled = false
-    User.auditing_enabled = false
+##Old rake task pointing to eirb_api applicaton, new task is "update_form_eirb_db.rake"
 
-    script_start      = Time.now
 
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+# require 'dotenv/tasks'
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
-    $friendly_token    = Devise.friendly_token
-    $research_masters  = ResearchMaster.eager_load(:pi).all
-    $users             = User.all
+# task update_from_eirb: :environment do
+#   begin
+#     ## turn off auditing for the duration of this script
+#     Protocol.auditing_enabled = false
+#     ResearchMaster.auditing_enabled = false
+#     User.auditing_enabled = false
 
-    def log message
-      puts "#{message}\n"
-      $status_notifier.ping message
-    end
+#     script_start      = Time.now
 
-    log "*Cronjob (EIRB) has started.*"
+#     $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
-    log "- *Beginning data retrieval from APIs...*"
+#     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+#     $friendly_token    = Devise.friendly_token
+#     $research_masters  = ResearchMaster.eager_load(:pi).all
+#     $users             = User.all
 
-    eirb_api        = ENV.fetch("EIRB_API")
-    eirb_api_token  = ENV.fetch("EIRB_API_TOKEN")
+#     def log message
+#       puts "#{message}\n"
+#       $status_notifier.ping message
+#     end
 
-    log "--- *Fetching from EIRB_API...*"
+#     log "*Cronjob (EIRB) has started.*"
 
-    start         = Time.now
-    eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
-    finish        = Time.now
+#     log "- *Beginning data retrieval from APIs...*"
 
-    if eirb_studies.is_a?(String)
-      log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
-    else
-      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+#     eirb_api        = ENV.fetch("EIRB_API")
+#     eirb_api_token  = ENV.fetch("EIRB_API_TOKEN")
 
-      ResearchMaster.update_all(eirb_validated: false)
+#     log "--- *Fetching from EIRB_API...*"
 
-      log "- *Beginning EIRB_API data import...*"
-      log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
+#     start         = Time.now
+#     eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
+#     finish        = Time.now
 
-      start                   = Time.now
-      updated_eirb_protocols  = []
-      created_eirb_protocols  = []
+#     if eirb_studies.is_a?(String)
+#       log "----- :heavy_exclamation_mark: Error retrieving protocols from EIRB_API: #{eirb_studies}"
+#     else
+#       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
 
-      ResearchMaster.update_all(eirb_protocol_id: nil)
+#       ResearchMaster.update_all(eirb_validated: false)
 
-      # Preload eIRB Protocols to improve efficiency
-      eirb_protocols        = Protocol.eager_load(:primary_pi).where(type: 'EIRB')
-      existing_eirb_ids     = eirb_protocols.pluck(:eirb_id)
-      existing_eirb_studies = eirb_studies.select{ |s| existing_eirb_ids.include?(s['pro_number']) }
-      new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
+#       log "- *Beginning EIRB_API data import...*"
+#       log "--- Total number of protocols from EIRB_API: #{eirb_studies.count}"
 
-      # Update Existing eIRB Protocol Records
-      log "--- Updating existing eIRB protocols"
-      bar = ProgressBar.new(existing_eirb_studies.count)
+#       start                   = Time.now
+#       updated_eirb_protocols  = []
+#       created_eirb_protocols  = []
 
-      existing_eirb_studies.each do |study|
-        existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
-        existing_protocol.short_title             = study['short_title']
-        existing_protocol.long_title              = study['title']
-        existing_protocol.eirb_state              = study['state']
-        existing_protocol.eirb_institution_id     = study['institution_id']
-        existing_protocol.date_initially_approved = study['date_initially_approved']
-        existing_protocol.date_approved           = study['date_approved']
-        existing_protocol.date_expiration         = study['date_expiration']
+#       ResearchMaster.update_all(eirb_protocol_id: nil)
 
-        if existing_protocol.changed?
-          existing_protocol.save(validate: false)
-          updated_eirb_protocols.append(existing_protocol.id)
-        end
+#       # Preload eIRB Protocols to improve efficiency
+#       eirb_protocols        = Protocol.eager_load(:primary_pi).where(type: 'EIRB')
+#       existing_eirb_ids     = eirb_protocols.pluck(:eirb_id)
+#       existing_eirb_studies = eirb_studies.select{ |s| existing_eirb_ids.include?(s['pro_number']) }
+#       new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
 
-        if study['research_master_id'].present?
-          if study['pi_net_id']
-            net_id = study['pi_net_id']
-            net_id.slice!('@musc.edu')
-            if u = User.where(net_id: net_id).first
-              existing_protocol.primary_pi_id = u.id
-              existing_protocol.save(validate: false)
-            else
-              u = User.new(
-                net_id: net_id,
-                email: study['pi_email'],
-                first_name: study['first_name'],
-                last_name: study['last_name'],
-                department: study['pi_department'],
-                password: $friendly_token,
-                password_confirmation:  $friendly_token
-              )
-              if u.valid?
-                u.save(validate: false)
-                existing_protocol.primary_pi_id = u.id
-                existing_protocol.save(validate: false)
-              end
-            end
-          end
+#       # Update Existing eIRB Protocol Records
+#       log "--- Updating existing eIRB protocols"
+#       bar = ProgressBar.new(existing_eirb_studies.count)
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
-            rm.eirb_protocol_id       = existing_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+#       existing_eirb_studies.each do |study|
+#         existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
+#         existing_protocol.short_title             = study['short_title']
+#         existing_protocol.long_title              = study['title']
+#         existing_protocol.eirb_state              = study['state']
+#         existing_protocol.eirb_institution_id     = study['institution_id']
+#         existing_protocol.date_initially_approved = study['date_initially_approved']
+#         existing_protocol.date_approved           = study['date_approved']
+#         existing_protocol.date_expiration         = study['date_expiration']
 
-            if $validated_states.include?(study['state'])
-              rm.eirb_validated = true
-              rm.short_title     = study['short_title']
-              rm.long_title     = study['title']
-            end
+#         if existing_protocol.changed?
+#           existing_protocol.save(validate: false)
+#           updated_eirb_protocols.append(existing_protocol.id)
+#         end
 
-            rm.save(validate: false) if rm.changed?
-          end
-        end
+#         if study['research_master_id'].present?
+#           if study['pi_net_id']
+#             net_id = study['pi_net_id']
+#             net_id.slice!('@musc.edu')
+#             if u = User.where(net_id: net_id).first
+#               existing_protocol.primary_pi_id = u.id
+#               existing_protocol.save(validate: false)
+#             else
+#               u = User.new(
+#                 net_id: net_id,
+#                 email: study['pi_email'],
+#                 first_name: study['first_name'],
+#                 last_name: study['last_name'],
+#                 department: study['pi_department'],
+#                 password: $friendly_token,
+#                 password_confirmation:  $friendly_token
+#               )
+#               if u.valid?
+#                 u.save(validate: false)
+#                 existing_protocol.primary_pi_id = u.id
+#                 existing_protocol.save(validate: false)
+#               end
+#             end
+#           end
 
-        bar.increment! rescue nil
-      end
+#           if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
+#             rm.eirb_protocol_id       = existing_protocol.id
+#             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-      # Create New eIRB Protocol Records
-      log "--- Creating new eIRB protocols"
-      bar = ProgressBar.new(new_eirb_studies.count)
+#             if $validated_states.include?(study['state'])
+#               rm.eirb_validated = true
+#               rm.short_title     = study['short_title']
+#               rm.long_title     = study['title']
+#             end
 
-      new_eirb_studies.each do |study|
-        if study['research_master_id'].present?
-          eirb_protocol = Protocol.new(
-            type:                     study['type'],
-            short_title:              study['short_title'] || "",
-            long_title:               study['title'] || "",
-            eirb_id:                  study['pro_number'],
-            eirb_institution_id:      study['institution_id'],
-            eirb_state:               study['state'],
-            date_initially_approved:  study['date_initially_approved'],
-            date_approved:            study['date_approved'],
-            date_expiration:          study['date_expiration']
-          )
+#             rm.save(validate: false) if rm.changed?
+#           end
+#         end
 
-          if study['pi_net_id']
-            net_id = study['pi_net_id']
-            net_id.slice!('@musc.edu')
-            if u = User.where(net_id: net_id).first
-              eirb_protocol.primary_pi_id = u.id
-              eirb_protocol.save(validate: false)
-            else
-              u = User.new(
-                net_id: net_id,
-                email: study['pi_email'],
-                first_name: study['first_name'],
-                last_name: study['last_name'],
-                department: study['pi_department'],
-                password: $friendly_token,
-                password_confirmation:  $friendly_token
-              )
-              if u.valid?
-                u.save(validate: false)
-                eirb_protocol.primary_pi_id = u.id
-                eirb_protocol.save(validate: false)
-              end
-            end
-          end
+#         bar.increment! rescue nil
+#       end
 
-          created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
+#       # Create New eIRB Protocol Records
+#       log "--- Creating new eIRB protocols"
+#       bar = ProgressBar.new(new_eirb_studies.count)
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
-            rm.eirb_protocol_id       = eirb_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+#       new_eirb_studies.each do |study|
+#         if study['research_master_id'].present?
+#           eirb_protocol = Protocol.new(
+#             type:                     study['type'],
+#             short_title:              study['short_title'] || "",
+#             long_title:               study['title'] || "",
+#             eirb_id:                  study['pro_number'],
+#             eirb_institution_id:      study['institution_id'],
+#             eirb_state:               study['state'],
+#             date_initially_approved:  study['date_initially_approved'],
+#             date_approved:            study['date_approved'],
+#             date_expiration:          study['date_expiration']
+#           )
 
-            if $validated_states.include?(study['state'])
-              rm.eirb_validated = true
-              rm.short_title     = study['short_title']
-              rm.long_title     = study['title']
-            end
+#           if study['pi_net_id']
+#             net_id = study['pi_net_id']
+#             net_id.slice!('@musc.edu')
+#             if u = User.where(net_id: net_id).first
+#               eirb_protocol.primary_pi_id = u.id
+#               eirb_protocol.save(validate: false)
+#             else
+#               u = User.new(
+#                 net_id: net_id,
+#                 email: study['pi_email'],
+#                 first_name: study['first_name'],
+#                 last_name: study['last_name'],
+#                 department: study['pi_department'],
+#                 password: $friendly_token,
+#                 password_confirmation:  $friendly_token
+#               )
+#               if u.valid?
+#                 u.save(validate: false)
+#                 eirb_protocol.primary_pi_id = u.id
+#                 eirb_protocol.save(validate: false)
+#               end
+#             end
+#           end
 
-            rm.save(validate: false) if rm.changed?
-          end
+#           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          bar.increment! rescue nil
-        end
-      end
+#           if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
+#             rm.eirb_protocol_id       = eirb_protocol.id
+#             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-      finish = Time.now
+#             if $validated_states.include?(study['state'])
+#               rm.eirb_validated = true
+#               rm.short_title     = study['short_title']
+#               rm.long_title     = study['title']
+#             end
 
-      log "--- :heavy_check_mark: *Done!*"
-      log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
-      log "--- *New protocols total:* #{created_eirb_protocols.count}"
-      log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
-    end
+#             rm.save(validate: false) if rm.changed?
+#           end
 
-    script_finish = Time.now
+#           bar.increment! rescue nil
+#         end
+#       end
 
-    log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
+#       finish = Time.now
 
-    log ":heavy_check_mark: *Cronjob (EIRB) has completed successfully.*"
+#       log "--- :heavy_check_mark: *Done!*"
+#       log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
+#       log "--- *New protocols total:* #{created_eirb_protocols.count}"
+#       log "--- *Finished EIRB_API data import* (#{(finish - start).to_i} Seconds)."
+#     end
 
-    ## turn on auditing
-    Protocol.auditing_enabled = true
-    ResearchMaster.auditing_enabled = true
-    User.auditing_enabled = true
-  rescue => error
-    Protocol.auditing_enabled = true
-    ResearchMaster.auditing_enabled = true
-    User.auditing_enabled = true
+#     script_finish = Time.now
 
-    log ":heavy_exclamation_mark: *Cronjob (EIRB) has failed unexpectedly.*"
-    log error.inspect
-  end
-end
+#     log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
+
+#     log ":heavy_check_mark: *Cronjob (EIRB) has completed successfully.*"
+
+#     ## turn on auditing
+#     Protocol.auditing_enabled = true
+#     ResearchMaster.auditing_enabled = true
+#     User.auditing_enabled = true
+#   rescue => error
+#     Protocol.auditing_enabled = true
+#     ResearchMaster.auditing_enabled = true
+#     User.auditing_enabled = true
+
+#     log ":heavy_exclamation_mark: *Cronjob (EIRB) has failed unexpectedly.*"
+#     log error.inspect
+#   end
+# end
