@@ -1,0 +1,44 @@
+I"—(function() {
+  var addCookie, removeCookie;
+
+  addCookie = function(name, value) {
+    return Cookies.set(name, value);
+  };
+
+  removeCookie = function(name) {
+    return Cookies.remove(name);
+  };
+
+  $(function() {
+    $("[data-toggle='tooltip']").tooltip();
+    if (Cookies.get('showMoreCookie') === '1') {
+      $('#optional-search-fields').show();
+      $('#show_more').attr('checked', 'checked');
+    }
+    $(document).on('click', '.research-master', function() {
+      var id;
+      id = $(this).data('id');
+      return $.ajax({
+        type: 'GET',
+        url: "/research_masters/" + id
+      });
+    });
+    $(document).on('click', '#show_more', function() {
+      $('#optional-search-fields').toggle();
+      if (Cookies.get('showMoreCookie') === void 0) {
+        return addCookie('showMoreCookie', 1);
+      } else {
+        return removeCookie('showMoreCookie');
+      }
+    });
+    return $(document).on('change', 'select#reason', function() {
+      if ($(this).val() === '') {
+        return $('input.reason_submit').attr("disabled", true);
+      } else {
+        return $('input.reason_submit').removeAttr("disabled");
+      }
+    });
+  });
+
+}).call(this);
+:ET

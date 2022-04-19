@@ -1,0 +1,32 @@
+I"É(function() {
+  var root;
+
+  root = typeof exports !== "undefined" && exports !== null ? exports : this;
+
+  root.$.fn.clearFormErrors = function() {
+    this.find('.form-group').removeClass('has-error');
+    return this.find('span.help-block').remove();
+  };
+
+  root.$.fn.renderFormErrors = function(modelName, errors) {
+    var form;
+    form = this;
+    this.clearFormErrors();
+    return $.each(errors, function(field, messages) {
+      var input;
+      input = form.find('input, select, textarea').filter(function() {
+        var name;
+        name = $(this).attr('name');
+        if (name) {
+          return name.match(new RegExp(modelName + '\\[' + field + '\\(?'));
+        }
+      });
+      input.closest('.form-group').addClass('has-error');
+      return input.parent().append('<span class="help-block">' + $.map(messages, function(m) {
+        return m.charAt(0).toUpperCase() + m.slice(1);
+      }).join('<br />') + '</span>');
+    });
+  };
+
+}).call(this);
+:ET

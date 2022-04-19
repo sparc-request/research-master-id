@@ -1,0 +1,14 @@
+I"‰(function() {
+  $(function() {
+    $(document).on('click', '.clear-selection', function(e) {
+      e.preventDefault();
+      return $(this).closest('.input-group').find('input.form-control').val('');
+    });
+    return $(document).on('click', '.clear-all', function(e) {
+      e.preventDefault();
+      return $('.clear-form').find('input.form-control').val('');
+    });
+  });
+
+}).call(this);
+:ET

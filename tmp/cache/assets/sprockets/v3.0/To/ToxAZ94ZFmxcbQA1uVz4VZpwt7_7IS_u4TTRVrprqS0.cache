@@ -1,0 +1,7 @@
+I"a(function() {
+  $(function() {
+    return new Clipboard('.copy-key');
+  });
+
+}).call(this);
+:ET
