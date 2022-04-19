@@ -1,0 +1,61 @@
+I"
+(function() {
+  $(function() {
+    $(document).ajaxError(function(e, data) {
+      return $('.research-master-form').renderFormErrors('research_master', data.responseJSON.error);
+    });
+    return $('#research_master_modal').on('shown.bs.modal', function() {
+      if ($('#research_master_pi_name').val().length < 1 || $('#research_master_pi_name').val() === $('#research_master_pi_name').attr('placeholder')) {
+        $('.submit-rm-record').prop('disabled', true);
+      }
+      $('.reset-pi-name').on('click', function() {
+        if ($(this).attr("disabled") !== 'disabled') {
+          $('#pi_name').val('');
+          $('#pi_email').val('');
+          $('#research_master_pi_name').prop('disabled', false);
+          $('#research_master_pi_name').val('');
+          $('#research_master_pi_name').typeahead('val', '');
+          $('#pi_department').val('');
+          $('#pi_department').prop('disabled', false);
+          $('.submit-rm-record').prop('disabled', true);
+          $(this).closest('.form-group').removeClass('has-error');
+          return $('#label_error_message').hide();
+        }
+      });
+      $('#research_master_pi_name').on('blur', function() {
+        if ($(this).val() === '') {
+          $('.submit-rm-record').prop('disabled', true);
+        }
+        if ($('#pi_name').val() === '') {
+          $(this).closest('.form-group').addClass('has-error');
+          return $('#label_error_message').show();
+        }
+      });
+      $('#research_master_pi_name').on('typeahead:select', function(ev, selection) {
+        $(this).typeahead('val', selection.name);
+        $('#pi_name').val(selection.name);
+        $('#pi_netid').val(selection.netid);
+        $('#pi_email').val(selection.email);
+        $('#pi_first_name').val(selection.first_name);
+        $('#pi_last_name').val(selection.last_name);
+        $('#pi_middle_initial').val(selection.middle_initial);
+        $('#pi_pvid').val(selection.pvid);
+        if (selection.department !== null) {
+          $('#pi_department').val(selection.department);
+        }
+        if (selection.interfolio_user) {
+          $('#pi_department').prop('disabled', true);
+        }
+        $('#research_master_pi_name').prop('disabled', true);
+        $('.submit-rm-record').prop('disabled', false);
+        $(this).closest('.form-group').removeClass('has-error');
+        return $('#label_error_message').hide();
+      });
+      return $('.research-master-form').bind('submit', function() {
+        return $(this).find(':input').not('.eirb_locked').prop('disabled', false);
+      });
+    });
+  });
+
+}).call(this);
+:ET

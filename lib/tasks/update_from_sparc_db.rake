@@ -37,7 +37,7 @@ task update_from_sparc_db: :environment do
 
     def log(message)
       puts "#{message}\n"
-      $status_notifier.ping message
+#      $status_notifier.ping message
     end
 
     log '*Cronjob (SPARC) has started.*'
@@ -208,7 +208,7 @@ task update_from_sparc_db: :environment do
       log "--- *New protocols total:* #{created_sparc_protocols.count}"
       log "--- *New primary pis total:* #{created_sparc_pis.count}"
       log "--- *New primary pi ids:* #{created_sparc_pis}"
-      log "--- *Finished SPARC_API data import* (#{(finish - start).to_i} Seconds)."
+      log "--- *Finished SPARC_DB data import* (#{(finish - start).to_i} Seconds)."
     end
   end
 

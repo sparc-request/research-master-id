@@ -1,0 +1,73 @@
+I"]	(function() {
+  $(function() {
+    var searchTermValue;
+    searchTermValue = function() {
+      var search_options, selected;
+      selected = "";
+      search_options = $('.search-term-options');
+      search_options.each(function() {
+        if ($(this).prop("checked")) {
+          return selected = $(this).val();
+        }
+      });
+      return selected;
+    };
+    $('#q_pi_name_cont').typeahead({
+      minLength: 3,
+      highlight: true,
+      hint: true
+    }, {
+      display: 'display_name',
+      limit: 2000,
+      source: function(query, syncResults, asyncResults) {
+        return $.get("/directories.json?name=" + ($('#q_pi_name_cont').val()) + ";source=pi_name", function(data) {
+          return asyncResults(data);
+        });
+      }
+    }).on('typeahead:asyncrequest', function() {
+      return $('.spinner').show();
+    }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+      return $('.spinner').hide();
+    });
+    $('#q_pi_name_cont').on('typeahead:select', function(ev, selection) {
+      return $(this).typeahead('val', selection.name);
+    });
+    $('#q_primary_pi_name_cont').typeahead({
+      minLength: 3,
+      highlight: true,
+      hint: true
+    }, {
+      display: 'display_name',
+      limit: 2000,
+      source: function(query, syncResults, asyncResults) {
+        return $.get("/directories.json?name=" + ($('#q_primary_pi_name_cont').val()), function(data) {
+          return asyncResults(data);
+        });
+      }
+    });
+    $('#q_primary_pi_name_cont').on('typeahead:select', function(ev, selection) {
+      return $(this).typeahead('val', selection.name);
+    });
+    return $('#research_master_modal').on('shown.bs.modal', function() {
+      return $('#research_master_pi_name').typeahead({
+        minLength: 3,
+        highlight: true,
+        hint: true
+      }, {
+        display: 'display_name',
+        limit: 2000,
+        source: function(query, syncResults, asyncResults) {
+          return $.get("/directories.json?name=" + ($('#research_master_pi_name').val()) + ";search_term=" + (searchTermValue()), function(data) {
+            return asyncResults(data);
+          });
+        }
+      }).on('typeahead:asyncrequest', function() {
+        return $('.spinner').show();
+      }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+        return $('.spinner').hide();
+      });
+    });
+  });
+
+}).call(this);
+:ET
