@@ -38,7 +38,7 @@ task update_from_eirb: :environment do
 
     def log message
       puts "#{message}\n"
-      #$status_notifier.ping message
+      $status_notifier.ping message
     end
 
     log "*Cronjob (EIRB) has started.*"
