@@ -1,2 +1,0 @@
-class SparcProfessionalOrganization < SparcConnection
-end

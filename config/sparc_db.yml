@@ -1,15 +1,11 @@
-default: &default
+development:
   adapter: mysql2
   encoding: utf8
-  username: root
-  password:
+  username: sparc_test
+  password: SP@rC_fULF!ll
   port: 3306
   timeout: 5000
   pool: 5
-  host: 127.0.0.1
-development:
-  <<: *default
-  database: sparc-rails_development
-test:
-  <<: *default
-  database: sparc-rails_test
+  host: bmic-dbphi-s.ccit.musc.edu
+  database: sparc_request_testing
+

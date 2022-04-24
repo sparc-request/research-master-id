@@ -38,7 +38,7 @@ task update_from_coeus: :environment do
 
     def log message
       puts "#{message}\n"
-      $status_notifier.ping message
+    #  $status_notifier.ping message
     end
 
     log "*Cronjob (COEUS) has started.*"
