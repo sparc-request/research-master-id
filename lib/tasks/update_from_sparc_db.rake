@@ -45,10 +45,10 @@ task update_from_sparc_db: :environment do
     log '- *Beginning data retrieval from SPARC Database...*'
 
     begin
-      sparc_db = SparcConnection.connection
+      sparc_db = Sparc::Connection.connection
       valid_connection = true
     rescue StandardError
-      log '------- :heavy_exclamation_mark: Cannont connect to SPARC Database'
+      log '------- :heavy_exclamation_mark: Cannot connect to SPARC Database'
     end
 
     if valid_connection
@@ -60,7 +60,7 @@ task update_from_sparc_db: :environment do
 
       start       = Time.now
       # protocols   = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
-      protocols   = SparcHumanSubjectsInfo
+      protocols   = Sparc::Protocol.includes(:sparc_primary_pi, :sparc_human_subjects_info).where.not(sparc_primary_pis: {id: nil})
       finish      = Time.now
       ldap_search = LdapSearch.new
 
@@ -75,7 +75,7 @@ task update_from_sparc_db: :environment do
       ResearchMaster.update_all(sparc_protocol_id: nil)
 
       log '- *Beginning SPARC_DB data import...*'
-      log "--- Total number of protocols from SPARC_DB: #{protocols.count}"
+      log "--- Total number of protocols from SPARC_DB: #{sparc_protocol.count}"
 
       start                   = Time.now
       created_sparc_protocols = []
