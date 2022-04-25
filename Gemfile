@@ -39,8 +39,6 @@ gem 'net-scp'
 gem 'tiny_tds'
 gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
 
-gem 'active_model_serializers'
-
 group :development, :test do
   gem 'byebug'
   gem 'rspec-rails'
