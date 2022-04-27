@@ -34,6 +34,9 @@
       = research_master.long_title
     - else
       = research_master.long_title
+    - if research_master.eirb_closed_out_study?
+      %h6.text-danger
+        Study has been closed out in eIRB
   %td.research-master{ data: { id: research_master.id } }
     - if research_master.eirb_validated?
       %h6.text-success
