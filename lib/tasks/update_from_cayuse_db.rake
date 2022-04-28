@@ -55,7 +55,6 @@ task update_from_cayuse_db: :environment do
       start                 = Time.now
       #projects_with_pi_list = HTTParty.get("#{cayuse_api}/cayuse_projects_with_pi_list", timeout: 500, headers: {'Content-Type' => 'application/json'})
       projects_with_pi_list = Epds::CayuseProject.all.has_rmid 
-      log '#{projects_with_pi_list.first}'
       finish                = Time.now
 
       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
@@ -159,11 +158,11 @@ task update_from_cayuse_db: :environment do
 
       log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
       log ":heavy_check_mark: *Cronjob (CAYUSE) has completed successfully.*"
-     end
+    end
       ## turn on auditing
       Protocol.auditing_enabled = true
       ResearchMaster.auditing_enabled = true
-    rescue => error
+  rescue => error
       Protocol.auditing_enabled = true
       ResearchMaster.auditing_enabled = true
 

@@ -36,7 +36,7 @@ task update_from_cayuse: :environment do
 
     def log message
       puts "#{message}\n"
-      $status_notifier.ping message
+     # $status_notifier.ping message
     end
 
     log "*Cronjob (CAYUSE) has started.*"
