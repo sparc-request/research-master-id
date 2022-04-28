@@ -1,4 +1,4 @@
-# Copyright © 2020 MUSC Foundation for Research Development~
+# Copyright © 2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -36,6 +36,7 @@ task update_from_cayuse_db: :environment do
 
     def log message
       puts "#{message}\n"
+      # TODO
      # $status_notifier.ping message
     end
 
@@ -51,9 +52,7 @@ task update_from_cayuse_db: :environment do
       log "- *Beginning data retrieval from CAYUSE DB...*"
       log "--- *Fetching from CAYUSE DB...*"
 
-      #cayuse_api            = ENV.fetch("COEUS_API")
       start                 = Time.now
-      #projects_with_pi_list = HTTParty.get("#{cayuse_api}/cayuse_projects_with_pi_list", timeout: 500, headers: {'Content-Type' => 'application/json'})
       projects_with_pi_list = Epds::CayuseProject.all.has_rmid 
       finish                = Time.now
 
@@ -162,7 +161,7 @@ task update_from_cayuse_db: :environment do
       ## turn on auditing
       Protocol.auditing_enabled = true
       ResearchMaster.auditing_enabled = true
-  rescue => error
+  rescue => e
       Protocol.auditing_enabled = true
       ResearchMaster.auditing_enabled = true
 

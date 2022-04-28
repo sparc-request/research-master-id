@@ -1,4 +1,4 @@
-# Copyright © 2020 MUSC Foundation for Research Development~
+# Copyright © 2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -38,6 +38,7 @@ task update_from_coeus_db: :environment do
 
     def log message
       puts "#{message}\n"
+     # TODO 
      # $status_notifier.ping message
     end
 
@@ -57,11 +58,8 @@ task update_from_coeus_db: :environment do
       log "- *Beginning data retrieval from COEUS Database...*"
 
       start            = Time.now 
-      # award_details    = HTTParty.get("#{coeus_api}/award_details", timeout: 500, headers: {'Content-Type' => 'application/json'})
       award_details    = Epds::CoeusAwardDetail.valid_protocols
-      # awards_hrs       = HTTParty.get("#{coeus_api}/awards_hrs", timeout: 500, headers: {'Content-Type' => 'application/json'})
       awards_hrs        = Epds::CoeusAwardsHr.all
-      # interfolio_users = HTTParty.get("#{coeus_api}/interfolio", timeout: 500, headers: {'Content-Type' => 'application/json'})
       interfolio_users = Epds::CoeusInterfolio.all
       finish           = Time.now
 
