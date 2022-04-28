@@ -1,4 +1,4 @@
-class CayuseAward < Epds::Connection
+class Epds::CayuseAward < Epds::Connection
   self.table_name = 'SRC_CAYUSE_AWARDS'
   self.primary_key = 'AWARD_NUMBER'
 
