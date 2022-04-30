@@ -41,7 +41,6 @@ task update_from_coeus_db: :environment do
      # TODO 
      # $status_notifier.ping message
     end
-
     log "*Cronjob (COEUS) has started.*"
 
     log "- *Connectiong to COEUS Database...*"
@@ -70,7 +69,6 @@ task update_from_coeus_db: :environment do
 
       start                   = Time.now
       created_coeus_protocols = []
-
       # Preload COEUS Protocols to improve efficiency
       coeus_protocols               = Protocol.where(type: 'COEUS')
       existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
