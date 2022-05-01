@@ -38,14 +38,12 @@ task update_from_coeus_db: :environment do
 
     def log message
       puts "#{message}\n"
-     # TODO 
-     # $status_notifier.ping message
+      $status_notifier.ping message
     end
     log "*Cronjob (COEUS) has started.*"
 
     log "- *Connectiong to COEUS Database...*"
 
-    # coeus_api       = ENV.fetch("COEUS_API")
     begin
       coeus_db = Epds::Connection.connection  
       valid_connection = true
@@ -125,13 +123,13 @@ task update_from_coeus_db: :environment do
 
       log "--- Updating award numbers from COEUS Database: #{awards_hrs.count}"
 
-      existing_coeus_awards_hrs = awards_hrs.select{ |ah| existing_award_numbers.include?(ah['mit_award_number']) }
+      existing_coeus_awards_hrs = awards_hrs.select { |ah| existing_award_numbers.include?(ah['mit_award_number']) }
 
       log "--- Updating COEUS award numbers"
       bar = ProgressBar.new(existing_coeus_awards_hrs.count)
 
       existing_coeus_awards_hrs.each do |ah|
-        existing_protocol                       = coeus_protocols.detect{ |p| p.mit_award_number == ah['mit_award_number'] }
+        existing_protocol                       = coeus_protocols.detect { |p| p.mit_award_number == ah['mit_award_number'] }
         existing_protocol.coeus_protocol_number = ah['protocol_number']
 
         existing_protocol.save(validate: false) if existing_protocol.changed?
@@ -168,7 +166,7 @@ task update_from_coeus_db: :environment do
     Protocol.auditing_enabled = true
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
-  rescue => e
+  rescue => error
     Protocol.auditing_enabled = true
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
