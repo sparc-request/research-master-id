@@ -42,8 +42,9 @@ task update_from_cayuse_db: :environment do
 
     log "*Cronjob (CAYUSE) has started.*"
     begin
-      epds_db = Epds::Connection.connection
-      valid_connection = true
+      if Epds::Connection.connection
+        valid_connection = true
+      end
     rescue
       log "----- :heavy_exclamation_mark: Cannot connect to CAYUSE Database"
     end
@@ -53,7 +54,10 @@ task update_from_cayuse_db: :environment do
       log "--- *Fetching from CAYUSE DB...*"
 
       start                 = Time.now
-      projects_with_pi_list = Epds::CayuseProject.all.has_rmid 
+      # projects_with_pi_list = Epds::CayuseProject.has_rmid 
+      projects_with_pi_list = Epds::CayuseProject.includes(:cayuse_research_teams).where(SRC_CAYUSE_RESEARCH_TEAM:{ROLE:"Lead Principal Investigator"}).has_rmid
+
+
       finish                = Time.now
 
       log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
@@ -73,9 +77,8 @@ task update_from_cayuse_db: :environment do
       need_imported              = []
 
       projects_with_pi_list.each do |project_with_pi_list|
-        project = project_with_pi_list
-
-        if existing_project_numbers.include?(project['PROJECT_NUMBER'])
+        #project = project_with_pi_list
+        if existing_project_numbers.include?(project_with_pi_list.PROJECT_NUMBER)
           already_imported_protocols << project_with_pi_list
         else
           need_imported << project_with_pi_list
@@ -94,10 +97,10 @@ task update_from_cayuse_db: :environment do
         existing_protocol = existing_cayuse_protocols.detect{|protocol| protocol.cayuse_project_number == project['PROJECT_NUMBER'] }
 
         #Update both fields that come from cayuse (that could change), just to make sure we catch any changes.
-        existing_protocol.update_attributes(title: project['PROJECT_TITLE'], cayuse_pi_name: pi_list.join(", "))
+        existing_protocol.update_attributes(title: project.PROJECT_TITLE, cayuse_pi_name: pi_list.join(", "))
 
         #Link any that might have been imported but not linked (do to timing of RMID vs cayuse creation)
-        if research_master = $research_masters.detect{ |rm| rm.id == project['RMID'].to_i }
+        if research_master = $research_masters.detect{ |rm| rm.id == project.RMID.to_i }
           # But obviously don't if it already exists
           unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == research_master.id }
             ResearchMasterCayuseRelation.create(
@@ -122,15 +125,15 @@ task update_from_cayuse_db: :environment do
 
         cayuse_protocol = Protocol.new(
           type:                   'CAYUSE',
-          title:                  project['PROJECT_TITLE'],
-          cayuse_project_number:  project['PROJECT_NUMBER'],
+          title:                  project.PROJECT_TITLE,
+          cayuse_project_number:  project.PROJECT_NUMBER,
           cayuse_pi_name:         pi_list.join(", ")
         )
 
         if cayuse_protocol.save
           created_cayuse_protocols.append(cayuse_protocol.id)
 
-          if research_master = $research_masters.detect{ |rm| rm.id == project['RMID'].to_i }
+          if research_master = $research_masters.detect{ |rm| rm.id == project.RMID.to_i }
             ResearchMasterCayuseRelation.create(
               protocol: cayuse_protocol,
               research_master: research_master
