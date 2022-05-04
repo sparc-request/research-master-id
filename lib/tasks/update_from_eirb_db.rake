@@ -29,7 +29,7 @@ task update_from_eirb_db: :environment do
 
     script_start      = Time.now
 
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    # $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
 
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
@@ -38,7 +38,7 @@ task update_from_eirb_db: :environment do
 
     def log message
       puts "#{message}\n"
-      #$status_notifier.ping message
+      $status_notifier.ping message
     end
 
     log "*Cronjob (EIRB) has started.*"
