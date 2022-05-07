@@ -48,6 +48,7 @@ task update_from_coeus_db: :environment do
       if Epds::Connection.connection  
         valid_connection = true
       end
+      valid_connection = true
     rescue
       log "----- :heavy_exclamation_mark: Cannot connect to COEUS Database"
     end
@@ -56,7 +57,7 @@ task update_from_coeus_db: :environment do
       log "- *Beginning data retrieval from COEUS Database...*"
 
       start            = Time.now 
-      award_details    = Epds::CoeusAwardDetail.valid_protocols 
+      award_details    = Epds::CoeusAwardDetail.valid_protocols
       awards_hrs       = Epds::CoeusAwardsHr.all
       interfolio_users = Epds::CoeusInterfolio.all
       finish           = Time.now

@@ -209,7 +209,11 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.0.2)
+<<<<<<< HEAD
     mini_portile2 (2.6.1)
+=======
+    mini_portile2 (2.8.0)
+>>>>>>> 13284a339d92b2e94d2cd62fb06b4c38e680067a
     minitest (5.14.1)
     multi_xml (0.6.0)
     mysql2 (0.5.3)
@@ -218,8 +222,13 @@ GEM
       net-ssh (>= 2.6.5, < 6.0.0)
     net-ssh (5.2.0)
     nio4r (2.3.1)
+<<<<<<< HEAD
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
+=======
+    nokogiri (1.13.4)
+      mini_portile2 (~> 2.8.0)
+>>>>>>> 13284a339d92b2e94d2cd62fb06b4c38e680067a
       racc (~> 1.4)
     omniauth (1.9.1)
       hashie (>= 3.4.6)

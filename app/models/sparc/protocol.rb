@@ -15,5 +15,12 @@ class Sparc::Protocol < Sparc::Connection
 
   def primary_pi_project_role
     project_roles.detect { |pr| pr.role == 'primary-pi' }
+    
+  def primary_principal_investigator
+	  primary_pi_project_role.try(:idenity)
+  end
+
+  def primary_pi_project_role
+	  project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
 end

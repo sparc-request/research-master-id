@@ -55,7 +55,11 @@ set :tmp_dir, "/home/deploy/tmp"
 set :deploy_to, '/var/www/rails/research_master_id'
 set :branch, 'testing'
 set :rails_env, 'production'
+<<<<<<< HEAD
 set :rvm_ruby_version, '2.5.5@research-master-id --create'
+=======
+set :rvm_ruby_version, '2.7.5@research-master-id --create'
+>>>>>>> 13284a339d92b2e94d2cd62fb06b4c38e680067a
 set :passenger_restart_with_touch, true
 
 
