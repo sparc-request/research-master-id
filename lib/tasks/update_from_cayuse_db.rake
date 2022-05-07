@@ -55,7 +55,10 @@ task update_from_cayuse_db: :environment do
 
       start                 = Time.now
       # projects_with_pi_list = Epds::CayuseProject.has_rmid 
-      projects_with_pi_list = Epds::CayuseProject.includes(:cayuse_research_teams).where(SRC_CAYUSE_RESEARCH_TEAM:{ROLE:"Lead Principal Investigator"}).has_rmid
+      projects_with_pi_list = Epds::CayuseProject
+                                .includes(:cayuse_research_teams)
+                                .where(SRC_CAYUSE_RESEARCH_TEAM: { ROLE: "Lead Principal Investigator" } )
+                                .has_rmid
 
 
       finish                = Time.now

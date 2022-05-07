@@ -38,15 +38,16 @@ task update_from_coeus_db: :environment do
 
     def log message
       puts "#{message}\n"
-      $status_notifier.ping message
+     # $status_notifier.ping message
     end
     log "*Cronjob (COEUS) has started.*"
 
     log "- *Connectiong to COEUS Database...*"
 
     begin
-      coeus_db = Epds::Connection.connection  
-      valid_connection = true
+      if Epds::Connection.connection  
+        valid_connection = true
+      end
     rescue
       log "----- :heavy_exclamation_mark: Cannot connect to COEUS Database"
     end
@@ -55,8 +56,8 @@ task update_from_coeus_db: :environment do
       log "- *Beginning data retrieval from COEUS Database...*"
 
       start            = Time.now 
-      award_details    = Epds::CoeusAwardDetail.valid_protocols
-      awards_hrs        = Epds::CoeusAwardsHr.all
+      award_details    = Epds::CoeusAwardDetail.valid_protocols 
+      awards_hrs       = Epds::CoeusAwardsHr.all
       interfolio_users = Epds::CoeusInterfolio.all
       finish           = Time.now
 
@@ -70,18 +71,18 @@ task update_from_coeus_db: :environment do
       # Preload COEUS Protocols to improve efficiency
       coeus_protocols               = Protocol.where(type: 'COEUS')
       existing_award_numbers        = coeus_protocols.pluck(:mit_award_number)
-      existing_coeus_award_details  = award_details.select{ |ad| existing_award_numbers.include?(ad['mit_award_number']) }
-      new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad['mit_award_number']) }
+      existing_coeus_award_details  = award_details.select{ |ad| existing_award_numbers.include?(ad.MIT_AWARD_NUMBER) }
+      new_coeus_award_details       = award_details.select{ |ad| existing_award_numbers.exclude?(ad.MIT_AWARD_NUMBER) }
 
       # Update Existing COEUS Protocol Records
       log "--- Updating existing COEUS protocols"
       bar = ProgressBar.new(existing_coeus_award_details.count)
 
       existing_coeus_award_details.each do |ad|
-        existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad['mit_award_number'] }
-        existing_protocol.update_attributes(coeus_project_id: ad['coeus_project_id'])
+        existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad.MIT_AWARD_NUMBER }
+        existing_protocol.update_attributes(coeus_project_id: ad.ACCOUNT_NUMBER)
 
-        if ad['rmid'].present? && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
+        if ad.RMID_NO.present? && rm = $research_masters.detect{ |rm| rm.id == ad.RMID_NO }
           unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }
             ResearchMasterCoeusRelation.create(
               protocol:         existing_protocol,
@@ -100,17 +101,17 @@ task update_from_coeus_db: :environment do
       new_coeus_award_details.each do |ad|
         coeus_protocol = Protocol.new(
           type:                 'COEUS',
-          title:                ad['title'],
-          mit_award_number:     ad['mit_award_number'],
-          sequence_number:      ad['sequence_number'],
-          entity_award_number:  ad['entity_award_number'],
-          coeus_project_id:     ad['coeus_project_id']
+          title:                ad.title,
+          mit_award_number:     ad.MIT_AWARD_NUMBER,
+          sequence_number:      ad.SEQUENCE_NUMBER,
+          entity_award_number:  ad.ENTITY_AWARD_NUMBER,
+          coeus_project_id:     ad.COEUS_PROJECT_ID
         )
 
         if coeus_protocol.save
           created_coeus_protocols.append(coeus_protocol.id)
 
-          if ad['rmid'].present? && rm = $research_masters.detect{ |rm| rm.id == ad['rmid'] }
+          if ad.RMID_NO.present? && rm = $research_masters.detect{ |rm| rm.id == ad.RMID_NO }
             ResearchMasterCoeusRelation.create(
               protocol:         coeus_protocol,
               research_master:  rm
@@ -123,14 +124,14 @@ task update_from_coeus_db: :environment do
 
       log "--- Updating award numbers from COEUS Database: #{awards_hrs.count}"
 
-      existing_coeus_awards_hrs = awards_hrs.select { |ah| existing_award_numbers.include?(ah['mit_award_number']) }
+      existing_coeus_awards_hrs = awards_hrs.select { |ah| existing_award_numbers.include?(ah.MIT_AWARD_NUMBER)}
 
       log "--- Updating COEUS award numbers"
       bar = ProgressBar.new(existing_coeus_awards_hrs.count)
 
       existing_coeus_awards_hrs.each do |ah|
-        existing_protocol                       = coeus_protocols.detect { |p| p.mit_award_number == ah['mit_award_number'] }
-        existing_protocol.coeus_protocol_number = ah['protocol_number']
+        existing_protocol                       = coeus_protocols.detect { |p| p.mit_award_number == ah.MIT_AWARD_NUMBER }
+        existing_protocol.coeus_protocol_number = ah.PROTOCOL_NUMBER
 
         existing_protocol.save(validate: false) if existing_protocol.changed?
 
@@ -142,8 +143,8 @@ task update_from_coeus_db: :environment do
       bar = ProgressBar.new(interfolio_users.count)
 
       interfolio_users.each do |user|
-        if user_to_update = $users.detect{ |u| u.net_id == user['netid']}
-          user_to_update.update_attribute(:department, user['department'])
+        if user_to_update = $users.detect{ |u| u.net_id == user.NETID}
+          user_to_update.update_attribute(:department, user.DEPARTMENT)
         end
 
         bar.increment! rescue nil
