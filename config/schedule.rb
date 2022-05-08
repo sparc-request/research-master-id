@@ -22,16 +22,16 @@ every 1.hour, :roles => [:app] do
   rake 'update_from_sparc'
 end
 
-every 1.day, at: ["1:05 am", "2:05 am", "3:05 am", "4:05 am", "5:05 am", "6:05 am", "7:05 am", "8:05 am", "9:05 am", "10:05 am", "11:05 am", "12:05 pm", "1:05 pm", "2:05 pm", "3:05 pm", "4:05 pm", "5:05 pm", "6:05 pm", "7:05 pm", "8:05 pm", "9:05 pm", "10:05 pm", "11:05 pm", "12:05 am"], :roles => [:app] do
+every 1.day, at: ["1:25 am", "2:25 am", "3:25 am", "4:25 am", "5:25 am", "6:25 am", "7:25 am", "8:25 am", "9:25 am", "10:25 am", "11:25 am", "12:25 pm", "1:25 pm", "2:25 pm", "3:25 pm", "4:25 pm", "5:25 pm", "6:25 pm", "7:25 pm", "8:25 pm", "9:25 pm", "10:25 pm", "11:25 pm", "12:25 am"], :roles => [:app] do
   rake 'update_from_eirb_db'
 end
 
 every 1.day, at: ['10:40 pm'], :roles => [:app] do
-  rake 'update_from_coeus'
+  rake 'update_from_coeus_db'
 end
 
 every 1.day, at: ['10:50 pm'], :roles => [:app] do
-  rake 'update_from_cayuse'
+  rake 'update_from_cayuse_db'
 end
 
 every 1.hour, :roles => [:app] do

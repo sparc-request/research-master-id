@@ -12,6 +12,10 @@ services:
 
 before_install:
   - "export TZ=America/New_York"
+  - sudo apt-get -y install wget build-essential libc6-dev
+  - wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
+  - pushd /tmp && tar -xzvf /tmp/freetds.tar.gz
+  - cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install && popd
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml
