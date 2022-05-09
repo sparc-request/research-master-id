@@ -12,6 +12,7 @@ services:
 
 before_install:
   - "export TZ=America/New_York"
+  - sudo apt-get -y install freetds
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml
