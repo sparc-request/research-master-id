@@ -12,7 +12,7 @@ services:
 
 before_install:
   - "export TZ=America/New_York"
-  - sudo apt-get -y install freetds
+  - sudo apt-get -y install unixodbc unixodbc-dev freetds-dev freetds-bin tdsodbc
 before_script:
   - "export DISPLAY=:99.0"
   - cp config/database.yml.example config/database.yml
