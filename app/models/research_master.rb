@@ -66,4 +66,13 @@ class ResearchMaster < ApplicationRecord
   def has_attached_data?
     eirb_validated? or sparc_protocol_id? or coeus_protocols.any? or cayuse_protocols.any?
   end
+
+  def eirb_closed_out_study?
+    if eirb_protocol_id?
+      eirb_protocol = Protocol.find(self.eirb_protocol_id)
+      if eirb_protocol
+        eirb_protocol.eirb_state == 'Terminated' or eirb_protocol.eirb_state == 'Completed'
+      end
+    end
+  end
 end
