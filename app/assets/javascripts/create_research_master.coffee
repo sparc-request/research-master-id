@@ -37,10 +37,15 @@ $ ->
         $('#pi_department').val('')
         $('#pi_department').prop('disabled', false)
         $('.submit-rm-record').prop('disabled', true)
+        $(this).closest('.form-group').removeClass('has-error')
+        $('#label_error_message').hide()
 
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''
         $('.submit-rm-record').prop('disabled', true)
+      if($('#pi_name').val() == '')
+        $(this).closest('.form-group').addClass('has-error')
+        $('#label_error_message').show()
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
       $(this).typeahead('val', selection.name)
@@ -57,6 +62,8 @@ $ ->
         $('#pi_department').prop('disabled', true)
       $('#research_master_pi_name').prop('disabled', true)
       $('.submit-rm-record').prop('disabled', false)
+      $(this).closest('.form-group').removeClass('has-error')
+      $('#label_error_message').hide()
 
     $('.research-master-form').bind 'submit', ->
       $(this).find(':input').not('.eirb_locked').prop('disabled', false)
