@@ -41,6 +41,7 @@ scratch
 config/database.yml
 config/eirb_db.yml
 config/epds_db.yml
+config/sparc_db.yml
 /coverage
 .env
 .env.*

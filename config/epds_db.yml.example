@@ -1,0 +1,9 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  username: epds
+  password: 
+  database: coeus_data
+  pool: 5
+  timeout: 5000
+  host: 
