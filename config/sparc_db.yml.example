@@ -1,0 +1,10 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  username: user
+  password: password
+  port: 3306
+  timeout: 5000
+  pool: 5
+  host: host
+  database: db
