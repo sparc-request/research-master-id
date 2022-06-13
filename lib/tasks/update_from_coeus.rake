@@ -22,12 +22,13 @@ require 'dotenv/tasks'
 
 task update_from_coeus: :environment do
   $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $full_message = ""
 
   def log message
     puts "#{message}\n"
-    $status_notifier.post(message)
+    $full_message << message + " <br> "
   end
-  
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -162,6 +163,8 @@ task update_from_coeus: :environment do
 
     log "&#x2714; *Cronjob (COEUS) has completed successfully.*"
 
+    $status_notifier.post($full_message)
+
     ## turn on auditing
     Protocol.auditing_enabled = true
     ResearchMaster.auditing_enabled = true
@@ -173,5 +176,7 @@ task update_from_coeus: :environment do
 
     log "&#x2757; *Cronjob (COEUS) has failed unexpectedly.*"
     log error.inspect
+
+    $status_notifier.post($full_message)
   end
 end

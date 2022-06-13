@@ -22,10 +22,11 @@ require 'dotenv/tasks'
 
 task update_from_cayuse_db: :environment do
   $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $full_message = ""
 
   def log message
     puts "#{message}\n"
-    $status_notifier.post(message)
+    $full_message << message + " <br> "
   end
 
   begin
@@ -161,6 +162,8 @@ task update_from_cayuse_db: :environment do
 
       log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
       log "&#x2714; *Cronjob (CAYUSE) has completed successfully.*"
+
+      $status_notifier.post($full_message)
     end
 
     ## turn on auditing
@@ -172,5 +175,6 @@ task update_from_cayuse_db: :environment do
 
     log "&#x2757; *Cronjob (CAYUSE) has failed unexpectedly.*"
     log error.inspect
+    $status_notifier.post($full_message)
   end
 end
