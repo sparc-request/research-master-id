@@ -35,6 +35,7 @@ gem "letter_opener", :group => :development
 gem "progress_bar"
 gem 'net-ssh'
 gem 'net-scp'
+gem 'msteams-ruby-client'
 
 gem 'tiny_tds'
 gem 'activerecord-sqlserver-adapter', '~> 5.2.1'

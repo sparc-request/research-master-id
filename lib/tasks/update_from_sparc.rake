@@ -21,6 +21,13 @@
 require 'dotenv/tasks'
 
 task update_from_sparc: :environment do
+  $status_notifier  = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+
+  def log message
+    puts "#{message}\n"
+    $status_notifier.post(message)
+  end
+    
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled       = false
@@ -29,16 +36,13 @@ task update_from_sparc: :environment do
 
     script_start      = Time.now
 
-    $status_notifier  = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    
 
     $friendly_token   = Devise.friendly_token
     $research_masters = ResearchMaster.eager_load(:pi).all
     $users            = User.all
 
-    def log message
-      puts "#{message}\n"
-      $status_notifier.ping message
-    end
+    
 
     log "*Cronjob (SPARC) has started.*"
 
@@ -54,13 +58,13 @@ task update_from_sparc: :environment do
     ldap_search = LdapSearch.new
 
     if protocols.code == 401
-      log "----- :heavy_exclamation_mark:  SPARC_API Authorization Failed: #{protocols}"
+      log "----- &#x2757;  SPARC_API Authorization Failed: #{protocols}"
     elsif protocols.code == 500
-      log "----- :heavy_exclamation_mark:  SPARC_API Internal Server Error: #{protocols}"
+      log "----- &#x2757;  SPARC_API Internal Server Error: #{protocols}"
     elsif protocols.is_a?(String)
-      log "----- :heavy_exclamation_mark: Error retrieving protocols from SPARC_API: #{protocols}"
+      log "----- &#x2757; Error retrieving protocols from SPARC_API: #{protocols}"
     else
-      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+      log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
       ResearchMaster.update_all(sparc_protocol_id: nil)
 
       log "- *Beginning SPARC_API data import...*"
@@ -182,7 +186,7 @@ task update_from_sparc: :environment do
 
       finish = Time.now
 
-      log "--- :heavy_check_mark: *Done!*"
+      log "--- &#x2714; *Done!*"
       log "--- *Updated protocols total:* #{updated_sparc_protocols.count}"
       log "--- *New protocols total:* #{created_sparc_protocols.count}"
       log "--- *New primary pis total:* #{created_sparc_pis.count}"
@@ -194,7 +198,7 @@ task update_from_sparc: :environment do
 
     log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-    log ":heavy_check_mark: *Cronjob (SPARC) has completed successfully.*"
+    log "&#x2714; *Cronjob (SPARC) has completed successfully.*"
 
     ## turn on auditing
     Protocol.auditing_enabled = true
@@ -205,7 +209,7 @@ task update_from_sparc: :environment do
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
 
-    log ":heavy_exclamation_mark: *Cronjob (SPARC) has failed unexpectedly.*"
+    log "&#x2757; *Cronjob (SPARC) has failed unexpectedly.*"
     log error.inspect
   end
 end

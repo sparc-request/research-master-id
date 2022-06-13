@@ -21,23 +21,27 @@
 require 'dotenv/tasks'
 
 task update_from_cayuse: :environment do
+  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+
+  def log message
+    puts "#{message}\n"
+    $status_notifier.post(message)
+  end
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
     ResearchMaster.auditing_enabled = false
 
     script_start      = Time.now
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    
     $friendly_token    = Devise.friendly_token
 
     ##Load up Research Masters ahead of time
     $research_masters  = ResearchMaster.all
     $rmc_relations     = ResearchMasterCayuseRelation.all
 
-    def log message
-      puts "#{message}\n"
-      $status_notifier.ping message
-    end
+    
 
     log "*Cronjob (CAYUSE) has started.*"
     log "- *Beginning data retrieval from APIs...*"
@@ -49,7 +53,7 @@ task update_from_cayuse: :environment do
 
     finish                = Time.now
 
-    log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
 
     log "- *Beginning CAYUSE API data import...*"
     log "--- Total number of protocols from CAYUSE API: #{projects_with_pi_list.count}"
@@ -105,7 +109,7 @@ task update_from_cayuse: :environment do
 
       bar.increment! rescue nil
     end
-    log "--- :heavy_check_mark: *Done!*"
+    log "--- &#x2714; *Done!*"
 
     # Create new cayuse protocols
     log "--- Creating new CAYUSE protocols"
@@ -138,7 +142,7 @@ task update_from_cayuse: :environment do
 
     finish = Time.now
 
-    log "--- :heavy_check_mark: *Done!*"
+    log "--- &#x2714; *Done!*"
 
     log "--- *Newly linked protocols total:* #{newly_linked_protocols.count}"
     log "--- *Newly linked protocol ids:* #{newly_linked_protocols}"
@@ -151,7 +155,7 @@ task update_from_cayuse: :environment do
     script_finish = Time.now
 
     log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
-    log ":heavy_check_mark: *Cronjob (CAYUSE) has completed successfully.*"
+    log "&#x2714; *Cronjob (CAYUSE) has completed successfully.*"
 
     ## turn on auditing
     Protocol.auditing_enabled = true
@@ -160,7 +164,7 @@ task update_from_cayuse: :environment do
     Protocol.auditing_enabled = true
     ResearchMaster.auditing_enabled = true
 
-    log ":heavy_exclamation_mark: *Cronjob (CAYUSE) has failed unexpectedly.*"
+    log "&#x2757; *Cronjob (CAYUSE) has failed unexpectedly.*"
     log error.inspect
   end
 end
