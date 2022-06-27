@@ -21,6 +21,14 @@
 require 'dotenv/tasks'
 
 task update_from_coeus: :environment do
+  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $full_message = ""
+
+  def log message
+    puts "#{message}\n"
+    $full_message << message + " <br> "
+  end
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -29,17 +37,14 @@ task update_from_coeus: :environment do
 
     script_start      = Time.now
 
-    $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
+    
 
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $rmc_relations     = ResearchMasterCoeusRelation.all
     $users             = User.all
 
-    def log message
-      puts "#{message}\n"
-      $status_notifier.ping message
-    end
+    
 
     log "*Cronjob (COEUS) has started.*"
 
@@ -55,7 +60,7 @@ task update_from_coeus: :environment do
     interfolio_users = HTTParty.get("#{coeus_api}/interfolio", timeout: 500, headers: {'Content-Type' => 'application/json'})
     finish           = Time.now
 
-    log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+    log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
 
     log "- *Beginning COEUS API data import...*"
     log "--- Total number of protocols from COEUS API: #{award_details.count}"
@@ -147,7 +152,7 @@ task update_from_coeus: :environment do
 
     finish = Time.now
 
-    log "--- :heavy_check_mark: *Done!*"
+    log "--- &#x2714; *Done!*"
     log "--- *New protocols total:* #{created_coeus_protocols.count}"
     log "--- *New protocol ids:* #{created_coeus_protocols}"
     log "--- *Finished COEUS_API data import* (#{(finish - start).to_i} Seconds)."
@@ -156,7 +161,9 @@ task update_from_coeus: :environment do
 
     log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-    log ":heavy_check_mark: *Cronjob (COEUS) has completed successfully.*"
+    log "&#x2714; *Cronjob (COEUS) has completed successfully.*"
+
+    $status_notifier.post($full_message)
 
     ## turn on auditing
     Protocol.auditing_enabled = true
@@ -167,7 +174,9 @@ task update_from_coeus: :environment do
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
 
-    log ":heavy_exclamation_mark: *Cronjob (COEUS) has failed unexpectedly.*"
+    log "&#x2757; *Cronjob (COEUS) has failed unexpectedly.*"
     log error.inspect
+
+    $status_notifier.post($full_message)
   end
 end

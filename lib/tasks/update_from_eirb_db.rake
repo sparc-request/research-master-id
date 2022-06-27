@@ -21,6 +21,14 @@
 require 'dotenv/tasks'
 
 task update_from_eirb_db: :environment do
+  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $full_message = ""
+
+  def log message
+    puts "#{message}\n"
+    $full_message << message + " <br> "
+  end
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -29,17 +37,12 @@ task update_from_eirb_db: :environment do
 
     script_start      = Time.now
 
-    # $status_notifier   = Slack::Notifier.new(ENV.fetch('CRONJOB_STATUS_WEBHOOK'))
-
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $users             = User.all
 
-    def log message
-      puts "#{message}\n"
-      # $status_notifier.ping message
-    end
+    
 
     log "*Cronjob (EIRB) has started.*"
 
@@ -49,7 +52,7 @@ task update_from_eirb_db: :environment do
       eirb_db = EirbConnection.connection #check if the connection is valid
       valid_connection = true
     rescue
-      log "----- :heavy_exclamation_mark: Cannot connect to EIRB Database"
+      log "----- &#x2757; Cannot connect to EIRB Database"
     end
 
     if valid_connection
@@ -59,7 +62,7 @@ task update_from_eirb_db: :environment do
       # eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
       eirb_studies = EirbStudy.is_musc.filter_out_preserve_state.filter_invalid_pro_numbers
       finish        = Time.now
-      log "----- :heavy_check_mark: *Done!* (#{(finish - start).to_i} Seconds)"
+      log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
 
       ResearchMaster.update_all(eirb_validated: false)
 
@@ -202,7 +205,7 @@ task update_from_eirb_db: :environment do
 
       finish = Time.now
 
-      log "--- :heavy_check_mark: *Done!*"
+      log "--- &#x2714; *Done!*"
       log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
       log "--- *New protocols total:* #{created_eirb_protocols.count}"
       log "--- *Finished EIRB data import* (#{(finish - start).to_i} Seconds)."
@@ -211,7 +214,8 @@ task update_from_eirb_db: :environment do
 
       log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-      log ":heavy_check_mark: *Cronjob (EIRB) has completed successfully.*"
+      log "&#x2714; *Cronjob (EIRB) has completed successfully.*"
+      $status_notifier.post($full_message)
     end
 
     ## turn on auditing
@@ -223,7 +227,8 @@ task update_from_eirb_db: :environment do
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
 
-    log ":heavy_exclamation_mark: *Cronjob (EIRB) has failed unexpectedly.*"
+    log "&#x2757; *Cronjob (EIRB) has failed unexpectedly.*"
     log error.inspect
+    $status_notifier.post($full_message)
   end
 end
