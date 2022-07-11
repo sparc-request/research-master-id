@@ -43,9 +43,12 @@ $ ->
     $('#research_master_pi_name').on 'blur', ->
       if $(this).val() == ''
         $('.submit-rm-record').prop('disabled', true)
-      if($('#pi_name').val() == '')
+        $(this).closest('.form-group').removeClass('has-error')
+        $('#label_error_message').hide()
+      if($('#pi_name').val() != $(this).val())
         $(this).closest('.form-group').addClass('has-error')
         $('#label_error_message').show()
+
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
       $(this).typeahead('val', selection.name)
