@@ -1,4 +1,4 @@
-# Copyright © 2020 MUSC Foundation for Research Development~
+# Copyright © 2022 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,7 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'dotenv/tasks'
 
 task update_from_eirb_db: :environment do
   $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
@@ -42,32 +41,29 @@ task update_from_eirb_db: :environment do
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $users             = User.all
 
-    
-
     log "*Cronjob (EIRB) has started.*"
 
     log "--- *Connecting to EIRB Database...*"
 
     begin
-      eirb_db = EirbConnection.connection #check if the connection is valid
+      eirb_db = EirbConnection.connection
       valid_connection = true
     rescue
-      log "----- &#x2757; Cannot connect to EIRB Database"
+      log "--- *Cannot connect to EIRB Database...*"
     end
 
     if valid_connection
-      log "- *Beginning data retrieval from EIRB Database...*"
+      log "--- *Beginning data retrieval from EIRB Database...*"
 
       start         = Time.now
-      # eirb_studies  = HTTParty.get("#{eirb_api}/studies.json?musc_studies=true", timeout: 500, headers: {'Content-Type' => 'application/json', "Authorization" => "Token token=\"#{eirb_api_token}\""})
       eirb_studies = EirbStudy.is_musc.filter_out_preserve_state.filter_invalid_pro_numbers
       finish        = Time.now
-      log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
+      log "--- *Done!* (#{(finish - start).to_i} Seconds)"
 
       ResearchMaster.update_all(eirb_validated: false)
 
-      log "- *Beginning EIRB data import...*"
-      log "--- Total number of protocols from EIRB Database: #{eirb_studies.count}"
+      log "--- *Beginning EIRB data import...*"
+      log "--- *Total number of protocols from EIRB Database: #{eirb_studies.count}"
 
       start                   = Time.now
       updated_eirb_protocols  = []
@@ -82,14 +78,14 @@ task update_from_eirb_db: :environment do
       new_eirb_studies      = eirb_studies.select{ |s| existing_eirb_ids.exclude?(s['pro_number']) }
 
       # Update Existing eIRB Protocol Records
-      log "--- Updating existing eIRB protocols"
+      log "--- *Updating existing eIRB protocols"
       bar = ProgressBar.new(existing_eirb_studies.count)
 
       existing_eirb_studies.each do |study|
         existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
         existing_protocol.short_title             = study['short_title']
         existing_protocol.long_title              = study['title']
-        existing_protocol.eirb_state              = study['state']
+        existing_protocol.eirb_state              = study['project_status']
         existing_protocol.eirb_institution_id     = study['institution_id']
         existing_protocol.date_initially_approved = study['date_initially_approved']
         existing_protocol.date_approved           = study['date_approved']
@@ -100,9 +96,9 @@ task update_from_eirb_db: :environment do
           updated_eirb_protocols.append(existing_protocol.id)
         end
 
-        if study['research_master_id'].present?
-          if study['pi_net_id']
-            net_id = study['pi_net_id']
+        if study['rmid'].present?
+          if study['principal_investigator_id']
+            net_id = study['principal_investigator_id']
             net_id.slice!('@musc.edu')
             if u = User.where(net_id: net_id).first
               existing_protocol.primary_pi_id = u.id
@@ -110,10 +106,10 @@ task update_from_eirb_db: :environment do
             else
               u = User.new(
                 net_id: net_id,
-                email: study['pi_email'],
-                first_name: study['first_name'],
-                last_name: study['last_name'],
-                department: study['pi_department'],
+                email: study['principal_investigator_email_address'],
+                first_name: study['principal_investigator_first_name'],
+                last_name: study['principal_investigator_last_name'],
+                department: study['principal_investigator_department'],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
@@ -125,11 +121,11 @@ task update_from_eirb_db: :environment do
             end
           end
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
+          if (rm = $research_masters.detect{ |rm| rm.id == study ['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
             rm.eirb_protocol_id       = existing_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-            if $validated_states.include?(study['state'])
+            if $validated_states.include?(study['project_status'])
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
@@ -147,21 +143,21 @@ task update_from_eirb_db: :environment do
       bar = ProgressBar.new(new_eirb_studies.count)
 
       new_eirb_studies.each do |study|
-        if study['research_master_id'].present?
+        if study['rmid'].present?
           eirb_protocol = Protocol.new(
             type:                     study['type'],
             short_title:              study['short_title'] || "",
             long_title:               study['title'] || "",
             eirb_id:                  study['pro_number'],
             eirb_institution_id:      study['institution_id'],
-            eirb_state:               study['state'],
+            eirb_state:               study['project_status'],
             date_initially_approved:  study['date_initially_approved'],
             date_approved:            study['date_approved'],
             date_expiration:          study['date_expiration']
           )
 
-          if study['pi_net_id']
-            net_id = study['pi_net_id']
+          if study['principal_investigator_id']
+            net_id = study['principal_investigator_id']
             net_id.slice!('@musc.edu')
             if u = User.where(net_id: net_id).first
               eirb_protocol.primary_pi_id = u.id
@@ -169,10 +165,10 @@ task update_from_eirb_db: :environment do
             else
               u = User.new(
                 net_id: net_id,
-                email: study['pi_email'],
-                first_name: study['first_name'],
-                last_name: study['last_name'],
-                department: study['pi_department'],
+                email: study['principal_investigator_email_address'],
+                first_name: study['principal_investigator_first_name'],
+                last_name: study['principal_investigator_last_name'],
+                department: study['principal_investigator_department'],
                 password: $friendly_token,
                 password_confirmation:  $friendly_token
               )
@@ -186,11 +182,11 @@ task update_from_eirb_db: :environment do
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['research_master_id'].to_i }) && (study['state'] != 'Withdrawn')
+          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
             rm.eirb_protocol_id       = eirb_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-            if $validated_states.include?(study['state'])
+            if $validated_states.include?(study['project_status'])
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
@@ -205,16 +201,16 @@ task update_from_eirb_db: :environment do
 
       finish = Time.now
 
-      log "--- &#x2714; *Done!*"
+      log "--- *Done!*"
       log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
       log "--- *New protocols total:* #{created_eirb_protocols.count}"
       log "--- *Finished EIRB data import* (#{(finish - start).to_i} Seconds)."
 
       script_finish = Time.now
 
-      log "- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
+      log "--- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
-      log "&#x2714; *Cronjob (EIRB) has completed successfully.*"
+      log "--- *Cronjob (EIRB) has completed successfully.*"
       $status_notifier.post($full_message)
     end
 
@@ -227,7 +223,7 @@ task update_from_eirb_db: :environment do
     ResearchMaster.auditing_enabled = true
     User.auditing_enabled = true
 
-    log "&#x2757; *Cronjob (EIRB) has failed unexpectedly.*"
+    log "--- *Cronjob (EIRB) has failed unexpectedly.*"
     log error.inspect
     $status_notifier.post($full_message)
   end
