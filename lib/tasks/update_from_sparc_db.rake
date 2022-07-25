@@ -213,5 +213,6 @@ task update_from_sparc_db: :environment do
     log "&#x2757; *Cronjob (SPARC) has failed unexpectedly.*"
     log error.inspect
     $status_notifier.post($full_message)
+    ExceptionNotifier.notify_exception(error)
   end
 end

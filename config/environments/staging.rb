@@ -27,13 +27,20 @@ Rails.application.configure do
   config.middleware.use ExceptionNotification::Rack,
     :slack => {
     :webhook_url => ENV.fetch('SLACK_WEBHOOK_URL'),
-    :channel => "#rmid_errors_staging",
+    :channel => "#rmid_errors_prod",
     :username => 'RMID Error Bot',
     :additional_parameters => {
       :icon_url => "https://slack.com/img/icons/app-57.pn",
       :mrkdwn => true
     }
-  }
+  }, 
+    email: {
+      sender_address: %{"Notifier" <rmid_noreply@musc.edu>}, 
+      exception_recipients: ENV.fetch('EXCEPTION_NOTIFICATION_RECIPIENTS'), 
+      email_prefix: "[RMID-#{Rails.env.upcase}-ERROR]"
+    }, 
+    error_grouping: true, 
+    error_grouping_period: 5.minutes    # the time before an error is regarded as fixed
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -92,6 +99,8 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "research_master_id_#{Rails.env}"
   config.action_mailer.perform_caching = false
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.perform_deliveries = true
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
