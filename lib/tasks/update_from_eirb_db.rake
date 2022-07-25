@@ -226,5 +226,6 @@ task update_from_eirb_db: :environment do
     log "--- *Cronjob (EIRB) has failed unexpectedly.*"
     log error.inspect
     $status_notifier.post($full_message)
+    ExceptionNotifier.notify_exception(error)
   end
 end

@@ -26,6 +26,24 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
+  config.middleware.use ExceptionNotification::Rack,
+    :slack => {
+    :webhook_url => ENV.fetch('SLACK_WEBHOOK_URL'),
+    :channel => "#rmid_errors_dev",
+    :username => 'RMID Error Bot',
+    :additional_parameters => {
+      :icon_url => "https://slack.com/img/icons/app-57.pn",
+      :mrkdwn => true
+    }
+  }, 
+    email: {
+      sender_address: %{"Notifier" <no-reply@musc.edu>}, 
+      exception_recipients: ENV.fetch('EXCEPTION_NOTIFICATION_RECIPIENTS'), 
+      email_prefix: "[RMID-#{Rails.env.upcase}-ERROR]"
+    }, 
+    error_grouping: true, 
+    error_grouping_period: 5.minutes    # the time before an error is regarded as fixed
+
   # Do not eager load code on boot.
   config.eager_load = false
 

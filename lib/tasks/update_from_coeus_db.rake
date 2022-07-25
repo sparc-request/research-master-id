@@ -182,5 +182,6 @@ task update_from_coeus_db: :environment do
     log error.inspect
 
     $status_notifier.post($full_message)
+    ExceptionNotifier.notify_exception(error)
   end
 end
