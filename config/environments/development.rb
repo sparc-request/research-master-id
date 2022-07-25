@@ -37,7 +37,7 @@ Rails.application.configure do
     }
   }, 
     email: {
-      sender_address: %{"Notifier" <rmid_noreply@musc.edu>}, 
+      sender_address: %{"Notifier" <no-reply@musc.edu>}, 
       exception_recipients: ENV.fetch('EXCEPTION_NOTIFICATION_RECIPIENTS'), 
       email_prefix: "[RMID-#{Rails.env.upcase}-ERROR]"
     }, 

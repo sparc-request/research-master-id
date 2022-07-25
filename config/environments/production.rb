@@ -35,7 +35,7 @@ Rails.application.configure do
     }
   }, 
     email: {
-      sender_address: %{"Notifier" <rmid_noreply@musc.edu>}, 
+      sender_address: %{"Notifier" <no-reply@musc.edu>}, 
       exception_recipients: ENV.fetch('EXCEPTION_NOTIFICATION_RECIPIENTS'), 
       email_prefix: "[RMID-#{Rails.env.upcase}-ERROR]"
     }, 
@@ -99,6 +99,8 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "research_master_id_#{Rails.env}"
   config.action_mailer.perform_caching = false
+  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.perform_deliveries = true
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
