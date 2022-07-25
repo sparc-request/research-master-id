@@ -27,7 +27,7 @@ Rails.application.configure do
   config.middleware.use ExceptionNotification::Rack,
     :slack => {
     :webhook_url => ENV.fetch('SLACK_WEBHOOK_URL'),
-    :channel => "#rmid_errors_prod",
+    :channel => "#rmid_errors_staging",
     :username => 'RMID Error Bot',
     :additional_parameters => {
       :icon_url => "https://slack.com/img/icons/app-57.pn",

@@ -39,7 +39,7 @@ task update_from_cayuse_db: :environment do
     $friendly_token    = Devise.friendly_token
 
     ##Load up Research Masters ahead of time
-    $research_masters  = ResearchMaster.all
+    $research_masters  = ResearchMaster1.all
     $rmc_relations     = ResearchMasterCayuseRelation.all
 
     
