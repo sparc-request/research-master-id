@@ -39,7 +39,7 @@ Rails.application.configure do
     email: {
       sender_address: %{"Notifier" <no-reply@musc.edu>}, 
       exception_recipients: ENV.fetch('EXCEPTION_NOTIFICATION_RECIPIENTS'), 
-      email_prefix: "[RMID-#{Rails.env.upcase}-ERROR]"
+      email_prefix: "[RMID-#{Socket.gethostname}-ERROR]"
     }, 
     error_grouping: true, 
     error_grouping_period: 5.minutes    # the time before an error is regarded as fixed
