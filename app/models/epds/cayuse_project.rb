@@ -23,7 +23,7 @@ class Epds::CayuseProject < Epds::Connection
   self.primary_key = "PROJECT_ID"
 
   has_many :cayuse_awards, foreign_key: 'PROJECT_ID'
-  has_many :cayuse_research_teams, through: :cayuse_awards #-> { where(ROLE: 'Lead Principal Investigator') },
+  has_many :cayuse_research_teams, -> { where(ROLE: 'Lead Principal Investigator') }, through: :cayuse_awards
 
   def self.has_rmid
     where.not(RMID: [nil, 0])
