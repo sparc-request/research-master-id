@@ -23,15 +23,21 @@ class Epds::CayuseProject < Epds::Connection
   self.primary_key = "PROJECT_ID"
 
   has_many :cayuse_awards, foreign_key: 'PROJECT_ID'
-  has_many :cayuse_research_teams, -> { where(ROLE: 'Lead Principal Investigator') }, through: :cayuse_awards 
+  has_many :cayuse_research_teams, through: :cayuse_awards #-> { where(ROLE: 'Lead Principal Investigator') },
 
   def self.has_rmid
     where.not(RMID: [nil, 0])
   end
 
   def pi_list
+
     # Grabs all research team records, which have tons of duplicates because of multiple 'award years'.
     # So we have to unique the names after combining first and last.
-    self.cayuse_research_teams.map{ |rt| rt.FNAME + " " + rt.LNAME }.uniq
+    if self.cayuse_research_teams.uniq.count > 1
+      ['Multiple Principal Investigators']
+    else
+      self.cayuse_research_teams.map{ |rt| rt.FNAME + " " + rt.LNAME }.uniq
+    end
   end
+
 end
