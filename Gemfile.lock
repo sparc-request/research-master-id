@@ -230,8 +230,8 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.5)
-    puma (3.12.6)
-    racc (1.6.0)
+    puma (4.3.9)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-cors (1.0.5)
       rack (>= 1.6.0)
@@ -409,7 +409,7 @@ DEPENDENCIES
   omniauth-shibboleth (~> 1.2, >= 1.2.1)
   progress_bar
   pry
-  puma (~> 3.12)
+  puma (~> 4.3)
   rack-cors
   rails (~> 5.1, >= 5.1.5)
   rails-controller-testing
