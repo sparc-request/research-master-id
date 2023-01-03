@@ -158,8 +158,8 @@ GEM
       haml (>= 4.0, < 6)
       nokogiri (>= 1.6.0)
       ruby_parser (~> 3.5)
-    httparty (0.13.7)
-      json (~> 1.8)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
@@ -394,7 +394,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.9.0)
   faker
   haml-rails (~> 2.0)
-  httparty (~> 0.13.7)
+  httparty (~> 0.21.0)
   jbuilder (~> 2.0)
   jquery-rails
   kaminari (~> 1.2)
