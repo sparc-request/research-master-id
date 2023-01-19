@@ -106,7 +106,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.10)
     crass (1.0.6)
     daemons (1.3.1)
     delayed_job (4.1.5)
@@ -140,8 +140,8 @@ GEM
     faker (1.9.3)
       i18n (>= 0.7)
     ffi (1.11.1)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (1.0.1)
+      activesupport (>= 5.0)
     haml (5.1.1)
       temple (>= 0.8.0)
       tilt
@@ -161,7 +161,7 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    i18n (1.8.5)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     iconv (1.0.8)
     jbuilder (2.9.1)
@@ -204,7 +204,7 @@ GEM
       rake
     mini_mime (1.0.2)
     mini_portile2 (2.8.0)
-    minitest (5.14.1)
+    minitest (5.17.0)
     msteams-ruby-client (1.1.0)
     multi_xml (0.6.0)
     mysql2 (0.5.3)
