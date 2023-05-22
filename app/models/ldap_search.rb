@@ -124,7 +124,7 @@ class LdapSearch
       Net::LDAP.new(host: host,
                     port: port,
                     encryption: encryption,
-                    base: 'ou=People,dc=clinlan,dc=local',
+                    base: 'ou=MUSC Users,dc=clinlan,dc=local',
                     auth: auth
                    )
     }
