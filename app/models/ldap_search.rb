@@ -110,6 +110,7 @@ class LdapSearch
   def connect_to_ldap()
     host = ENV.fetch('ADS_HOST')
     port = ENV.fetch('ADS_PORT')
+    musc_base = ENV.fetch('MUSC_LDAP_BASE')
     encryption = { method: :simple_tls, tls_options: { verify_mode: OpenSSL::SSL::VERIFY_NONE } }
     auth = { method: :simple, username: ENV.fetch('ADS_USERNAME'), password: ENV.fetch('ADS_PASSWORD') }
 
@@ -124,7 +125,7 @@ class LdapSearch
       Net::LDAP.new(host: host,
                     port: port,
                     encryption: encryption,
-                    base: 'ou=MUSC Users,dc=clinlan,dc=local',
+                    base: musc_base,
                     auth: auth
                    )
     }

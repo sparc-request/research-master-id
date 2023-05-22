@@ -44,3 +44,4 @@ ADS_PORT=636
 ADS_USERNAME=abc
 ADS_PASSWORD=123
 EXCEPTION_NOTIFICATION_RECIPIENTS='example1@musc.edu, example2@musc.edu, example3@musc.edu'
+MUSC_LDAP_BASE=ou=MUSC Users,dc=clinlan,dc=local
