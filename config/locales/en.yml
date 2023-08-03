@@ -87,6 +87,10 @@ en:
         department: "Department"
         long_title: "Long Title"
         short_title: "Short Title"
+        pi_errors:
+          name: "Select the PI Name from the dropdown"
+          email: "Select the PI Email from the dropdown"
+          net_id: "Select the PI Net ID from the dropdown"
       tooltips:
         pi_name: "Enter the name of the Principal Investigator (PI) of the research study. If the PI is unknown, enter the name of the proposed PI"
         department: "The department of the PI is populated once the Principal Investigator is selected based on the past records. If it is empty, begin entering the name of the department and select it from the list"
