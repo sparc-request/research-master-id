@@ -44,10 +44,6 @@
       = research_master.short_title
     - else
       = research_master.short_title
-  %td.research-master{ data: { id: research_master.id } }
-    = research_master.funding_source
-  %td.research-master{ data: { id: research_master.id } }
-    = display_research_type(research_master.research_type)
   - if current_user.admin?
     %td
       = link_to new_notifications_path(research_master_id: research_master.id), class: 'btn btn-info', remote: true do

@@ -50,14 +50,6 @@
                 %i.glyphicon.glyphicon-remove-circle
       #optional-search-fields{ style: 'display:none;' }
         .form-group
-          = f.label :funding_source_cont, t(:research_masters)[:index][:search_fields][:funding_source], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:funding_source]
-          .col-xs-10
-            .input-group
-              = f.search_field :funding_source_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:funding_source]
-              .input-group-btn
-                %button.btn.btn-danger.clear-selection
-                  %i.glyphicon.glyphicon-remove-circle
-        .form-group
           = f.label :id_eq, t(:research_masters)[:index][:search_fields][:rmid], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:rmid]
           .col-xs-10
             .input-group
@@ -102,10 +94,6 @@
         = sort_link(@q, :long_title, 'Long Title')
       %th
         = sort_link(@q, :short_title, 'Short Title')
-      %th
-        = sort_link(@q, :funding_source, 'Funding Source')
-      %th
-        = sort_link(@q, :research_type, 'Research Type')
       - if current_user.admin?
         %th
           Notification
