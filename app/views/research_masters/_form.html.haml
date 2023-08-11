@@ -34,6 +34,7 @@
       = hidden_field_tag 'pi_last_name', (f.object.pi.present? ? f.object.pi.last_name : nil)
       = hidden_field_tag 'pi_middle_initial', (f.object.pi.present? ? f.object.pi.middle_initial : nil)
       = hidden_field_tag 'pi_pvid', (f.object.pi.present? ? f.object.pi.pvid : nil)
+      = hidden_field_tag 'search_type', 'name', disabled: true
       .form-group
         = f.label :search_term, t(:research_masters)[:new][:fields][:search_term], class: 'col-xs-3 control-label', title: t(:research_masters)[:new][:tooltips][:search_term]
         .col-xs-9
@@ -61,7 +62,8 @@
             %span.input-group-btn
               = link_to 'Reset', 'javascript:void(0);',
                 class: 'btn btn-default reset-pi-name', disabled: @research_master.eirb_validated
-          = label_tag 'error_message', "Select the PI Name from the dropdown", class: 'error_message', id: 'label_error_message'
+          = label_tag 'error_message', I18n.t('research_masters.new.placeholders.pi_errors.email'), class: 'error_message', id: 'label_error_message'
+          - search_type = 'name'
         .col-xs-1
           .spinner
             = image_tag 'spinner_small.gif'
