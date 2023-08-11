@@ -36,7 +36,7 @@ class LdapSearch
 
         if key == 'musc'
           user[:mail] = entry[:mail].first
-          user[:netid] = entry['muscaccountname'].first
+          user[:netid] = entry['samaccountname'].first
           user[:middle_initial] = entry['middlename'].first
         elsif key == 'affiliate'
           user[:mail] = entry[:userprincipalname].first
@@ -79,7 +79,7 @@ class LdapSearch
           entry_info[:name] = "#{entry[:givenname].first} #{entry[:middlename].first} #{entry[:sn].first}"
           entry_info[:middle_initial] = entry['middlename'].first
           entry_info[:email] = entry[:mail].first
-          entry_info[:netid] = entry[:muscaccountname].first
+          entry_info[:netid] = entry[:samaccountname].first
           if !active_only
             entry_info[:active] = entry[:muscactiveaccount].include?('FALSE') ? false : true
           end
