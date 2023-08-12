@@ -20,7 +20,7 @@
 
 
 task update_from_eirb_db: :environment do
-  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+ # $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
   $full_message = ""
 
   def log message
@@ -36,7 +36,7 @@ task update_from_eirb_db: :environment do
 
     script_start      = Time.now
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Exempt Completed', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Overdue Study Status', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $users             = User.all
@@ -211,7 +211,7 @@ task update_from_eirb_db: :environment do
       log "--- *Script Duration:* #{(script_finish - script_start).to_i} Seconds."
 
       log "--- *Cronjob (EIRB) has completed successfully.*"
-      $status_notifier.post($full_message)
+     # $status_notifier.post($full_message)
     end
 
     ## turn on auditing
