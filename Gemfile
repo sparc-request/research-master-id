@@ -60,7 +60,8 @@ end
 group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'site_prism'
-  gem 'webdrivers', '~> 4.4'
+  gem 'selenium-webdriver', '~> 4.9.0'
+  gem 'webdrivers'
   gem 'rails-controller-testing'
 end
 
