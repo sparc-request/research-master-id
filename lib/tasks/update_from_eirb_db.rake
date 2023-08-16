@@ -36,7 +36,7 @@ task update_from_eirb_db: :environment do
 
     script_start      = Time.now
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Suspended', 'Terminated']
+    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Exempt Completed', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Overdue Study Status', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $users             = User.all
