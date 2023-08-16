@@ -1,0 +1,20 @@
+%p
+  = "There were #{@missing_pis.count} users in RMID-#{@environment} have no current LDAP record and, therefore, their data in RMID could not be updated successfully."
+%p
+  = "The following users in RMID-#{@environment} have no current LDAP record:"
+%table
+  %tr
+    %th
+      = "User ID"
+    %th
+      = "Net ID"
+    %th 
+      = "Name"
+  - @missing_pis.each do |pi|
+    %tr 
+      %td
+        = pi.id
+      %td
+        = (pi.net_id ? pi.net_id : 'NetID Missing')
+      %td
+        = pi.name
