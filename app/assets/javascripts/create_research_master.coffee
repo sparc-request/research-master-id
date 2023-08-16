@@ -47,22 +47,15 @@ $ ->
         $('#label_error_message').hide()
       if($('#pi_name').val() != $(this).val())
         $(this).closest('.form-group').addClass('has-error')
-        if $("input[name='research_master[search_term]']:checked").val() == 'name'
-          error_text = 'Select the PI Name from the dropdown'
-        else if $("input[name='research_master[search_term]']:checked").val() == 'email'
-          error_text = "Select the PI Email from the dropdown"
-        else if $("input[name='research_master[search_term]']:checked").val() == 'netid'
-          error_text = 'Select the PI Net ID from the dropdown'
-        $('#label_error_message').show().html(error_text)
+        $('#label_error_message').show()
 
     $("input[name='research_master[search_term]']").on 'change', ->
       if $("input[name='research_master[search_term]']:checked").val() == 'name'
-        error_text = 'Select the PI Name from the dropdown'
+        $("#research_master_pi_name").attr('placeholder', 'Search for PI Name')
       else if $("input[name='research_master[search_term]']:checked").val() == 'email'
-        error_text = "Select the PI Email from the dropdown"
+        $("#research_master_pi_name").attr('placeholder', 'Search for PI Email')
       else if $("input[name='research_master[search_term]']:checked").val() == 'netid'
-        error_text = 'Select the PI Net ID from the dropdown'
-      $('#label_error_message').html(error_text)
+        $("#research_master_pi_name").attr('placeholder', 'Search for PI Net ID')
 
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->

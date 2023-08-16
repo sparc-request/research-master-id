@@ -62,7 +62,7 @@
             %span.input-group-btn
               = link_to 'Reset', 'javascript:void(0);',
                 class: 'btn btn-default reset-pi-name', disabled: @research_master.eirb_validated
-          = label_tag 'error_message', I18n.t('research_masters.new.placeholders.pi_errors.email'), class: 'error_message', id: 'label_error_message'
+          = label_tag 'error_message', "Select the PI Name from the dropdown", class: 'error_message', id: 'label_error_message'
           - search_type = 'name'
         .col-xs-1
           .spinner
