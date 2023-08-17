@@ -42,7 +42,8 @@ class ResearchMaster < ApplicationRecord
   paginates_per 50
 
   validates :long_title,
-    :short_title
+    :short_title,
+    presence: true
 
   validates_length_of :short_title, maximum: 255
 
