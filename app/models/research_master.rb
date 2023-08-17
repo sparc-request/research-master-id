@@ -43,7 +43,6 @@ class ResearchMaster < ApplicationRecord
 
   validates :long_title,
     :short_title,
-    :funding_source,
     presence: true
 
   validates_length_of :short_title, maximum: 255
@@ -56,8 +55,6 @@ class ResearchMaster < ApplicationRecord
   validates :long_title,
     uniqueness: { scope: [:pi_id],
     message: 'There is an existing Research Master record with the same PI Name' }
-
-  validates_presence_of :research_type
 
   def self.validated
     where(eirb_validated: true)
