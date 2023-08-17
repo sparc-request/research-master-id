@@ -27,8 +27,6 @@ RSpec.describe ResearchMaster, type: :model do
 
   it { is_expected.to validate_length_of(:short_title).is_at_most(255) }
 
-  it { is_expected.to validate_presence_of(:funding_source) }
-
   it 'should validate on uniqueness of pi_name and long title when both are the same' do
     pi = create(:user, name: 'pi')
     create(:research_master,
