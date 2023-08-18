@@ -51,11 +51,11 @@ $ ->
 
     $("input[name='research_master[search_term]']").on 'change', ->
       if $("input[name='research_master[search_term]']:checked").val() == 'name'
-        $("#research_master_pi_name").attr('placeholder', 'Search for PI Name')
+        $("#research_master_pi_name").attr('placeholder', 'Search by PI Name')
       else if $("input[name='research_master[search_term]']:checked").val() == 'email'
-        $("#research_master_pi_name").attr('placeholder', 'Search for PI Email')
+        $("#research_master_pi_name").attr('placeholder', 'Search by PI Email')
       else if $("input[name='research_master[search_term]']:checked").val() == 'netid'
-        $("#research_master_pi_name").attr('placeholder', 'Search for PI Net ID')
+        $("#research_master_pi_name").attr('placeholder', 'Search by PI Net ID')
 
 
     $('#research_master_pi_name').on 'typeahead:select', (ev, selection) ->
