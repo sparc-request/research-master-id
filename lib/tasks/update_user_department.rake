@@ -58,5 +58,5 @@ task update_user_department: :environment do
       next
     end
   end
-  PiUpdateMailer.ldap_missing_email(missing_ldap_users, ['taylorby@musc.edu', 'forney@musc.edu', 'catesa@musc.edu', 'harikrip@musc.edu', 'etai@musc.edu'])
+  PiUpdateMailer.ldap_missing_email(missing_ldap_users, ['taylorby@musc.edu', 'forney@musc.edu', 'catesa@musc.edu', 'harikrip@musc.edu', 'etai@musc.edu']).deliver_now
 end
