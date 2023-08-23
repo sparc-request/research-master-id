@@ -37,7 +37,7 @@ task update_user_department: :environment do
 
   users.each do |user|
     if user.net_id.present?
-      ldap_user = ldap_search.info_query(user.net_id, false, true)
+      ldap_user = ldap_search.info_query(user.email, false, false, 'email')
       unless ldap_user.present?
         missing_ldap_users << user
         puts "User '#{user.name}' was not found in ldap."
