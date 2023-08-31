@@ -37,14 +37,28 @@ task update_user_department: :environment do
 
   users.each do |user|
     if user.net_id.present?
-      ldap_user = (ldap_search.info_query(user.email, false, false, 'email') || ldap_search.info_query(user.name, false, false, 'email'))
-      unless ldap_user.present?
+      ldap_user_email = []
+      ldap_user_name = []
+
+      ldap_user_email = ldap_search.info_query(user.email, false, false, 'email')
+
+      if ldap_user_email.blank?
+        ldap_user_name = ldap_search.info_query(user.name, false, false, 'name')
+      end
+
+      unless ldap_user_email.present? || ldap_user_name.present?
         missing_ldap_users << user
         puts "User '#{user.name}' was not found in ldap."
         next
       end
 
-      department = ldap_user.first[:department]
+      department = 
+        if ldap_user_email.present?
+          ldap_user_email.first[:department]
+        else
+          ldap_user_name.first[:department]
+        end
+
       if !department.blank? && (user.department != department)
         puts "Updating #{user.department} to #{department}"
         user.department = department
