@@ -68,7 +68,7 @@ class ResearchMaster < ApplicationRecord
     if eirb_protocol_id?
       eirb_protocol = Protocol.find(self.eirb_protocol_id)
       if eirb_protocol
-        eirb_protocol.eirb_state == 'Terminated' or eirb_protocol.eirb_state == 'Completed'
+        eirb_protocol.eirb_state == 'Terminated' or eirb_protocol.eirb_state == 'Completed' or eirb_protocol.eirb_state == 'Exempt Complete'
       end
     end
   end
