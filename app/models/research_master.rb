@@ -41,20 +41,11 @@ class ResearchMaster < ApplicationRecord
 
   paginates_per 50
 
-  validates :long_title,
-    :short_title,
-    presence: true
+  validates :long_title, :short_title, presence: true
 
-  validates_length_of :short_title, maximum: 255
+  validates :short_title, length: { maximum: 255 }
 
-  validates :pi_id,
-    uniqueness: { scope: [:long_title],
-    message: 'There is an existing Research Master record with the same
-    Long Title' }
-
-  validates :long_title,
-    uniqueness: { scope: [:pi_id],
-    message: 'There is an existing Research Master record with the same PI Name' }
+  validate :validate_title_uniqueness_for_pi
 
   def self.validated
     where(eirb_validated: true)
@@ -70,6 +61,17 @@ class ResearchMaster < ApplicationRecord
       if eirb_protocol
         eirb_protocol.eirb_state == 'Terminated' or eirb_protocol.eirb_state == 'Completed'
       end
+    end
+  end
+
+  private
+
+  def validate_title_uniqueness_for_pi
+    if ResearchMaster.exists?(pi_id: pi_id, long_title: long_title)
+      errors.add(:long_title, 'There is an existing Research Master record with the same PI and Long Title')
+    end
+    if ResearchMaster.exists?(pi_id: pi_id, short_title: short_title)
+      errors.add(:short_title, 'There is an existing Research Master record with the same PI and Short Title')
     end
   end
 end

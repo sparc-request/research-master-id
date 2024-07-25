@@ -28,43 +28,36 @@ RSpec.describe ResearchMaster, type: :model do
   it { is_expected.to validate_length_of(:short_title).is_at_most(255) }
 
   it 'should validate on uniqueness of pi_name and long title when both are the same' do
-    pi = create(:user, name: 'pi')
-    create(:research_master,
-          pi: pi,
-          long_title: 'long'
-         )
-    research_master_two = build(:research_master,
-                                pi: pi,
-                                long_title: 'long'
-                               )
-
+    pi = create(:user)
+    create(:research_master, pi: pi, long_title: 'long')
+    research_master_two = build(:research_master, pi: pi, long_title: 'long')
     expect(research_master_two).not_to be_valid
   end
 
-  it 'should validate on uniqueness of pi_name and long title when pi is different' do
-    create(:research_master,
-          pi: create(:user, name: 'pi'),
-          long_title: 'long'
-         )
-    research_master_two = build(:research_master,
-                                pi: create(:user, name: 'brady'),
-                                long_title: 'long'
-                               )
-
+  it 'should validate on uniqueness of pi and long title when pi is different' do
+    create(:research_master, pi: create(:user), long_title: 'long')
+    research_master_two = build(:research_master, pi: create(:user), long_title: 'long')
     expect(research_master_two).to be_valid
   end
 
-  it 'should validate on uniqueness of pi_name and long title when long title is different' do
-    pi = create(:user, name: 'pi')
-    create(:research_master,
-          pi: pi,
-          long_title: 'long'
-         )
-    research_master_two = build(:research_master,
-                                pi: pi,
-                                long_title: 'long2'
-                               )
+  it 'should validate on uniqueness of pi and long title when long title is different' do
+    pi = create(:user)
+    create(:research_master, pi: pi, long_title: 'long', short_title: 'short')
+    research_master_two = build(:research_master, pi: pi, long_title: 'long2')
+    expect(research_master_two).to be_valid
+  end
 
+  it 'should validate on uniqueness of pi and short title when both are the same' do
+    pi = create(:user)
+    create(:research_master, pi: pi, short_title: 'short', long_title: 'long')
+    research_master_two = build(:research_master, pi: pi, short_title: 'short')
+    expect(research_master_two).not_to be_valid
+  end
+
+  it 'should validate on uniqueness of pi and short title when short title is different' do
+    pi = create(:user)
+    create(:research_master, pi: pi, short_title: 'short', long_title: 'long')
+    research_master_two = build(:research_master, pi: pi, short_title: 'short2')
     expect(research_master_two).to be_valid
   end
 
@@ -99,4 +92,3 @@ RSpec.describe ResearchMaster, type: :model do
     end
   end
 end
-
