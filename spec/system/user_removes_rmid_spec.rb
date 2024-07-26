@@ -70,7 +70,7 @@ RSpec.describe 'Removing an RMID', js: true do
 
     describe 'as the creator' do
       it "should be removed" do
-        @research_master.update_attributes(creator_id: @user.id)
+        @research_master.update_attribute(:creator_id, @user.id)
         visit root_path
         wait_for_ajax
 
