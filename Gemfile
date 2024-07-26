@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem "audited", "~> 4.6"
 gem 'rails', '~> 5.1', '>= 5.1.5'
-gem 'mysql2'
+gem 'mysql2', '0.5.6'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
@@ -66,7 +66,7 @@ group :test do
 end
 
 ### custom gem for data sanitization ###
-gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/MUSC-BMIC/sanitized_data.git'
 
 ### added for new ssl support
 gem 'ed25519'
