@@ -65,9 +65,6 @@ group :test do
   gem 'rails-controller-testing'
 end
 
-### custom gem for data sanitization ###
-gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
-
 ### added for new ssl support
 gem 'ed25519'
 gem 'bcrypt_pbkdf'

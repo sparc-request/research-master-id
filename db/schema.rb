@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_31_140353) do
+ActiveRecord::Schema.define(version: 2024_08_05_170110) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -95,6 +95,8 @@ ActiveRecord::Schema.define(version: 2023_08_31_140353) do
     t.string "coeus_project_id"
     t.string "cayuse_project_number"
     t.string "cayuse_pi_name"
+    t.string "submission_type"
+    t.string "irb_review_request"
     t.index ["primary_pi_id"], name: "index_protocols_on_primary_pi_id"
   end
 
