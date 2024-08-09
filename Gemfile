@@ -66,7 +66,7 @@ group :test do
 end
 
 ### custom gem for data sanitization ###
-gem 'sanitized_data',  git: 'https://github.com/HSSC/sanitized_data.git'
+gem 'sanitized_data',  git: 'https://github.com/MUSC-BMIC/sanitized_data.git'
 
 ### added for new ssl support
 gem 'ed25519'
