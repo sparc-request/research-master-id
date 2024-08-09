@@ -206,7 +206,7 @@ GEM
     minitest (5.14.1)
     msteams-ruby-client (1.1.0)
     multi_xml (0.6.0)
-    mysql2 (0.5.3)
+    mysql2 (0.5.6)
     net-ldap (0.16.0)
     net-scp (2.0.0)
       net-ssh (>= 2.6.5, < 6.0.0)
@@ -433,4 +433,4 @@ DEPENDENCIES
   whenever (~> 1.0.0)
 
 BUNDLED WITH
-   2.3.10
+   2.4.22
