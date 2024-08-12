@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/MUSC-BMIC/sanitized_data.git
+  revision: afdb1cfd7161ae5bc0ba6bd2f07af22da54d64e0
+  specs:
+    sanitized_data (0.0.4)
+      iconv
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -155,6 +162,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
+    iconv (1.0.8)
     jbuilder (2.9.1)
       activesupport (>= 4.2.0)
     jquery-rails (4.3.4)
@@ -198,7 +206,7 @@ GEM
     minitest (5.14.1)
     msteams-ruby-client (1.1.0)
     multi_xml (0.6.0)
-    mysql2 (0.5.6)
+    mysql2 (0.5.3)
     net-ldap (0.16.0)
     net-scp (2.0.0)
       net-ssh (>= 2.6.5, < 6.0.0)
@@ -409,6 +417,7 @@ DEPENDENCIES
   rails-controller-testing
   ransack
   rspec-rails
+  sanitized_data!
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   selenium-webdriver (~> 4.9.0)
