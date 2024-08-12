@@ -23,8 +23,6 @@ class EirbStudy < EirbConnection
   self.table_name = "view___Study"
   self.primary_key = "pro_number"
 
-  default_scope { order(pro_number: :asc) }
-
   has_many :keywords, :foreign_key => :pro_number
 
   ### different scopes for returning data ###
@@ -76,6 +74,5 @@ class EirbStudy < EirbConnection
   def self.recently_updated
     where('updated_at >= ?', 1.month.ago)
   end
-
 
 end
