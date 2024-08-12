@@ -130,8 +130,8 @@ task update_from_eirb_db: :environment do
 
             if $validated_states.include?(study['project_status'])
               rm.eirb_validated = true
-              rm.short_title     = study.short_title.to_s.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
-              rm.long_title     = study.title.to_s.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+              rm.short_title     = study.short_title
+              rm.long_title     = study.title
             end
 
             rm.save(validate: false) if rm.changed?
