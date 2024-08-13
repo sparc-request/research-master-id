@@ -20,7 +20,15 @@
 
 
 task update_from_eirb_db: :environment do
-  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $status_notifier = if Rails.env.development?
+    Class.new do
+      def notify(message); end
+      def post(message); end
+    end.new
+  else
+    Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  end
+
   $full_message = ""
 
   def log message
@@ -83,16 +91,15 @@ task update_from_eirb_db: :environment do
 
       existing_eirb_studies.each do |study|
         existing_protocol                         = eirb_protocols.detect{ |p| p.eirb_id == study['pro_number'] }
-        existing_protocol.short_title             = study.short_title
-        existing_protocol.long_title              = study.title
+        existing_protocol.short_title             = study['short_title']
+        existing_protocol.long_title              = study['title']
         existing_protocol.eirb_state              = study['project_status']
         existing_protocol.eirb_institution_id     = study['institution_id']
         existing_protocol.date_initially_approved = study['date_initially_approved']
         existing_protocol.date_approved           = study['date_approved']
         existing_protocol.date_expiration         = study['date_expiration']
-
-        existing_protocol.submission_type         = study.review_type
-        existing_protocol.irb_review_request      = study.irb_review_request
+        existing_protocol.submission_type         = study['review_type']
+        existing_protocol.irb_review_request      = study['irb_review_request']
 
         if existing_protocol.changed?
           existing_protocol.save(validate: false)
@@ -130,8 +137,8 @@ task update_from_eirb_db: :environment do
 
             if $validated_states.include?(study['project_status'])
               rm.eirb_validated = true
-              rm.short_title     = study.short_title
-              rm.long_title     = study.title
+              rm.short_title     = study['short_title']
+              rm.long_title     = study['title']
             end
 
             rm.save(validate: false) if rm.changed?
@@ -157,8 +164,8 @@ task update_from_eirb_db: :environment do
             date_initially_approved:  study['date_initially_approved'],
             date_approved:            study['date_approved'],
             date_expiration:          study['date_expiration'],
-            submission_type:          study.review_type,
-            irb_review_request:       study.irb_review_request
+            submission_type:          study['review_type'],
+            irb_review_request:       study['irb_review_request']
           )
 
           if study['principal_investigator_id']
