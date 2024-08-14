@@ -20,7 +20,15 @@
 
 
 task update_from_eirb_db: :environment do
-  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $status_notifier = if Rails.env.development?
+    Class.new do
+      def notify(message); end
+      def post(message); end
+    end.new
+  else
+    Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  end
+
   $full_message = ""
 
   def log message
@@ -90,6 +98,8 @@ task update_from_eirb_db: :environment do
         existing_protocol.date_initially_approved = study['date_initially_approved']
         existing_protocol.date_approved           = study['date_approved']
         existing_protocol.date_expiration         = study['date_expiration']
+        existing_protocol.submission_type         = study['review_type']
+        existing_protocol.irb_review_request      = study['irb_review_request']
 
         if existing_protocol.changed?
           existing_protocol.save(validate: false)
@@ -153,7 +163,9 @@ task update_from_eirb_db: :environment do
             eirb_state:               study['project_status'],
             date_initially_approved:  study['date_initially_approved'],
             date_approved:            study['date_approved'],
-            date_expiration:          study['date_expiration']
+            date_expiration:          study['date_expiration'],
+            submission_type:          study['review_type'],
+            irb_review_request:       study['irb_review_request']
           )
 
           if study['principal_investigator_id']

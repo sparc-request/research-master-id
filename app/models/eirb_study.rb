@@ -75,7 +75,4 @@ class EirbStudy < EirbConnection
     where('updated_at >= ?', 1.month.ago)
   end
 
-
 end
-
-
