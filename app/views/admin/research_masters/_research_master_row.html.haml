@@ -1,0 +1,54 @@
+-# Copyright © 2020 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+%tr{ class: 'admin-rm-row', id: "research_master_#{research_master.id}", data: { id: research_master.id } }
+  %td{ data: { id: research_master.id } }
+    = research_master.id
+  %td{ data: { id: research_master.id } }
+    = display_all_system_colors(research_master)
+  %td{ data: { id: research_master.id } }
+    - if research_master.eirb_validated?
+      %h6.text-success
+        Updated to corresponding eIRB Protocol Short Title
+      = research_master.short_title
+    - else
+      = research_master.short_title
+  %td{ data: { id: research_master.id } }
+    = research_master.pi.name
+  %td{ data: { id: research_master.id } }
+    = research_master.creator.name
+  %td{ data: { id: research_master.id } }
+    = format_date(research_master.created_at)
+  %td{ data: { id: research_master.id } }
+    = format_date(research_master.updated_at)
+  %td{ data: { id: research_master.id } }
+    = research_master.eirb_validated? ? 'Yes' : 'No'
+
+  %td.actions
+    .btn-group#actions-container
+      .large_tooltip_wrapper{ title: "New Notification", data: { toggle: "tooltip" } }
+        = link_to new_notifications_path(research_master_id: research_master.id), class: 'btn btn-info', remote: true do
+          %span.glyphicon.glyphicon-envelope
+      .large_tooltip_wrapper{title: (cannot?(:update, research_master) ? "RMID can not be edited because you do not have rights" : "Edit Research Master"), data: {toggle: "tooltip"}}
+        = link_to edit_research_master_path(research_master), class: [("btn btn-warning edit-#{research_master.id}"), ('disabled' if cannot?(:update, research_master) )], remote: true do
+          %span.glyphicon.glyphicon-edit
+      .large_tooltip_wrapper{title: (cannot?(:destroy, research_master) ? "RMID can not be removed because you do not have rights, or it has been associated with protocols" : "Remove Research Master"), data: {toggle: "tooltip"}}
+        = link_to research_master_reason_form_path(research_master), remote: true, class: [('btn btn-danger'), 'research-master-delete', ('disabled' if cannot?(:destroy, research_master) )], data: { id: research_master.id, toggle: 'dropdown' } do
+          %span.glyphicon.glyphicon-remove

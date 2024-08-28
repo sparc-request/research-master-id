@@ -76,4 +76,8 @@ module ApplicationHelper
         ["Clinical Science (Non-billable)", "clinical_research_non_billable", title: t(:research_masters)[:new][:tooltips][:clinical_non_billable]] ]
     }
   end
+
+  def format_date(date)
+    date.strftime("%m/%d/%Y") if date
+  end
 end
