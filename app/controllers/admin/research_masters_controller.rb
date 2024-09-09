@@ -18,43 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-Rails.application.routes.draw do
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
-  root 'research_masters#index'
+class Admin::ResearchMastersController < ApplicationController
+  before_action :set_research_master, only: [:show, :edit, :update, :destroy]
 
-  resources :research_masters do
-    match 'reason_form' => 'research_masters#reason_form', via: [:get]
-  end
-
-  match 'deleted_rmids' => 'deleted_rmids#index', via: [:get]
-
-  resource :notifications
-
-  resource :detail, only: [:show]
-
-  get "test_exception_notifier" => "application#test_exception_notifier"
-
-  namespace :api do
-    resources :research_masters, only: [:index, :show]
-    resources :validated_records, only: [:index]
-    resources :protocols, only: [:index]
-    resources :api_keys, only: [:create, :new]
-    match 'status' => 'system#status', via: [:get]
-  end
-
-  resource :directories, only: [:show]
-
-  resources :protocols do
-    collection do
-      match 'search' => 'protocols#search', via: [:get, :post], as: :search
+  def index
+    @q = ResearchMaster.ransack(params[:q])
+    @research_masters = @q.result.page(params[:page]).per(25)
+    respond_to do |format|
+      format.html
+      format.json { render json: @research_masters }
     end
   end
 
-  resources :primary_pis, only: [:index]
+  def show
+    research_master = ResearchMaster.find(params[:id])
+      if research_master.sparc_protocol_id?
+        @sparc_protocol = Protocol.find(research_master.sparc_protocol_id)
+      end
+      if research_master.eirb_protocol_id?
+        @eirb_protocol = Protocol.find(research_master.eirb_protocol_id)
+      end
+    @coeus_records = research_master.coeus_protocols
+    @cayuse_records = research_master.cayuse_protocols
+    respond_to do |format|
+      format.js { render 'admin/research_masters/show' }
+    end
+  end
 
-  namespace :admin do
-    resources :research_masters
-    resources :users
-    root to: "research_masters#index"
+  private
+
+  def set_research_master
+    @research_master = ResearchMaster.find(params[:id])
   end
 end

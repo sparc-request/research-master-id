@@ -20,6 +20,10 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  admin:
+    navigation:
+      research_masters: "Studies"
+      users: "Users"
   about_rmid:
     header: "About RMID"
     text1: "A Research Master ID (<strong>RMID</strong>) is a unique numeric identifier that links a research study across multiple MUSC research systems. The purpose of the RMID is to allow for accurate identification of research studies, improve tracking and reporting of institutional research metrics and data accuracy."

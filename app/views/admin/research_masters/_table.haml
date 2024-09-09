@@ -1,0 +1,63 @@
+-# Copyright © 2020 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+%main.card#adminCard
+  #researchMastersTableToolbar
+    .d-flex.justify-content-end
+      = search_form_for(@q, url: admin_research_masters_path, html: { class: 'form-inline', method: :get }) do |f|
+        .form-group
+          = f.search_field :pi_name_or_short_title_or_long_title_or_id_or_pi_department_cont, class: 'form-control', placeholder: 'Search...'
+          = f.submit 'Search', class: 'btn btn-primary'
+
+  %table.table.table-striped.table-hover#research-master-records{ data: { toggle: 'table', url: admin_research_masters_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#researchMastersTableToolbar' } }
+    %thead
+      %tr
+        %th
+          = sort_link(@q, :id, 'RMID')
+        %th
+          = ""
+        %th
+          = sort_link(@q, :short_title, 'Short Title')
+        %th
+          = sort_link(@q, :pi_name, 'PI Name')
+        %th Creator Name
+        %th Created
+        %th Updated
+        %th eIRB Validated
+        %th Actions
+
+      %tbody.research-master-records
+        = render "research_master_index_table", research_masters: @research_masters
+  .text-center
+    = paginate @research_masters
+  %div{ class: 'modal fade', id: 'showresearch_master_modal', tabindex: '-1' }
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          %button{ class: 'close', data: { dismiss: 'modal' } }
+            %span
+              &times;
+          %h4.modal-title
+            Associated Protocols
+        .modal-body
+        .modal-footer
+          %button{class: 'btn btn-default', data: { dismiss: 'modal' } }
+            Close
+  = render "research_masters/research_master_modal"

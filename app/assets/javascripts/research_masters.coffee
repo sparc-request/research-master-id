@@ -37,6 +37,12 @@ $ ->
       type: 'GET'
       url: "/research_masters/#{id}"
 
+  $(document).on 'click', '.admin-rm-row', ->
+    id = $(this).data('id')
+    $.ajax
+      type: 'GET'
+      url: "/admin/research_masters/#{id}"
+
   $(document).on 'click', '#show_more', ->
     $('#optional-search-fields').toggle()
     if Cookies.get('showMoreCookie') == undefined

@@ -18,43 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-Rails.application.routes.draw do
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
-  root 'research_masters#index'
-
-  resources :research_masters do
-    match 'reason_form' => 'research_masters#reason_form', via: [:get]
-  end
-
-  match 'deleted_rmids' => 'deleted_rmids#index', via: [:get]
-
-  resource :notifications
-
-  resource :detail, only: [:show]
-
-  get "test_exception_notifier" => "application#test_exception_notifier"
-
-  namespace :api do
-    resources :research_masters, only: [:index, :show]
-    resources :validated_records, only: [:index]
-    resources :protocols, only: [:index]
-    resources :api_keys, only: [:create, :new]
-    match 'status' => 'system#status', via: [:get]
-  end
-
-  resource :directories, only: [:show]
-
-  resources :protocols do
-    collection do
-      match 'search' => 'protocols#search', via: [:get, :post], as: :search
+class Admin::UsersController < ApplicationController
+  def index
+    @q = User.ransack(params[:q])
+    @users = @q.result.page(params[:page]).per(25)
+    respond_to do |format|
+      format.html
+      format.json { render json: @users }
     end
   end
 
-  resources :primary_pis, only: [:index]
-
-  namespace :admin do
-    resources :research_masters
-    resources :users
-    root to: "research_masters#index"
+  def show
+    if params[:source] == 'pi_name'
+      db_search = DatabaseSearch.new
+      @user_info = db_search.user_query(params[:name].strip)
+    else
+      ldap_search = LdapSearch.new
+      @user_info = ldap_search.info_query(params[:name].strip, true, false, params[:search_term])
+    end
   end
 end

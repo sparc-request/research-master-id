@@ -19,5 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 $('#research_master_modal').modal('hide')
-$("#research_master_<%= j @research_master.id.to_s %>").replaceWith("<%= j render 'research_master_row', research_master: @research_master %>")
+
+if window.location.pathname.includes('/admin')
+  $("#research_master_<%= j @research_master.id.to_s %>").replaceWith("<%= j render 'admin/research_masters/research_master_row', research_master: @research_master %>")
+else
+  $("#research_master_<%= j @research_master.id.to_s %>").replaceWith("<%= j render 'research_master_row', research_master: @research_master %>")
 swal('Success', 'Research Master record updated', 'success')

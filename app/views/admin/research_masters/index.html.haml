@@ -18,38 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-%nav.navbar.navbar-default
-  .container
-    .navbar-header
-      = link_to 'SPARC', ENV.fetch('SPARC_URL'), class: 'navbar-brand', target: '_blank'
-      = link_to 'eIRB', ENV.fetch('EIRB_URL'), class: 'navbar-brand', target: '_blank'
-      = link_to 'ePDS', ENV.fetch('EPDS_URL'), class: 'navbar-brand', target: '_blank'
-      = link_to 'About RMID', ENV.fetch('ABOUT_URL'),
-        class: 'navbar-brand', target: '_blank'
-      = link_to 'Removed RMIDs', "/deleted_rmids", class: 'navbar-brand', target: '_blank'
-      - if current_user&.admin?
-        = link_to 'RMID Admin', admin_research_masters_path, class: 'navbar-brand'
-    #navbar
-      %ul.nav.navbar-nav.navbar-right
-        - if user_signed_in?
-          %p.navbar-text
-            = "Signed in as #{current_user.email}"
-          - if current_user.developer?
-            %li
-              = link_to new_api_api_key_path do
-                API
-                %i.glyphicon.glyphicon-flash
-        %li
-          - if user_signed_in?
-            - if ENV.fetch('ENVIRONMENT') == 'development'
-              = link_to destroy_user_session_path, method: :delete do
-                Log out
-                %i.glyphicon.glyphicon-log-out
-          - else
-            = link_to new_user_session_path do
-              Log in
-              %i.glyphicon.glyphicon-log-in
-        %li
-          = link_to root_path do
-            Home
-            %i.glyphicon.glyphicon-home
+.container-fluid
+  .row
+    .col-md-2
+      = render 'layouts/admin/navigation'
+    .col-md-10
+      = render 'table'
+
