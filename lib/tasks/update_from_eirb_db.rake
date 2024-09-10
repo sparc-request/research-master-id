@@ -98,8 +98,13 @@ task update_from_eirb_db: :environment do
         existing_protocol.date_initially_approved = study['date_initially_approved']
         existing_protocol.date_approved           = study['date_approved']
         existing_protocol.date_expiration         = study['date_expiration']
-        existing_protocol.submission_type         = study['review_type']
+        existing_protocol.review_type             = study['review_type']
         existing_protocol.irb_review_request      = study['irb_review_request']
+        existing_protocol.irb_committee_name      = study['IRB committee name']
+        existing_protocol.external_irb_of_record  = study['External IRB of Record']
+        existing_protocol.other_external_irb_text = study['Other External IRB Text']
+        existing_protocol.clinical_study_phase    = study['Clinical study phase']
+        existing_protocol.status_description      = study['status_description']
 
         if existing_protocol.changed?
           existing_protocol.save(validate: false)
@@ -164,8 +169,13 @@ task update_from_eirb_db: :environment do
             date_initially_approved:  study['date_initially_approved'],
             date_approved:            study['date_approved'],
             date_expiration:          study['date_expiration'],
-            submission_type:          study['review_type'],
-            irb_review_request:       study['irb_review_request']
+            review_type:              study['review_type'],
+            irb_review_request:       study['irb_review_request'],
+            irb_committee_name:       study['IRB committee name'],
+            external_irb_of_record:   study['External IRB of Record'],
+            other_external_irb_text:  study['Other External IRB Text'],
+            clinical_study_phase:     study['Clinical study phase'],
+            status_description:       study['status_description']
           )
 
           if study['principal_investigator_id']

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_05_170110) do
+ActiveRecord::Schema.define(version: 2024_09_10_174603) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2024_08_05_170110) do
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
-    t.string "title"
+    t.text "title", limit: 16777215
     t.string "entity_award_number"
     t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
@@ -95,8 +95,13 @@ ActiveRecord::Schema.define(version: 2024_08_05_170110) do
     t.string "coeus_project_id"
     t.string "cayuse_project_number"
     t.string "cayuse_pi_name"
-    t.string "submission_type"
+    t.string "review_type"
     t.string "irb_review_request"
+    t.string "irb_committee_name"
+    t.string "external_irb_of_record"
+    t.string "other_external_irb_text"
+    t.string "clinical_study_phase"
+    t.string "status_description"
     t.index ["primary_pi_id"], name: "index_protocols_on_primary_pi_id"
   end
 
