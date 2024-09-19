@@ -23,33 +23,33 @@
     .d-flex.justify-content-end
       = search_form_for(@q, url: admin_users_path, html: { class: 'form-inline', method: :get }) do |f|
         .form-group
-          = f.search_field :name_or_department_or_net_id_or_email_cont, class: 'form-control', placeholder: 'Search...'
+          = f.search_field :combined_search_cont, class: 'form-control', placeholder: 'Search...'
         .form-group
           = f.submit 'Search', class: 'btn btn-primary'
 
-  %table.table.table-striped.table-hover#users{ data: { toggle: 'table', url: admin_users_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#usersTableToolbar' } }
+  %table.table.table-striped.table-hover#users
     %thead
       %tr
         %th
           = sort_link(@q, :name, 'Name')
         %th
           = sort_link(@q, :department, 'Department')
-        -# current-interfolio-user
-        %th Faculty
-        -# netid
+        %th
+          = sort_link(@q, :current_interfolio_user, "Faculty")
         %th
           = sort_link(@q, :net_id, 'Login')
         %th
           = sort_link(@q, :email, 'Email')
-        %th RMID Admin
-        -# created_at
-        %th Created
-        -# current_sign_in
-        %th Latest Sign In
+        %th
+          = sort_link(@q, :admin, "Admin")
+        %th
+          = sort_link(@q, :created_at, "Created")
+        %th
+          = sort_link(@q, :current_sign_in_at, "Latest Sign In")
     %tbody
       - @users.each do |user|
         %tr
-          %td= user.name
+          %td= user.name.present? ? user.name : "#{user&.first_name}  #{user&.middle_initial} #{user&.last_name}"
           %td= user.department
           %td= user.current_interfolio_user ? 'Yes' : 'No'
           %td= user.net_id
@@ -57,4 +57,5 @@
           %td= user.admin ? 'Yes' : 'No'
           %td= format_date(user.created_at)
           %td= user.current_sign_in_at ? format_date(user.current_sign_in_at) : 'Never'
-            = link_to 'Show', admin_user_path(user)
+  .text-center
+    = paginate @users

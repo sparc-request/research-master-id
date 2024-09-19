@@ -20,6 +20,12 @@
 
 module ResearchMasterHelper
 
+  def eirb_closed_out_message(research_master)
+    if research_master.eirb_closed_out_study?
+      content_tag(:h6, 'Study has been closed out in eIRB', class: 'text-danger')
+    end
+  end
+
   def mark_required(object, attribute)
     if object.class.validators_on(attribute).map(&:class).include? ActiveRecord::Validations::PresenceValidator
       " *"

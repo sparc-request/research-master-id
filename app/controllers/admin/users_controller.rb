@@ -20,7 +20,11 @@
 
 class Admin::UsersController < ApplicationController
   def index
+    if params[:q] && params[:q][:combined_search_cont]
+      params[:q][:combined_search_cont] = User.reformat_to_match_db(params[:q][:combined_search_cont])
+    end
     @q = User.ransack(params[:q])
+    @q.sorts = 'last_name asc' if @q.sorts.empty?
     @users = @q.result.page(params[:page]).per(25)
     respond_to do |format|
       format.html

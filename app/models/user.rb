@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class User < ApplicationRecord
+  include DateFormatHelper
+
   audited
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -30,6 +32,21 @@ class User < ApplicationRecord
   has_many :protocols, foreign_key: :primary_pi_id
 
   attr_accessor :login
+
+  ransacker :combined_search do |parent|
+    Arel::Nodes::NamedFunction.new(
+      'CONCAT_WS',
+      [
+        Arel::Nodes.build_quoted(' '),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:email].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:net_id].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:name].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:department].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:created_at].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:current_sign_in_at].name} AS CHAR)")
+      ]
+    )
+  end
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
