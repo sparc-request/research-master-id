@@ -21,13 +21,15 @@
 class ResearchMaster < ApplicationRecord
   audited
 
+  include DateFormatHelper
+
   attr_accessor :search_term
 
   include SanitizedData
   sanitize_setter :long_title, :special_characters, :epic_special_characters, :squish
   sanitize_setter :short_title, :special_characters, :epic_special_characters, :squish
 
-  belongs_to :creator, class_name: "User"
+  belongs_to :creator, class_name: "User", foreign_key: "creator_id"
   belongs_to :pi, class_name: "User"
   belongs_to :sparc_protocol, class_name: :Protocol, optional: true
   belongs_to :eirb_protocol, class_name: :Protocol, optional: true
@@ -47,6 +49,24 @@ class ResearchMaster < ApplicationRecord
 
   validates :long_title, uniqueness: { scope: :pi_id, message: 'There is an existing Research Master record with the same PI and Long Title' }
   validates :short_title, uniqueness: { scope: :pi_id, message: 'There is an existing Research Master record with the same PI and Short Title' }
+
+  ransacker :combined_search do |parent|
+    Arel::Nodes::NamedFunction.new(
+      'CONCAT_WS',
+      [
+        Arel::Nodes.build_quoted(' '),
+        Arel::Nodes::SqlLiteral.new("CAST(research_masters.id AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:short_title].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(users.name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(users.last_name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(users.first_name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(research_masters.created_at AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:sparc_protocol_id].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:eirb_protocol_id].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(research_masters.updated_at AS CHAR)")
+      ]
+    )
+  end
 
   def self.validated
     where(eirb_validated: true)

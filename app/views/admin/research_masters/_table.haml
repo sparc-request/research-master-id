@@ -23,10 +23,11 @@
     .d-flex.justify-content-end
       = search_form_for(@q, url: admin_research_masters_path, html: { class: 'form-inline', method: :get }) do |f|
         .form-group
-          = f.search_field :pi_name_or_short_title_or_long_title_or_id_or_pi_department_cont, class: 'form-control', placeholder: 'Search...'
+          = f.search_field :combined_search_cont, class: 'form-control', placeholder: 'Search...'
+        .form-group
           = f.submit 'Search', class: 'btn btn-primary'
 
-  %table.table.table-striped.table-hover#research-master-records{ data: { toggle: 'table', url: admin_research_masters_path(format: :json), search: 'true', show_columns: 'true', show_refresh: 'true', page_size: '25', sort_name: 'id', sort_order: 'desc', toolbar: '#researchMastersTableToolbar' } }
+  %table.table.table-striped.table-hover#research-master-records
     %thead
       %tr
         %th
@@ -37,11 +38,15 @@
           = sort_link(@q, :short_title, 'Short Title')
         %th
           = sort_link(@q, :pi_name, 'PI Name')
-        %th Creator Name
-        %th Created
-        %th Updated
-        %th eIRB Validated
-        %th Actions
+        %th
+          = sort_link(@q, 'creator_last_name', "Creator Name")
+        %th
+          = sort_link(@q, :created_at, "Created")
+        %th
+          = sort_link(@q, :updated_at, "Updated")
+        %th
+          = sort_link(@q, :eirb_validated, "EIRB Validated")
+        %th.text-center Actions
 
       %tbody.research-master-records
         = render "research_master_index_table", research_masters: @research_masters

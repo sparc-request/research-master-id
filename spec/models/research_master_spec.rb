@@ -86,4 +86,27 @@ RSpec.describe ResearchMaster, type: :model do
       expect(result).not_to include(rm_two)
     end
   end
+
+  describe 'ransacker :combined_search' do
+    context 'search across multiple fields' do
+      it 'should find partial match' do
+        user = create(:user, name: 'Jane P. Doe', last_name: 'Doe', first_name: 'Jane')
+        rm = create(:research_master, short_title: 'short', creator: user, pi: user)
+        result = ResearchMaster.joins(:creator).ransack(combined_search_cont: 'P.').result
+        expect(result).to include(rm)
+      end
+    end
+    context 'date reformatting' do
+      it 'should reformat date to match db' do
+        expect(ResearchMaster.reformat_to_match_db('1/1/2020')).to eq('2020-01-01')
+      end
+      it 'should find match after reformatting' do
+        rm = create(:research_master, created_at: '2020-01-01')
+        date_search = '1/1/20'
+        reformat = ResearchMaster.reformat_to_match_db(date_search)
+        result = ResearchMaster.joins(:creator).ransack(combined_search_cont: reformat).result
+        expect(result).to include(rm)
+      end
+    end
+  end
 end

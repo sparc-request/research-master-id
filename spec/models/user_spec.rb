@@ -21,4 +21,41 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  it { is_expected.to have_many(:protocols) }
+
+  describe 'ransacker :combined_search' do
+    context 'search by email' do
+      it 'should find partial match' do
+        user = create(:user, email: 'aa@bb.cc')
+        result = User.ransack(combined_search_cont: '@bb').result
+        expect(result).to include(user)
+      end
+    end
+    context 'search by latest sign in date' do
+      it 'should find partial match' do
+        user = create(:user, current_sign_in_at: "2020-01-01")
+        result = User.ransack(combined_search_cont: '2020').result
+        expect(result).to include(user)
+      end
+    end
+    context 'date reformatting' do
+      it 'should reformat date to match db' do
+        expect(User.reformat_to_match_db('01/01/2020')).to eq('2020-01-01')
+      end
+      it 'should find match after reformatting' do
+        user = create(:user, current_sign_in_at: "2020-01-01")
+        date_search = '1/1/20'
+        reformat = User.reformat_to_match_db(date_search)
+        result = User.ransack(combined_search_cont: reformat).result
+        expect(result).to include(user)
+      end
+    end
+    context 'when searching for a user by name' do
+      it 'should return expected results' do
+        user = create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'jd@cc.cc')
+        result = User.ransack(combined_search_cont: 'Jane').result
+        expect(result).to include(user)
+      end
+    end
+  end
 end
