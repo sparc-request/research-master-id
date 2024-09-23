@@ -28,6 +28,13 @@
     = javascript_include_tag 'application'
     = csrf_meta_tags
   %body
+    - if Rails.application.config.staging_mode || Rails.env.development?
+      %h4.alert.alert-danger.rounded-0.text-center.m-0.env-banner{ role: 'alert'}
+        - if Rails.env.development?
+          = 'Development'
+        - else
+          = 'Testing'
+
     .container
       = render 'shared/header_logos'
     = render 'shared/navbar'
