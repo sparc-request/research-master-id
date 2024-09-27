@@ -25,9 +25,9 @@ class Admin::ResearchMastersController < ApplicationController
     if params[:q] && params[:q][:combined_search_cont]
       params[:q][:combined_search_cont] = ResearchMaster.reformat_to_match_db(params[:q][:combined_search_cont])
     end
-    @q = ResearchMaster.joins(:creator).ransack(params[:q])
+    @q = ResearchMaster.with_associations_for_search.ransack(params[:q])
     @research_masters = @q.result
-                          .includes(:creator)
+                          .includes(:creator, :pi, :sparc_protocol, :eirb_protocol, :coeus_protocols, :cayuse_protocols)
                           .page(params[:page])
                           .per(25)
     respond_to do |format|

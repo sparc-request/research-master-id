@@ -33,6 +33,10 @@ class User < ApplicationRecord
 
   attr_accessor :login
 
+  ransacker :sort_name do |parent|
+    Arel.sql("COALESCE(NULLIF(users.last_name, ''), NULLIF(users.name, ''), users.email)")
+  end
+
   ransacker :combined_search do |parent|
     Arel::Nodes::NamedFunction.new(
       'CONCAT_WS',
