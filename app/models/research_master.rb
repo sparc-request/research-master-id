@@ -51,7 +51,6 @@ class ResearchMaster < ApplicationRecord
   validates :short_title, uniqueness: { scope: :pi_id, message: 'There is an existing Research Master record with the same PI and Short Title' }
 
   scope :with_associations_for_search, -> {
-    # joins(:creator, :pi)
     joins("LEFT JOIN users AS creators ON creators.id = research_masters.creator_id")
     .joins("LEFT JOIN users AS pis ON pis.id = research_masters.pi_id")
     .joins("LEFT JOIN protocols as sparc_protocols ON sparc_protocols.id = research_masters.sparc_protocol_id")
