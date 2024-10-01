@@ -28,7 +28,7 @@
         class: 'navbar-brand', target: '_blank'
       = link_to 'Removed RMIDs', "/deleted_rmids", class: 'navbar-brand', target: '_blank'
       - if current_user&.admin?
-        = link_to 'RMID Admin', admin_research_masters_path, class: 'navbar-brand'
+        = link_to 'RMID Admin', admin_research_masters_path, class: 'navbar-brand', target: '_blank'
     #navbar
       %ul.nav.navbar-nav.navbar-right
         - if user_signed_in?
