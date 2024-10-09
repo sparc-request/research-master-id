@@ -57,5 +57,16 @@ RSpec.describe User, type: :model do
         expect(result).to include(user)
       end
     end
+    describe "sort by name" do
+      context "same last name" do
+        it "should sort by last name then first name" do
+          user = create(:user, name: 'Alicia Doe', first_name: 'Alicia', last_name: 'Doe', email: 'ad@ad.ad')
+          user1 = create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'dd@dd.dd')
+          user2 = create(:user, name: 'Zoe Doe', first_name: 'Zoe', last_name: 'Doe', email: 'zd@zd.zd')
+          users = User.ransack(sort_name: 'asc').result
+          expect(users).to eq([user, user1, user2])
+        end
+      end
+    end
   end
 end
