@@ -24,8 +24,19 @@ class Admin::UsersController < ApplicationController
       params[:q][:combined_search_cont] = User.reformat_to_match_db(params[:q][:combined_search_cont])
     end
     @q = User.ransack(params[:q])
-    @q.sorts = 'sort_name asc' if @q.sorts.empty?
+
+    if params[:q] && params[:q][:s]
+      if params[:q][:s].include?('desc')
+        @q.sorts = ['sort_name desc', 'first_name desc']
+      else
+        @q.sorts = ['sort_name asc', 'first_name asc']
+      end
+    else
+      @q.sorts = ['sort_name asc', 'first_name asc']
+    end
+
     @users = @q.result.page(params[:page]).per(25)
+
     respond_to do |format|
       format.html
       format.json { render json: @users }
