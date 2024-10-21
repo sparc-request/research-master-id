@@ -31,7 +31,7 @@
       .form-group
         = label_tag 'from', 'From', class: 'col-xs-2'
         .col-xs-10
-          = text_field_tag 'from', current_user.email, class: 'form-control', disabled: true
+          = text_field_tag 'from', "#{current_user.name} <#{current_user.email}>", class: 'form-control', disabled: true
       .form-group
         = label_tag 'to', 'To', class: 'col-xs-2'
         .col-xs-10

@@ -25,9 +25,9 @@ module NotificationsHelper
       pi = ''
     end
     if creator.email == pi.email
-      "#{creator.email}"
+      "#{creator.name} <#{creator.email}>"
     else
-      "#{creator.email}, #{pi.email}"
+      "#{creator.name} <#{creator.email}>, #{pi.name} <#{pi.email}>"
     end
   end
 end

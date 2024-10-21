@@ -28,6 +28,7 @@ class Admin::ResearchMastersController < ApplicationController
     @q = ResearchMaster.with_associations_for_search.ransack(params[:q])
     @research_masters = @q.result
                           .includes(:creator, :pi, :sparc_protocol, :eirb_protocol, :coeus_protocols, :cayuse_protocols)
+                          .distinct
                           .page(params[:page])
                           .per(25)
     respond_to do |format|

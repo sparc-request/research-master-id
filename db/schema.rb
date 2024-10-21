@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2024_09_10_174603) do
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
-    t.text "title", limit: 16777215
+    t.string "title"
     t.string "entity_award_number"
     t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
