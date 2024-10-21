@@ -33,8 +33,8 @@ class User < ApplicationRecord
 
   attr_accessor :login
 
-  ransacker :sort_name do |parent|
-    Arel.sql("COALESCE(NULLIF(users.last_name, ''), NULLIF(users.name, ''), users.email), users.first_name")
+  ransacker :sort_name do
+    Arel.sql("COALESCE(NULLIF(users.last_name, ''), NULLIF(SUBSTRING_INDEX(users.name, ' ', -1), ''), users.email)")
   end
 
   ransacker :combined_search do |parent|
