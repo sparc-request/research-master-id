@@ -59,6 +59,8 @@ class ResearchMaster < ApplicationRecord
     .joins("LEFT JOIN protocols as coeus_protocols ON coeus_protocols.id = research_master_coeus_relations.protocol_id")
     .joins("LEFT JOIN research_master_cayuse_relations ON research_master_cayuse_relations.research_master_id = research_masters.id")
     .joins("LEFT JOIN protocols as cayuse_protocols ON cayuse_protocols.id = research_master_cayuse_relations.protocol_id")
+    .joins("LEFT JOIN users as sparc_primary_pis on sparc_primary_pis.id = sparc_protocols.primary_pi_id")
+    .joins("left join users as eirb_primary_pis on eirb_primary_pis.id = eirb_protocols.primary_pi_id")
 }
 
   ransacker :pi_sort_name do |parent|
@@ -96,7 +98,13 @@ class ResearchMaster < ApplicationRecord
         Arel::Nodes::SqlLiteral.new("CAST(eirb_protocols.eirb_id AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(research_masters.updated_at AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(coeus_protocols.mit_award_number AS CHAR)"),
-        Arel::Nodes::SqlLiteral.new("CAST(cayuse_protocols.cayuse_project_number AS CHAR)")
+        Arel::Nodes::SqlLiteral.new("CAST(cayuse_protocols.cayuse_project_number AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(sparc_primary_pis.name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(sparc_primary_pis.first_name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(sparc_primary_pis.last_name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(eirb_primary_pis.name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(eirb_primary_pis.first_name AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(eirb_primary_pis.last_name AS CHAR)")
       ]
     )
   end
