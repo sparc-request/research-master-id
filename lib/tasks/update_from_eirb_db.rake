@@ -36,6 +36,10 @@ task update_from_eirb_db: :environment do
     $full_message << message + " <br> "
   end
 
+  def validated_state_checker(arr, val)
+    arr.map(&:downcase).include?(val.downcase)
+  end
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -44,7 +48,7 @@ task update_from_eirb_db: :environment do
 
     script_start      = Time.now
 
-    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Exempt Complete', 'Expired',  'Expired - Continuation in Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Overdue Study Status', 'Suspended', 'Terminated']
+    $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Exempt Complete', 'Expired',  'Expired - Continuation In Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Overdue Study Status', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
     $research_masters  = ResearchMaster.eager_load(:pi).all
     $users             = User.all
@@ -136,11 +140,11 @@ task update_from_eirb_db: :environment do
             end
           end
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study ['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
+          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
             rm.eirb_protocol_id       = existing_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-            if $validated_states.include?(study['project_status'])
+            if validated_state_checker($validated_states, study['project_status'])
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
@@ -208,7 +212,7 @@ task update_from_eirb_db: :environment do
             rm.eirb_protocol_id       = eirb_protocol.id
             rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
 
-            if $validated_states.include?(study['project_status'])
+            if validated_state_checker($validated_states, study['project_status'])
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
