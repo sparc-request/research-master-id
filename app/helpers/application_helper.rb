@@ -80,4 +80,17 @@ module ApplicationHelper
   def format_date(date)
     date.strftime("%m/%d/%Y") if date
   end
+
+  def display_pi_name(protocol)
+    if protocol.primary_pi
+      if protocol.primary_pi.name.present?
+        protocol.primary_pi.name
+      else
+        middle_initial = protocol.primary_pi.middle_initial.present? ? "#{protocol.primary_pi.middle_initial} " : ""
+        "#{protocol.primary_pi.first_name} #{middle_initial}#{protocol.primary_pi.last_name}"
+      end
+    else
+      "N/A"
+    end
+  end
 end
