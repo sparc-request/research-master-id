@@ -164,7 +164,7 @@ task update_from_eirb_db: :environment do
       new_eirb_studies.each do |study|
         if study['rmid'].present?
           eirb_protocol = Protocol.new(
-            type:                     study['type'],
+            type:                     'EIRB',
             short_title:              study['short_title'] || "",
             long_title:               study['title'] || "",
             eirb_id:                  study['pro_number'],
