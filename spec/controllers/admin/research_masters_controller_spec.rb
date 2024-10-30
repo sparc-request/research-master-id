@@ -4,7 +4,7 @@ RSpec.describe Admin::ResearchMastersController, type: :controller do
   describe 'GET #index' do
     context 'when a research master record has multiple associated protocols' do
       it 'returns the unique set without duplicates' do
-        user = create(:user)
+        user = create(:user, admin: true)
         sign_in user
         rm1 = create(:research_master, pi: user)
 
@@ -25,7 +25,7 @@ RSpec.describe Admin::ResearchMastersController, type: :controller do
     end
 
     it 'sorts by research master id' do
-      user = create(:user)
+      user = create(:user, admin: true)
       sign_in user
       rm1 = create(:research_master, pi: user)
       rm2 = create(:research_master, pi: user, short_title: 'short title')
@@ -39,5 +39,21 @@ RSpec.describe Admin::ResearchMastersController, type: :controller do
       expect(assigns(:research_masters)).to eq([rm2, rm1])
     end
 
+    context 'user is not an admin' do
+      it 'redirects requests for /admin to sign-in/main page' do
+        user = create(:user)
+        sign_in user
+        get :index
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+    context "user is an admin" do
+      it 'allows access to /admin' do
+        user = create(:user, admin: true)
+        sign_in user
+        get :index
+        expect(response).to be_successful
+      end
+    end
   end
 end
