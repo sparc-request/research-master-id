@@ -1,4 +1,4 @@
-# Copyright © 2020 MUSC Foundation for Research Development~
+# Copyright © 2024 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,42 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class Admin::UsersController < ApplicationController
-  before_action do
-    redirect_to new_user_session_path unless current_user.admin?
-  end
+require 'rails_helper'
 
-  def index
-    if params[:q] && params[:q][:combined_search_cont]
-      params[:q][:combined_search_cont] = User.reformat_to_match_db(params[:q][:combined_search_cont])
-    end
-    @q = User.ransack(params[:q])
-
-    if params[:q] && params[:q][:s]
-      if params[:q][:s].include?('desc')
-        @q.sorts = ['sort_name desc', 'first_name desc']
-      else
-        @q.sorts = ['sort_name asc', 'first_name asc']
+RSpec.describe Admin::UsersController, type: :controller do
+  describe 'GET #index' do
+    context 'when user is not an admin' do
+      it 'redirects to the sign-in/main page' do
+        user = create(:user)
+        sign_in user
+        get :index
+        expect(response).to redirect_to(new_user_session_path)
       end
-    else
-      @q.sorts = ['sort_name asc', 'first_name asc']
     end
-
-    @users = @q.result.page(params[:page]).per(25)
-
-    respond_to do |format|
-      format.html
-      format.json { render json: @users }
-    end
-  end
-
-  def show
-    if params[:source] == 'pi_name'
-      db_search = DatabaseSearch.new
-      @user_info = db_search.user_query(params[:name].strip)
-    else
-      ldap_search = LdapSearch.new
-      @user_info = ldap_search.info_query(params[:name].strip, true, false, params[:search_term])
+    context 'when user is an admin' do
+      it 'allows access to /admin/users' do
+        user = create(:user, admin: true)
+        sign_in user
+        get :index
+        expect(response).to be_successful
+      end
     end
   end
 end
