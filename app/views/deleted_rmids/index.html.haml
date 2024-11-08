@@ -18,6 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
+%main.card#deletedCard
+  #researchMastersTableToolbar
+    .d-flex.justify-content-end
+      = search_form_for(@q, url: deleted_rmids_path, html: { class: 'form-inline', method: :get }) do |f|
+        .form-group
+          = f.search_field :original_id_or_long_title_or_short_title_or_creator_name_or_pi_name_or_sparc_protocol_id_or_eirb_protocol_id_or_research_type_or_user_name_or_reason_or_created_at_cont, class: 'form-control', placeholder: 'Search...'
+        .form-group
+          = f.submit 'Search', class: 'btn btn-primary'
+
 %table.table.table-striped
   %thead
     %tr
@@ -48,13 +57,13 @@
   %tbody
     - @deleted_rmids.each do |rmid|
       %tr
-        %td= rmid.original_id
+        %td= rmid.original_id.to_s
         %td= rmid.long_title
         %td= rmid.short_title
         %td= rmid.creator.name
         %td= rmid.pi.name
-        %td= rmid.sparc_protocol_id
-        %td= rmid.eirb_protocol_id
+        %td= rmid.sparc_protocol_id.to_s
+        %td= rmid.eirb_protocol_id.to_s
         %td= rmid.research_type.titleize
         %td= rmid.user.name
         %td= rmid.reason
