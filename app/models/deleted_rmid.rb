@@ -22,4 +22,25 @@ class DeletedRmid < ApplicationRecord
   belongs_to :user
   belongs_to :creator, class_name: 'User', foreign_key: 'creator_id'
   belongs_to :pi, class_name: 'User', foreign_key: 'pi_id'
+
+  ransacker :original_id do
+    Arel.sql("CONVERT(`#{self.table_name}`.`original_id`, CHAR(8))")
+  end
+
+  ransacker :sparc_protocol_id do
+    Arel.sql("CONVERT(`#{self.table_name}`.`sparc_protocol_id`, CHAR(8))")
+  end
+
+  ransacker :eirb_protocol_id do
+    Arel.sql("CONVERT(`#{self.table_name}`.`eirb_protocol_id`, CHAR(8))")
+  end
+
+  ransacker :research_type, formatter: proc { |string| string.parameterize.underscore } do |parent|
+    parent.table[:research_type]
+  end
+
+  # ransacker :created_at, formatter: proc { |string| Date.parse(string).strftime("%a, %d %b %Y") } do |parent|
+  #   parent.table[:created_at]
+  #   Arel.sql("CONVERT(`#{self.table_name}`.`created_at`, CHAR(8))")
+  # end
 end
