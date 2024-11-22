@@ -25,7 +25,7 @@
 
 server 'bmic-rmid-v.mdc.musc.edu', user: 'wih205', roles: %w{app db web}
 
-set :repo_url, 'git@rmid_github:HSSC/research-master-id.git'
+set :repo_url, 'git@rmid_github:sparc-request/research-master-id.git'
 # server 'example.com', user: 'deploy', roles: %w{app db web}, my_property: :my_value
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
@@ -87,3 +87,6 @@ set :passenger_restart_with_touch, true
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
+set :ssh_options, {
+  forward_agent: false,
+}
