@@ -44,10 +44,7 @@
                 %td
                   = @sparc_protocol.sparc_id
                 %td
-                  - unless @sparc_protocol.primary_pi.nil?
-                    = "#{@sparc_protocol.primary_pi.first_name} #{@sparc_protocol.primary_pi.last_name}"
-                  - else
-                    = "N/A"
+                  = display_pi_name(@sparc_protocol)
                 %td
                   = @sparc_protocol.long_title
                 %td
@@ -62,10 +59,7 @@
                 %td
                   = @eirb_protocol.eirb_id
                 %td
-                  - unless @eirb_protocol.primary_pi.nil?
-                    = "#{@eirb_protocol.primary_pi.first_name} #{@eirb_protocol.primary_pi.last_name}"
-                  - else
-                    = "N/A"
+                  = display_pi_name(@eirb_protocol)
                 %td
                   = @eirb_protocol.long_title
                 %td

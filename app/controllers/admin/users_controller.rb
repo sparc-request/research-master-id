@@ -19,13 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class Admin::UsersController < ApplicationController
+  before_action do
+    redirect_to new_user_session_path unless current_user.admin?
+  end
+
   def index
     if params[:q] && params[:q][:combined_search_cont]
       params[:q][:combined_search_cont] = User.reformat_to_match_db(params[:q][:combined_search_cont])
     end
     @q = User.ransack(params[:q])
-    @q.sorts = 'last_name asc' if @q.sorts.empty?
+
+    if params[:q] && params[:q][:s]
+      if params[:q][:s].include?('desc')
+        @q.sorts = ['sort_name desc', 'first_name desc']
+      else
+        @q.sorts = ['sort_name asc', 'first_name asc']
+      end
+    else
+      @q.sorts = ['sort_name asc', 'first_name asc']
+    end
+
     @users = @q.result.page(params[:page]).per(25)
+
     respond_to do |format|
       format.html
       format.json { render json: @users }

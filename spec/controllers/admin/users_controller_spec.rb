@@ -1,4 +1,4 @@
-# Copyright © 2020 MUSC Foundation for Research Development~
+# Copyright © 2024 MUSC Foundation for Research Development~
 # All rights reserved.~
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
@@ -18,16 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module NotificationsHelper
+require 'rails_helper'
 
-  def notification_email_recipients(creator, pi)
-    if pi.nil?
-      pi = ''
+RSpec.describe Admin::UsersController, type: :controller do
+  describe 'GET #index' do
+    context 'when user is not an admin' do
+      it 'redirects to the sign-in/main page' do
+        user = create(:user)
+        sign_in user
+        get :index
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
-    if creator.email == pi.email
-      "#{creator.name} <#{creator.email}>"
-    else
-      "#{creator.name} <#{creator.email}>, #{pi.name} <#{pi.email}>"
+    context 'when user is an admin' do
+      it 'allows access to /admin/users' do
+        user = create(:user, admin: true)
+        sign_in user
+        get :index
+        expect(response).to be_successful
+      end
     end
   end
 end

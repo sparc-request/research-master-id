@@ -19,15 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class Admin::ResearchMastersController < ApplicationController
+  before_action do
+    redirect_to new_user_session_path unless current_user.admin?
+  end
   before_action :set_research_master, only: [:show, :edit, :update, :destroy]
 
   def index
     if params[:q] && params[:q][:combined_search_cont]
       params[:q][:combined_search_cont] = ResearchMaster.reformat_to_match_db(params[:q][:combined_search_cont])
     end
-    @q = ResearchMaster.joins(:creator).ransack(params[:q])
+    @q = ResearchMaster.with_associations_for_search.ransack(params[:q])
     @research_masters = @q.result
-                          .includes(:creator)
+                          .includes(:creator, :pi, :sparc_protocol, :eirb_protocol, :coeus_protocols, :cayuse_protocols)
+                          .distinct
                           .page(params[:page])
                           .per(25)
     respond_to do |format|

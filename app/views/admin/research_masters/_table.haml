@@ -37,9 +37,9 @@
         %th
           = sort_link(@q, :short_title, 'Short Title')
         %th
-          = sort_link(@q, :pi_name, 'PI Name')
+          = sort_link(@q, 'pi_sort_name', 'PI Name')
         %th
-          = sort_link(@q, 'creator_last_name', "Creator Name")
+          = sort_link(@q, 'creator_sort_name', "Creator Name")
         %th
           = sort_link(@q, :created_at, "Created")
         %th

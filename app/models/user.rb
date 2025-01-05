@@ -33,6 +33,10 @@ class User < ApplicationRecord
 
   attr_accessor :login
 
+  ransacker :sort_name do
+    Arel.sql("COALESCE(NULLIF(users.last_name, ''), NULLIF(SUBSTRING_INDEX(users.name, ' ', -1), ''), users.email)")
+  end
+
   ransacker :combined_search do |parent|
     Arel::Nodes::NamedFunction.new(
       'CONCAT_WS',
@@ -41,6 +45,9 @@ class User < ApplicationRecord
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:email].name} AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:net_id].name} AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:name].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:first_name].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:last_name].name} AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(CONCAT(#{parent.table[:first_name].name}, ' ', #{parent.table[:last_name].name}) AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:department].name} AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:created_at].name} AS CHAR)"),
         Arel::Nodes::SqlLiteral.new("CAST(#{parent.table[:current_sign_in_at].name} AS CHAR)")
