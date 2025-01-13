@@ -46,3 +46,18 @@ production:
   database: research-master-id_production
   username: research-master-id
   password: <%= ENV['RESEARCH-MASTER-ID_DATABASE_PASSWORD'] %>
+
+
+#Docker Dev Environment
+# default: &default
+#   adapter: mysql2
+#   encoding: utf8
+#   pool: 5
+#   timeout: 5000
+#   username: <%= ENV['DATABASE_USERNAME'] %>
+#   password: <%= ENV['DATABASE_PASSWORD'] %>
+#   host: <%= ENV['DATABASE_HOST'] %>
+# 
+# development:
+#   <<: *default
+#   database: <%= ENV['DATABASE_NAME'] %>
