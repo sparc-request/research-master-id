@@ -1,12 +1,12 @@
 services:
   rmid_web:
     build: .
-    command: bundle exec rails s -b '0.0.0.0' -p 6000
+    command: bundle exec rails s -b '0.0.0.0' -p 3002
     volumes:
       - .:/app
       - /app/node_modules
     ports:
-      - "6000:6000"
+      - "3002:3002"
     environment:
       DATABASE_HOST: sparc_db
       DATABASE_USERNAME: root
