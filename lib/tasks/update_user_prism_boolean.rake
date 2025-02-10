@@ -20,15 +20,21 @@
 
 task update_user_prism_boolean: :environment do
 
-  coeus_api   = ENV.fetch("COEUS_API")
-  interfolio_users = HTTParty.get("#{coeus_api}/interfolio", timeout: 500, headers: {'Content-Type' => 'application/json'})
   research_master_users = User.all
+  if research_master_users.any?
+    coeus_api   = ENV.fetch("COEUS_API")
+    interfolio_users = HTTParty.get("#{coeus_api}/interfolio", timeout: 500, headers: {'Content-Type' => 'application/json'})
 
-  research_master_users.each do |research_master_user|
-    interfolio_user = interfolio_users.select {|user| user["netid"] == research_master_user.net_id }.first
+    research_master_users.each do |research_master_user|
+      interfolio_user = interfolio_users.select {|user| user["netid"] == research_master_user.net_id }.first
 
-    if interfolio_user
-      research_master_user.update_attributes(current_interfolio_user: true)
+      if interfolio_user
+        research_master_user.update_attributes(current_interfolio_user: true)
+      end
     end
+  else
+    puts '#' * 50
+    puts "No users in database, skipping task"
+    puts '#' * 50
   end
 end

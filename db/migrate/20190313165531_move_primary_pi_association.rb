@@ -26,6 +26,13 @@ class MovePrimaryPiAssociation < ActiveRecord::Migration[5.1]
   end
 
   def up
+    if Protocol.count == 0
+      puts '#' * 50
+      puts "No Protocols found. Adding column and skipping data migration"
+      puts '#' * 50
+      add_reference :protocols, :primary_pi, after: :long_title, index: true
+      return
+    end
     puts 'Migrating Primary PI data. This may take a while...'
     puts 'Fetching Protocols from SPARC API...'
     sparc_api       = ENV.fetch("SPARC_API")
