@@ -59,6 +59,7 @@ en:
         funding_source: "Search by Funding Source"
         rmid: "Search by RMID"
         department: "Search by Department"
+        association: "Search by Association"
       search_placeholders:
         pi_name: "Search by PI Name"
         short_title: "Search by Short Title"
@@ -66,6 +67,7 @@ en:
         funding_source: "Search by Funding Source"
         rmid: "Search by RMID"
         department: "Search by Department"
+        association: "Search by SPARC, eIRB, COEUS or Cayuse ID"
       search_tooltips:
         pi_name: "Search by Principal Investigator (PI) name will return all studies associated with the designated PI"
         short_title: "Search by key words or short title of the study"
@@ -73,6 +75,7 @@ en:
         funding_source: "Search by Internal or External funding source"
         rmid: "Search by an existing RMID and associated study information"
         department: "Search by the department based on the appointment of the Principal Investigator of the study"
+        association: "Search by the associated study ID (SPARC, eIRB, COEUS or Cayuse)"
       show_more:
         label: "Show More"
         tooltip: "To include more search fields"

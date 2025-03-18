@@ -116,7 +116,7 @@ class ResearchMastersController < ApplicationController
   private
 
   def find_rm_records
-    @q = ResearchMaster.ransack(params[:q])
+    @q = ResearchMaster.with_associations_for_search.ransack(params[:q])
     @research_masters = @q.result.includes(:pi).page(params[:page])
   end
 
