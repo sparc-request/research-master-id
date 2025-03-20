@@ -67,7 +67,7 @@ task update_from_sparc_db: :environment do
       updated_sparc_protocols = []
       created_sparc_pis       = []
 
-      new_associations = {}
+      rm_updates = {}
 
       # Preload SPARC Protocols to improve efficiency
       sparc_protocols           = Protocol.eager_load(:primary_pi).where(type: 'SPARC')
@@ -114,7 +114,7 @@ task update_from_sparc_db: :environment do
         end
 
         if protocol.research_master_id.present? && rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-          new_associations[rm.id] = {
+          rm_updates[rm.id] = {
             sparc_protocol_id: existing_protocol.id,
             sparc_association_date: rm.sparc_association_date || DateTime.current
           }
@@ -167,7 +167,7 @@ task update_from_sparc_db: :environment do
           created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
           if rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-            new_associations[rm.id] = {
+            rm_updates[rm.id] = {
               sparc_protocol_id: sparc_protocol.id,
               sparc_association_date: rm.sparc_association_date || DateTime.current
             }
@@ -179,11 +179,11 @@ task update_from_sparc_db: :environment do
 
       no_longer_associated = ResearchMaster
         .where.not(sparc_protocol_id: nil)
-        .where.not(id: new_associations.keys)
+        .where.not(id: rm_updates.keys)
         .pluck(:id)
 
       ActiveRecord::Base.transaction do
-        new_associations.each do |rm_id, attrs|
+        rm_updates.each do |rm_id, attrs|
           ResearchMaster.where(id: rm_id).update_all(
             sparc_protocol_id: attrs[:sparc_protocol_id],
             sparc_association_date: attrs[:sparc_association_date]
