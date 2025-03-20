@@ -36,36 +36,29 @@ task update_from_sparc_db: :environment do
     User.auditing_enabled           = false
 
     script_start      = Time.now
-
-    
-
     $friendly_token   = Devise.friendly_token
     $research_masters = ResearchMaster.eager_load(:pi).all
     $users            = User.all
-
-    
 
     log "*Cronjob (SPARC) has started.*"
 
     log "--- *Connecting to SPARC Database...*"
 
+    valid_connection = false
     begin
       sparc_db = Sparc::Connection.connection #check if the connection is valid
       valid_connection = true
-    rescue
-      log "----- &#x2757; Cannot connect to SPARC Database"
+    rescue => e
+      log "----- &#x2757; Cannot connect to SPARC Database: #{e.message}"
     end
 
     start       = Time.now
-    # protocols   = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
-    protocols   = Sparc::Protocol.includes(:primary_pi, :human_subjects_info).all
+    protocols   = Sparc::Protocol.includes(:primary_pi, :human_subjects_info)
     finish      = Time.now
     ldap_search = LdapSearch.new
 
     if valid_connection
       log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
-      ResearchMaster.update_all(sparc_protocol_id: nil)
-
       log "- *Beginning SPARC data import...*"
       log "--- Total number of protocols from SPARC_API: #{protocols.count}"
 
@@ -73,6 +66,8 @@ task update_from_sparc_db: :environment do
       created_sparc_protocols = []
       updated_sparc_protocols = []
       created_sparc_pis       = []
+
+      new_associations = {}
 
       # Preload SPARC Protocols to improve efficiency
       sparc_protocols           = Protocol.eager_load(:primary_pi).where(type: 'SPARC')
@@ -86,7 +81,6 @@ task update_from_sparc_db: :environment do
 
       existing_sparc_protocols.each do |protocol|
         existing_protocol = sparc_protocols.detect{ |p| p.sparc_id == protocol['id'] }
-
         existing_protocol.short_title = protocol.short_title
         existing_protocol.long_title  = protocol.title
 
@@ -120,10 +114,10 @@ task update_from_sparc_db: :environment do
         end
 
         if protocol.research_master_id.present? && rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-          rm.sparc_protocol_id      = existing_protocol.id
-          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
-
-          rm.save(validate: false) if rm.changed?
+          new_associations[rm.id] = {
+            sparc_protocol_id: existing_protocol.id,
+            sparc_association_date: rm.sparc_association_date || DateTime.current
+          }
         end
 
         bar.increment! rescue nil
@@ -173,14 +167,29 @@ task update_from_sparc_db: :environment do
           created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
           if rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-            rm.sparc_protocol_id      = sparc_protocol.id
-            rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
-
-            rm.save(validate: false) if rm.changed?
+            new_associations[rm.id] = {
+              sparc_protocol_id: sparc_protocol.id,
+              sparc_association_date: rm.sparc_association_date || DateTime.current
+            }
           end
 
           bar.increment! rescue nil
         end
+      end
+
+      no_longer_associated = ResearchMaster
+        .where.not(sparc_protocol_id: nil)
+        .where.not(id: new_associations.keys)
+        .pluck(:id)
+
+      ActiveRecord::Base.transaction do
+        new_associations.each do |rm_id, attrs|
+          ResearchMaster.where(id: rm_id).update_all(
+            sparc_protocol_id: attrs[:sparc_protocol_id],
+            sparc_association_date: attrs[:sparc_association_date]
+          )
+        end
+        ResearchMaster.where(id: no_longer_associated).update_all( sparc_protocol_id: nil) if no_longer_associated.any?
       end
 
       finish = Time.now
