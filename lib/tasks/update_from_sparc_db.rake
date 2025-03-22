@@ -21,7 +21,16 @@
 require 'dotenv/tasks'
 
 task update_from_sparc_db: :environment do
-  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $status_notifier = if Rails.env.development?
+    stub = Object.new
+    def stub.post(m)
+      puts "Teams message: #{m}"
+    end
+    stub
+  else
+    Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  end
+
   $full_message = ""
 
   def log message
