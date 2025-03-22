@@ -21,10 +21,11 @@
 
 task update_from_eirb_db: :environment do
   $status_notifier = if Rails.env.development?
-    Class.new do
-      def notify(message); end
-      def post(message); end
-    end.new
+    stub = Object.new
+    def stub.post(m)
+      puts "Teams message: #{m}"
+    end
+    stub
   else
     Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
   end
@@ -50,18 +51,19 @@ task update_from_eirb_db: :environment do
 
     $validated_states  = ['Acknowledged', 'Approved', 'Completed', 'Disapproved', 'Exempt Approved', 'Exempt Complete', 'Expired',  'Expired - Continuation In Progress', 'External IRB Review Archive', 'Not Human Subjects Research', 'Overdue Study Status', 'Suspended', 'Terminated']
     $friendly_token    = Devise.friendly_token
-    $research_masters  = ResearchMaster.eager_load(:pi).all
+    $research_masters  = ResearchMaster.eager_load(:pi)
     $users             = User.all
 
     log "*Cronjob (EIRB) has started.*"
 
     log "--- *Connecting to EIRB Database...*"
 
+    valid_connection = false
     begin
       eirb_db = EirbConnection.connection
       valid_connection = true
-    rescue
-      log "--- *Cannot connect to EIRB Database...*"
+    rescue => e
+      log "--- *Cannot connect to EIRB Database: #{e.message}...*"
     end
 
     if valid_connection
@@ -71,9 +73,6 @@ task update_from_eirb_db: :environment do
       eirb_studies = EirbStudy.is_musc.filter_out_preserve_state.filter_invalid_pro_numbers
       finish        = Time.now
       log "--- *Done!* (#{(finish - start).to_i} Seconds)"
-
-      ResearchMaster.update_all(eirb_validated: false)
-
       log "--- *Beginning EIRB data import...*"
       log "--- *Total number of protocols from EIRB Database: #{eirb_studies.count}"
 
@@ -81,7 +80,7 @@ task update_from_eirb_db: :environment do
       updated_eirb_protocols  = []
       created_eirb_protocols  = []
 
-      ResearchMaster.update_all(eirb_protocol_id: nil)
+      rm_updates = {}
 
       # Preload eIRB Protocols to improve efficiency
       eirb_protocols        = Protocol.eager_load(:primary_pi).where(type: 'EIRB')
@@ -141,16 +140,20 @@ task update_from_eirb_db: :environment do
           end
 
           if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = existing_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+            attrs_to_update = {
+              eirb_protocol_id: existing_protocol.id,
+              eirb_association_date: rm.eirb_association_date || DateTime.current
+            }
 
             if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title     = study['short_title']
-              rm.long_title     = study['title']
+              attrs_to_update[:eirb_validated] = true
+              attrs_to_update[:short_title] = study['short_title']
+              attrs_to_update[:long_title] = study['title']
+            else
+              attrs_to_update[:eirb_validated] = false
             end
 
-            rm.save(validate: false) if rm.changed?
+            rm_updates[rm.id] = attrs_to_update
           end
         end
 
@@ -209,20 +212,39 @@ task update_from_eirb_db: :environment do
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
           if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = eirb_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+            attrs_to_update = {
+              eirb_protocol_id: eirb_protocol.id,
+              eirb_association_date: rm.eirb_association_date || DateTime.current
+            }
 
             if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title     = study['short_title']
-              rm.long_title     = study['title']
+              attrs_to_update[:eirb_validated] = true
+              attrs_to_update[:short_title] = study['short_title']
+              attrs_to_update[:long_title] = study['title']
+            else
+              attrs_to_update[:eirb_validated] = false
             end
 
-            rm.save(validate: false) if rm.changed?
+            rm_updates[rm.id] = attrs_to_update
           end
 
           bar.increment! rescue nil
         end
+      end
+
+      no_longer_associated = ResearchMaster
+        .where.not(eirb_protocol_id: nil)
+        .where.not(id: rm_updates.keys)
+        .pluck(:id)
+
+      ActiveRecord::Base.transaction do
+        ResearchMaster.update_all(eirb_validated: false)
+
+        rm_updates.each do |rm_id, attrs|
+          ResearchMaster.where(id: rm_id).update_all(attrs)
+        end
+
+        ResearchMaster.where(id: no_longer_associated).update_all(eirb_protocol_id: nil) if no_longer_associated.any?
       end
 
       finish = Time.now
