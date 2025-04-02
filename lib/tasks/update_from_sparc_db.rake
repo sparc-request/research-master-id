@@ -59,7 +59,6 @@ task update_from_sparc_db: :environment do
       valid_connection = true
     rescue => e
       log "----- &#x2757; Cannot connect to SPARC Database: #{e.message}"
-      valid_connection = false
     end
 
     start       = Time.now
