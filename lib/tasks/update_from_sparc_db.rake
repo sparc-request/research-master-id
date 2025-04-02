@@ -24,7 +24,7 @@ task update_from_sparc_db: :environment do
   $status_notifier = if Rails.env.development?
     stub = Object.new
     def stub.post(m)
-      puts "Teams message: #{m}"
+      puts "#{m}"
     end
     stub
   else
@@ -59,15 +59,20 @@ task update_from_sparc_db: :environment do
       valid_connection = true
     rescue => e
       log "----- &#x2757; Cannot connect to SPARC Database: #{e.message}"
+      valid_connection = false
     end
 
     start       = Time.now
-    protocols   = Sparc::Protocol.includes(:primary_pi, :human_subjects_info)
+    protocols   = Sparc::Protocol.includes(:primary_pi, :human_subjects_info).all
     finish      = Time.now
     ldap_search = LdapSearch.new
 
     if valid_connection
       log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
+
+      existing_rmids = protocols.map { |p| p.research_master_id }.compact
+      ResearchMaster.where.not(id: existing_rmids).where.not(sparc_protocol_id: nil).update_all(sparc_protocol_id: nil)
+
       log "- *Beginning SPARC data import...*"
       log "--- Total number of protocols from SPARC_API: #{protocols.count}"
 
@@ -75,8 +80,6 @@ task update_from_sparc_db: :environment do
       created_sparc_protocols = []
       updated_sparc_protocols = []
       created_sparc_pis       = []
-
-      rm_updates = {}
 
       # Preload SPARC Protocols to improve efficiency
       sparc_protocols           = Protocol.eager_load(:primary_pi).where(type: 'SPARC')
@@ -123,10 +126,10 @@ task update_from_sparc_db: :environment do
         end
 
         if protocol.research_master_id.present? && rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-          rm_updates[rm.id] = {
-            sparc_protocol_id: existing_protocol.id,
-            sparc_association_date: rm.sparc_association_date || DateTime.current
-          }
+          rm.sparc_protocol_id      = existing_protocol.id
+          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+
+          rm.save(validate: false) if rm.changed?
         end
 
         bar.increment! rescue nil
@@ -176,29 +179,14 @@ task update_from_sparc_db: :environment do
           created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
           if rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
-            rm_updates[rm.id] = {
-              sparc_protocol_id: sparc_protocol.id,
-              sparc_association_date: rm.sparc_association_date || DateTime.current
-            }
+            rm.sparc_protocol_id      = sparc_protocol.id
+            rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+
+            rm.save(validate: false) if rm.changed?
           end
 
           bar.increment! rescue nil
         end
-      end
-
-      no_longer_associated = ResearchMaster
-        .where.not(sparc_protocol_id: nil)
-        .where.not(id: rm_updates.keys)
-        .pluck(:id)
-
-      ActiveRecord::Base.transaction do
-        rm_updates.each do |rm_id, attrs|
-          ResearchMaster.where(id: rm_id).update_all(
-            sparc_protocol_id: attrs[:sparc_protocol_id],
-            sparc_association_date: attrs[:sparc_association_date]
-          )
-        end
-        ResearchMaster.where(id: no_longer_associated).update_all( sparc_protocol_id: nil) if no_longer_associated.any?
       end
 
       finish = Time.now
