@@ -80,6 +80,7 @@ task update_from_eirb_db: :environment do
       start                   = Time.now
       updated_eirb_protocols  = []
       created_eirb_protocols  = []
+      rmids_with_pi_change    = []
 
       ResearchMaster.update_all(eirb_protocol_id: nil)
 
@@ -148,12 +149,34 @@ task update_from_eirb_db: :environment do
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
-            end
 
-            rm.save(validate: false) if rm.changed?
+              if rm.pi_id != existing_protocol.primary_pi_id
+                rm.previous_pi_id = rm.pi_id
+                rm.pi_id = existing_protocol.primary_pi_id
+                rm.pi_change_date = DateTime.current
+                rmids_with_pi_change << rm.id
+
+                if rm.save(validate: false)
+                  begin
+                    existing_pi = User.find_by(id: rm.previous_pi_id)
+                    current_pi = User.find_by(id: rm.pi_id)
+                    creator = User.find_by(id: rm.creator_id)
+
+                    if existing_pi && current_pi && creator
+                      PiMailer.notify_pis(rm, existing_pi, current_pi, creator).deliver_now
+                    end
+                  rescue => e
+                    log "--- *Error sending PI mailer: #{e.message}*"
+                  end
+                end
+              end
+
+              if rm.changed?
+                rm.save(validate: false)
+              end
+            end
           end
         end
-
         bar.increment! rescue nil
       end
 
@@ -216,13 +239,34 @@ task update_from_eirb_db: :environment do
               rm.eirb_validated = true
               rm.short_title     = study['short_title']
               rm.long_title     = study['title']
+
+              if rm.pi_id != eirb_protocol.primary_pi_id
+                rm.previous_pi_id = rm.pi_id
+                rm.pi_id = eirb_protocol.primary_pi_id
+                rm.pi_change_date = DateTime.current
+                rmids_with_pi_change << rm.id
+
+                if rm.save(validate: false)
+                  begin
+                    existing_pi = User.find_by(id: rm.previous_pi_id)
+                    current_pi = User.find_by(id: rm.pi_id)
+                    creator = User.find_by(id: rm.creator_id)
+
+                    if existing_pi && current_pi && creator
+                      PiMailer.notify_pis(rm, existing_pi, current_pi, creator).deliver_now
+                    end
+                  rescue => e
+                    log "--- *Error sending PI mailer: #{e.message}*"
+                  end
+                end
+              end
+              if rm.changed?
+                rm.save(validate: false)
+              end
             end
-
-            rm.save(validate: false) if rm.changed?
           end
-
-          bar.increment! rescue nil
         end
+        bar.increment! rescue nil
       end
 
       finish = Time.now
@@ -230,6 +274,7 @@ task update_from_eirb_db: :environment do
       log "--- *Done!*"
       log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
       log "--- *New protocols total:* #{created_eirb_protocols.count}"
+      log "--- *Updated RMIDs with PI change total:* #{rmids_with_pi_change.uniq.count}"
       log "--- *Finished EIRB data import* (#{(finish - start).to_i} Seconds)."
 
       script_finish = Time.now

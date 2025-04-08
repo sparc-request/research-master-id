@@ -24,7 +24,12 @@
   %td.research-master{ data: { id: research_master.id } }
     = display_all_system_colors(research_master)
   %td.research-master{ data: { id: research_master.id } }
-    = research_master.pi.name
+    - if research_master.pi_id.present? && research_master.previous_pi_id.present?
+      %h6.text-success
+        Updated to eIRB PI
+      = research_master.pi.name
+    - else
+      = research_master.pi.name
   %td.research-master{ data: { id: research_master.id } }
     = research_master.pi.department
   %td.research-master{ data: { id: research_master.id } }

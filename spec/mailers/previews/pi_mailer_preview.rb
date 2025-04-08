@@ -20,5 +20,24 @@
 
 # Preview all emails at http://localhost:3000/rails/mailers/pi_mailer
 class PiMailerPreview < ActionMailer::Preview
+  def notify_pis
+    rm = ResearchMaster.where.not(previous_pi_id: nil).first
 
+    if rm.nil?
+      rm = ResearchMaster.first
+      exisiting_pi = User.first
+      current_pi = User.second || User.first
+      creator = User.third || User.first
+    else
+      existing_pi = User.find_by(id: rm.previous_pi_id)
+      current_pi = User.find_by(id: rm.pi_id)
+      creator = User.find_by(id: rm.creator_id)
+
+      existing_pi ||= User.first
+      current_pi ||= User.second || User.first
+      creator ||= User.third || User.first
+    end
+
+    PiMailer.notify_pis(rm, existing_pi, current_pi, creator)
+  end
 end
