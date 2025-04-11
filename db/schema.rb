@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_25_153423) do
+ActiveRecord::Schema.define(version: 2025_04_03_194635) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2024_10_25_153423) do
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
-    t.string "title"
+    t.text "title", limit: 16777215
     t.string "entity_award_number"
     t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
@@ -130,6 +130,8 @@ ActiveRecord::Schema.define(version: 2024_10_25_153423) do
     t.string "funding_source"
     t.integer "creator_id"
     t.integer "pi_id"
+    t.integer "previous_pi_id"
+    t.datetime "pi_change_date"
     t.boolean "eirb_validated", default: false
     t.integer "sparc_protocol_id"
     t.integer "eirb_protocol_id"
@@ -140,6 +142,7 @@ ActiveRecord::Schema.define(version: 2024_10_25_153423) do
     t.string "research_type"
     t.index ["creator_id"], name: "index_research_masters_on_creator_id"
     t.index ["pi_id"], name: "index_research_masters_on_pi_id"
+    t.index ["previous_pi_id"], name: "index_research_masters_on_previous_pi_id"
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
@@ -171,4 +174,5 @@ ActiveRecord::Schema.define(version: 2024_10_25_153423) do
 
   add_foreign_key "research_masters", "users", column: "creator_id"
   add_foreign_key "research_masters", "users", column: "pi_id"
+  add_foreign_key "research_masters", "users", column: "previous_pi_id"
 end
