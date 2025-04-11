@@ -21,7 +21,16 @@
 require 'dotenv/tasks'
 
 task update_from_sparc_db: :environment do
-  $status_notifier   = Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  $status_notifier = if Rails.env.development?
+    stub = Object.new
+    def stub.post(m)
+      puts "#{m}"
+    end
+    stub
+  else
+    Teams.new(ENV.fetch('TEAMS_STATUS_WEBHOOK'))
+  end
+
   $full_message = ""
 
   def log message
@@ -36,35 +45,32 @@ task update_from_sparc_db: :environment do
     User.auditing_enabled           = false
 
     script_start      = Time.now
-
-    
-
     $friendly_token   = Devise.friendly_token
     $research_masters = ResearchMaster.eager_load(:pi).all
     $users            = User.all
-
-    
 
     log "*Cronjob (SPARC) has started.*"
 
     log "--- *Connecting to SPARC Database...*"
 
+    valid_connection = false
     begin
       sparc_db = Sparc::Connection.connection #check if the connection is valid
       valid_connection = true
-    rescue
-      log "----- &#x2757; Cannot connect to SPARC Database"
+    rescue => e
+      log "----- &#x2757; Cannot connect to SPARC Database: #{e.message}"
     end
 
     start       = Time.now
-    # protocols   = HTTParty.get("#{sparc_api}/protocols", headers: {'Content-Type' => 'application/json'}, basic_auth: { username: ENV.fetch('SPARC_API_USERNAME'), password: ENV.fetch('SPARC_API_PASSWORD') }, timeout: 500)
     protocols   = Sparc::Protocol.includes(:primary_pi, :human_subjects_info).all
     finish      = Time.now
     ldap_search = LdapSearch.new
 
     if valid_connection
       log "----- &#x2714; *Done!* (#{(finish - start).to_i} Seconds)"
-      ResearchMaster.update_all(sparc_protocol_id: nil)
+
+      existing_rmids = protocols.map { |p| p.research_master_id }.compact
+      ResearchMaster.where.not(id: existing_rmids).where.not(sparc_protocol_id: nil).update_all(sparc_protocol_id: nil)
 
       log "- *Beginning SPARC data import...*"
       log "--- Total number of protocols from SPARC_API: #{protocols.count}"
@@ -86,7 +92,6 @@ task update_from_sparc_db: :environment do
 
       existing_sparc_protocols.each do |protocol|
         existing_protocol = sparc_protocols.detect{ |p| p.sparc_id == protocol['id'] }
-
         existing_protocol.short_title = protocol.short_title
         existing_protocol.long_title  = protocol.title
 
