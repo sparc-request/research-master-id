@@ -82,6 +82,19 @@ class ResearchMaster < ApplicationRecord
     Arel.sql("COALESCE(NULLIF(creators.last_name, ''), creators.name)")
   end
 
+  ransacker :associated_protocols do |parent|
+    Arel::Nodes::NamedFunction.new(
+      'CONCAT_WS',
+      [
+        Arel::Nodes.build_quoted(' '),
+        Arel::Nodes::SqlLiteral.new("CAST(cayuse_protocols.cayuse_project_number AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(coeus_protocols.mit_award_number AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(sparc_protocols.sparc_id AS CHAR)"),
+        Arel::Nodes::SqlLiteral.new("CAST(eirb_protocols.eirb_id AS CHAR)")
+      ]
+    )
+  end
+
   ransacker :combined_search do |parent|
     Arel::Nodes::NamedFunction.new(
       'CONCAT_WS',

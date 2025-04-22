@@ -58,10 +58,10 @@
                 %button.btn.btn-danger.clear-selection
                   %i.glyphicon.glyphicon-remove-circle
         .form-group
-          = f.label :combined_search_cont, t(:research_masters)[:index][:search_fields][:association], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:association]
+          = f.label :associated_protocols_cont, t(:research_masters)[:index][:search_fields][:association], class: 'col-xs-2 control-label', data: { toggle: 'tooltip', animation: 'false' }, title: t(:research_masters)[:index][:search_tooltips][:association]
           .col-xs-10
             .input-group
-              = f.search_field :combined_search_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:association]
+              = f.search_field :associated_protocols_cont, class: 'form-control', placeholder: t(:research_masters)[:index][:search_placeholders][:association]
               .input-group-btn
                 %button.btn.btn-danger.clear-selection
                   %i.glyphicon.glyphicon-remove-circle
