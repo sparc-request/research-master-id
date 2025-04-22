@@ -117,7 +117,7 @@ class ResearchMastersController < ApplicationController
 
   def find_rm_records
     @q = ResearchMaster.with_associations_for_search.ransack(params[:q])
-    @research_masters = @q.result.includes(:pi).page(params[:page])
+    @research_masters = @q.result.distinct.includes(:pi).page(params[:page])
   end
 
   def find_or_create_pi

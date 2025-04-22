@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-- if @creator.id == @current_pi.id
+- if @creator.id == @current_pi.id || @creator.id == @existing_pi.id
   %p
-    = "Dear #{@existing_pi.name} & #{@current_pi.name}"
+    = "Dear #{display_name(@existing_pi)} & #{display_name(@current_pi)}:"
 - else
   %p
-    = "Dear #{@creator.name} & #{@existing_pi.name} & #{@current_pi.name}"
+    = "Dear #{display_name(@creator)}, #{display_name(@existing_pi)} & #{display_name(@current_pi)}:"
 %p
   The Primary PI of the Research Master ID record has been updated. Please see below the detailed information.
 
@@ -47,14 +47,15 @@
     %td
       = @rm.short_title
     %td
-      = @existing_pi.name
+      = display_name(@existing_pi)
     %td
-      = @current_pi.name
+      = display_name(@current_pi)
     %td
-      = @rm.creator.name
+      = display_name(@rm.creator)
     %td
       = "according to eIRB record"
 %p
+  With this change, RMID record access and future notifications have also been transferred to the updated Primary PI.
   Please contact the SUCCESS Center at (843) 792-8300 or
   = mail_to 'rmid@musc.edu'
   with any questions you may have.
