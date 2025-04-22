@@ -45,38 +45,6 @@ task update_from_eirb_db: :environment do
     val.to_i <= 2147483647 # max value for signed INT
   end
 
-  def update_pi(rm, study, protocol)
-    if protocol.primary_pi_id.present? && rm.pi_id != protocol.primary_pi_id
-      rm.previous_pi_id = rm.pi_id
-      rm.pi_id = protocol.primary_pi_id
-      rm.pi_change_date = DateTime.current
-
-      begin
-        ResearchMaster.auditing_enabled = true
-        saved = rm.save(validate: false)
-      ensure
-        ResearchMaster.auditing_enabled = false
-      end
-
-      if saved
-        begin
-          existing = User.find_by(id: rm.previous_pi_id)
-          current  = User.find_by(id: rm.pi_id)
-          creator  = User.find_by(id: rm.creator_id)
-          if existing && current && creator
-            if ENV['SUPPRESS_PI_MAILER'] != 'true'
-              PiMailer.notify_pis(rm, existing, current, creator).deliver_now
-            end
-          end
-        rescue => e
-          log "--- *Error sending PI mailer: #{e.message}*"
-        end
-        return true
-      end
-    end
-    return false
-  end
-
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -203,8 +171,28 @@ task update_from_eirb_db: :environment do
               rm.short_title    = study['short_title']
               rm.long_title     = study['title']
 
-              pi_changes = update_pi(rm, study, existing_protocol)
-              if !pi_changes && rm.changed?
+              if rm.pi_id != existing_protocol.primary_pi_id
+                rm.previous_pi_id = rm.pi_id
+                rm.pi_id = existing_protocol.primary_pi_id
+                rm.pi_change_date = DateTime.current
+                rmids_with_pi_change << rm.id
+
+                if rm.save(validate: false)
+                  begin
+                    existing_pi = User.find_by(id: rm.previous_pi_id)
+                    current_pi = User.find_by(id: rm.pi_id)
+                    creator = User.find_by(id: rm.creator_id)
+
+                    if existing_pi && current_pi && creator
+                      PiMailer.notify_pis(rm, existing_pi, current_pi, creator).deliver_now
+                    end
+                  rescue => e
+                    log "--- *Error sending PI mailer: #{e.message}*"
+                  end
+                end
+              end
+
+              if rm.changed?
                 rm.save(validate: false)
               end
             end
@@ -273,8 +261,27 @@ task update_from_eirb_db: :environment do
               rm.short_title    = study['short_title']
               rm.long_title     = study['title']
 
-              pi_changes = update_pi(rm, study, eirb_protocol)
-              if !pi_changes && rm.changed?
+              if rm.pi_id != eirb_protocol.primary_pi_id
+                rm.previous_pi_id = rm.pi_id
+                rm.pi_id = eirb_protocol.primary_pi_id
+                rm.pi_change_date = DateTime.current
+                rmids_with_pi_change << rm.id
+
+                if rm.save(validate: false)
+                  begin
+                    existing_pi = User.find_by(id: rm.previous_pi_id)
+                    current_pi = User.find_by(id: rm.pi_id)
+                    creator = User.find_by(id: rm.creator_id)
+
+                    if existing_pi && current_pi && creator
+                      PiMailer.notify_pis(rm, existing_pi, current_pi, creator).deliver_now
+                    end
+                  rescue => e
+                    log "--- *Error sending PI mailer: #{e.message}*"
+                  end
+                end
+              end
+              if rm.changed?
                 rm.save(validate: false)
               end
             end
@@ -288,6 +295,7 @@ task update_from_eirb_db: :environment do
       log "--- *Done!*"
       log "--- *Updated protocols total:* #{updated_eirb_protocols.count}"
       log "--- *New protocols total:* #{created_eirb_protocols.count}"
+      log "--- *Updated RMIDs with PI change total:* #{rmids_with_pi_change.uniq.count}"
       log "--- *Finished EIRB data import* (#{(finish - start).to_i} Seconds)."
 
       script_finish = Time.now
