@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class PiMailer < ApplicationMailer
+  helper ApplicationHelper
   default from: 'donotreply@musc.edu'
 
   def notify_pis(rm, existing_pi, current_pi, creator)
@@ -26,11 +27,14 @@ class PiMailer < ApplicationMailer
     @existing_pi = existing_pi
     @current_pi = current_pi
     @creator = creator
-    if @current_pi.id == @creator.id
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi.email, current_pi.email]
+
+    if creator && current_pi && current_pi.id == creator.id
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
     else
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi.email, current_pi.email, creator.email]
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
     end
+
     mail to: address, subject: "(RMID - #{rm.id}) Research Master ID Primary PI Record Update"
+
   end
 end

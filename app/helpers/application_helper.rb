@@ -93,4 +93,13 @@ module ApplicationHelper
       "N/A"
     end
   end
+
+  def display_name(user)
+    if user.name.present?
+      user.name
+    else
+      middle = user.middle_initial.present? ? " #{user.middle_initial}" : ""
+      "#{user.first_name}#{middle} #{user.last_name}"
+    end
+  end
 end
