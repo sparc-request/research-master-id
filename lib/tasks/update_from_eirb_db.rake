@@ -203,10 +203,11 @@ task update_from_eirb_db: :environment do
               rm.short_title    = study['short_title']
               rm.long_title     = study['title']
 
-              pi_changes = update_pi(rm, study, existing_protocol)
-              if !pi_changes && rm.changed?
-                rm.save(validate: false)
-              end
+              update_pi(rm, study, existing_protocol)
+            end
+
+            if rm.changed?
+              rm.save(validate: false)
             end
           end
         end
@@ -273,10 +274,11 @@ task update_from_eirb_db: :environment do
               rm.short_title    = study['short_title']
               rm.long_title     = study['title']
 
-              pi_changes = update_pi(rm, study, eirb_protocol)
-              if !pi_changes && rm.changed?
-                rm.save(validate: false)
-              end
+              update_pi(rm, study, eirb_protocol)
+            end
+
+            if rm.changed?
+              rm.save(validate: false)
             end
           end
         end
