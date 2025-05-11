@@ -18,14 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-- if @creator.id == @current_pi.id || @creator.id == @existing_pi.id
+- if @creator&.id == @current_pi&.id || @creator&.id == @original_pi&.id
   %p
-    = "Dear #{display_name(@existing_pi)} & #{display_name(@current_pi)}:"
+    = "Dear #{display_name(@original_pi)} & #{display_name(@current_pi)}:"
 - else
   %p
-    = "Dear #{display_name(@creator)}, #{display_name(@existing_pi)} & #{display_name(@current_pi)}:"
+    = "Dear #{display_name(@creator)}, #{display_name(@original_pi)} & #{display_name(@current_pi)}:"
+
 %p
-  The Primary PI of the Research Master ID record has been updated. Please see below the detailed information.
+  The Primary PI of the Research Master ID record has been restored to the original PI. Please see below the detailed information.
 
 %table{ border: '1'}
   %tr
@@ -47,7 +48,7 @@
     %td
       = @rm.short_title
     %td
-      = display_name(@existing_pi)
+      = display_name(@original_pi)
     %td
       = display_name(@current_pi)
     %td

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_03_194635) do
+ActiveRecord::Schema.define(version: 2025_05_08_151952) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 2025_04_03_194635) do
     t.integer "creator_id"
     t.integer "pi_id"
     t.integer "previous_pi_id"
+    t.integer "original_pi_id"
     t.datetime "pi_change_date"
     t.boolean "eirb_validated", default: false
     t.integer "sparc_protocol_id"

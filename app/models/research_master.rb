@@ -32,6 +32,7 @@ class ResearchMaster < ApplicationRecord
   belongs_to :creator, class_name: "User", foreign_key: "creator_id"
   belongs_to :pi, class_name: "User", foreign_key: "pi_id"
   belongs_to :previous_pi, class_name: "User", foreign_key: "previous_pi_id", optional: true
+  belongs_to :original_pi, class_name: "User", foreign_key: "original_pi_id", optional: true
   belongs_to :sparc_protocol, class_name: :Protocol, foreign_key: "sparc_protocol_id", optional: true
   belongs_to :eirb_protocol, class_name: :Protocol, foreign_key: "eirb_protocol_id", optional: true
 

@@ -22,6 +22,20 @@ class PiMailer < ApplicationMailer
   helper ApplicationHelper
   default from: 'donotreply@musc.edu'
 
+  def notify_pis_on_restore(rm, current_pi, original_pi, creator)
+    @rm = rm
+    @current_pi = current_pi
+    @original_pi = original_pi
+    @creator = creator
+
+    if creator && current_pi && current_pi.id == creator.id
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [original_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
+    else
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [original_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
+    end
+    mail to: address, subject: "(RMID - #{rm.id}) Research Master ID Primary PI Record Restored"
+  end
+
   def notify_pis(rm, existing_pi, current_pi, creator)
     @rm = rm
     @existing_pi = existing_pi
