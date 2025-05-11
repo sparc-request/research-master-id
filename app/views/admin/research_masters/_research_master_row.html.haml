@@ -32,12 +32,12 @@
       = research_master.short_title
     = eirb_closed_out_message(research_master)
   %td{ data: { id: research_master.id } }
-    - if research_master.pi_id.present? && research_master.previous_pi_id.present?
+    - if research_master.eirb_validated?
+      = "#{research_master.pi.first_name} #{research_master.pi.last_name}"
       %h6.text-success
         Updated to eIRB PI
-      = research_master.pi.name
     - else
-      = research_master.pi.name
+      = "#{research_master.pi.first_name} #{research_master.pi.last_name}"
   %td{ data: { id: research_master.id } }
     = research_master.creator.name
   %td{ data: { id: research_master.id } }
