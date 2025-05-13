@@ -110,6 +110,25 @@ task update_from_eirb_db: :environment do
     end
   end
 
+  def update_rm(remote_study, local_protocol)
+    if (rm = $research_masters.detect{ |rm| rm.id == remote_study['rmid'].to_i }) && (remote_study['project_status'] != 'Withdrawn')
+      rm.eirb_protocol_id       = local_protocol.id
+      rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+
+      if validated_state_checker($validated_states, remote_study['project_status'])
+        rm.eirb_validated = true
+        rm.short_title    = remote_study['short_title']
+        rm.long_title     = remote_study['title']
+
+        update_pi(rm, remote_study, local_protocol)
+      end
+
+      if rm.changed?
+        rm.save(validate: false)
+      end
+    end
+  end
+
   begin
     ## turn off auditing for the duration of this script
     Protocol.auditing_enabled = false
@@ -230,23 +249,7 @@ task update_from_eirb_db: :environment do
               end
             end
           end
-
-          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = existing_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-            if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title    = study['short_title']
-              rm.long_title     = study['title']
-
-              update_pi(rm, study, existing_protocol)
-            end
-
-            if rm.changed?
-              rm.save(validate: false)
-            end
-          end
+          update_rm(study, existing_protocol)
         end
         bar.increment! rescue nil
       end
@@ -302,22 +305,7 @@ task update_from_eirb_db: :environment do
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = eirb_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-            if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title    = study['short_title']
-              rm.long_title     = study['title']
-
-              update_pi(rm, study, eirb_protocol)
-            end
-
-            if rm.changed?
-              rm.save(validate: false)
-            end
-          end
+          update_rm(study, eirb_protocol)
         end
         bar.increment! rescue nil
       end
