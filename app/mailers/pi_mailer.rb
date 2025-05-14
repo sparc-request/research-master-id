@@ -29,9 +29,9 @@ class PiMailer < ApplicationMailer
     @creator = creator
 
     if creator && current_pi && current_pi.id == creator.id
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [original_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? ENV.fetch('STAGING_EMAIL_ADDRESS') : [original_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
     else
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [original_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? ENV.fetch('STAGING_EMAIL_ADDRESS') : [original_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
     end
     mail to: address, subject: "(RMID - #{rm.id}) Research Master ID Primary PI Record Restored"
   end
@@ -43,9 +43,9 @@ class PiMailer < ApplicationMailer
     @creator = creator
 
     if creator && current_pi && current_pi.id == creator.id
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? ENV.fetch('STAGING_EMAIL_ADDRESS') : [existing_pi&.email, current_pi&.email].compact.reject(&:blank?).uniq
     else
-      address = ENV.fetch('ENVIRONMENT') == 'staging' ? 'sparcrequest@gmail.com' : [existing_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
+      address = ENV.fetch('ENVIRONMENT') == 'staging' ? ENV.fetch('STAGING_EMAIL_ADDRESS') : [existing_pi&.email, current_pi&.email, creator&.email].compact.reject(&:blank?).uniq
     end
 
     mail to: address, subject: "(RMID - #{rm.id}) Research Master ID Primary PI Record Update"
