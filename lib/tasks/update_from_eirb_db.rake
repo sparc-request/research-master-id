@@ -47,6 +47,11 @@ task update_from_eirb_db: :environment do
 
   def update_pi(rm, study, protocol)
     if protocol.primary_pi_id.present? && rm.pi_id != protocol.primary_pi_id
+
+      if rm.previous_pi_id.nil? && rm.original_pi_id.nil?
+        rm.original_pi_id = rm.pi_id
+      end
+
       rm.previous_pi_id = rm.pi_id
       rm.pi_id = protocol.primary_pi_id
       rm.pi_change_date = DateTime.current
@@ -75,6 +80,53 @@ task update_from_eirb_db: :environment do
       end
     end
     return false
+  end
+
+  def restore_original_pi(no_longer_linked_to_validated_eirb_study)
+    ResearchMaster.where(id: no_longer_linked_to_validated_eirb_study).each do |rm|
+      next unless rm.original_pi_id.present? && rm.pi_id != rm.original_pi_id
+
+      current_pi = User.find_by(id: rm.pi_id)
+      original_pi = User.find_by(id: rm.original_pi_id)
+      creator = User.find_by(id: rm.creator_id)
+
+      rm.previous_pi_id = rm.pi_id
+      rm.pi_id = rm.original_pi_id
+      rm.pi_change_date = DateTime.current
+
+      if rm.save(validate: false)
+        log "--- *Restored original PI for RMID #{rm.id} (Previous PI: #{rm.previous_pi_id}, New PI: #{rm.pi_id})*"
+
+        if current_pi && original_pi && creator
+          begin
+            PiMailer.notify_pis_on_restore(rm, current_pi, original_pi, creator).deliver_now
+          rescue => e
+            log "--- *Error sending PI mailer: #{e.message}*"
+          end
+        end
+      else
+        log "--- *Failed to restore original PI for RMID #{rm.id}*"
+      end
+    end
+  end
+
+  def update_rm(remote_study, local_protocol)
+    if (rm = $research_masters.detect{ |rm| rm.id == remote_study['rmid'].to_i }) && (remote_study['project_status'] != 'Withdrawn')
+      rm.eirb_protocol_id       = local_protocol.id
+      rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+
+      if validated_state_checker($validated_states, remote_study['project_status'])
+        rm.eirb_validated = true
+        rm.short_title    = remote_study['short_title']
+        rm.long_title     = remote_study['title']
+
+        update_pi(rm, remote_study, local_protocol)
+      end
+
+      if rm.changed?
+        rm.save(validate: false)
+      end
+    end
   end
 
   begin
@@ -110,24 +162,29 @@ task update_from_eirb_db: :environment do
       finish        = Time.now
       log "--- *Done!* (#{(finish - start).to_i} Seconds)"
 
-      existing_eirb_validated_rmids = []
       existing_eirb_associated_rmids = []
+      existing_eirb_associated_and_validated_rmids = []
       eirb_studies.each do |study|
         next unless study['rmid'].present? && valid_int?(study['rmid'].to_i)
         existing_eirb_associated_rmids << study['rmid'].to_i
 
         if study['project_status'] != 'Withdrawn' && validated_state_checker($validated_states, study['project_status'])
-          existing_eirb_validated_rmids << study['rmid'].to_i
+          existing_eirb_associated_and_validated_rmids << study['rmid'].to_i
         end
       end
 
-      ResearchMaster.where(eirb_validated: true)
-                    .where.not(id: existing_eirb_validated_rmids)
-                    .update_all(eirb_validated: false)
+      no_longer_linked_to_validated_eirb_study = ResearchMaster.where.not(id: existing_eirb_associated_and_validated_rmids).where.not(eirb_protocol_id: nil).pluck(:id)
+      if no_longer_linked_to_validated_eirb_study.any?
+        restore_original_pi(no_longer_linked_to_validated_eirb_study)
+      end
 
       ResearchMaster.where.not(id: existing_eirb_associated_rmids)
                     .where.not(eirb_protocol_id: nil)
                     .update_all(eirb_protocol_id: nil)
+
+      ResearchMaster.where(eirb_validated: true)
+                    .where.not(id: existing_eirb_associated_and_validated_rmids)
+                    .update_all(eirb_validated: false)
 
       log "--- *Beginning EIRB data import...*"
       log "--- *Total number of protocols from EIRB Database: #{eirb_studies.count}"
@@ -135,7 +192,6 @@ task update_from_eirb_db: :environment do
       start                   = Time.now
       updated_eirb_protocols  = []
       created_eirb_protocols  = []
-      rmids_with_pi_change    = []
 
       # Preload eIRB Protocols to improve efficiency
       eirb_protocols        = Protocol.eager_load(:primary_pi).where(type: 'EIRB')
@@ -193,23 +249,7 @@ task update_from_eirb_db: :environment do
               end
             end
           end
-
-          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = existing_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-            if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title    = study['short_title']
-              rm.long_title     = study['title']
-
-              update_pi(rm, study, existing_protocol)
-            end
-
-            if rm.changed?
-              rm.save(validate: false)
-            end
-          end
+          update_rm(study, existing_protocol)
         end
         bar.increment! rescue nil
       end
@@ -265,22 +305,7 @@ task update_from_eirb_db: :environment do
 
           created_eirb_protocols.append(eirb_protocol.id) if eirb_protocol.save
 
-          if (rm = $research_masters.detect{ |rm| rm.id == study['rmid'].to_i }) && (study['project_status'] != 'Withdrawn')
-            rm.eirb_protocol_id       = eirb_protocol.id
-            rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
-
-            if validated_state_checker($validated_states, study['project_status'])
-              rm.eirb_validated = true
-              rm.short_title    = study['short_title']
-              rm.long_title     = study['title']
-
-              update_pi(rm, study, eirb_protocol)
-            end
-
-            if rm.changed?
-              rm.save(validate: false)
-            end
-          end
+          update_rm(study, eirb_protocol)
         end
         bar.increment! rescue nil
       end
