@@ -18,13 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-- if @creator&.id == @current_pi&.id || @creator&.id == @original_pi&.id
-  %p
-    = "Dear #{display_name(@original_pi)} & #{display_name(@current_pi)}:"
-- else
-  %p
-    = "Dear #{display_name(@creator)}, #{display_name(@original_pi)} & #{display_name(@current_pi)}:"
-
+- recipients = []
+- recipients << @creator if @creator
+- recipients << @pi_after_restore if @pi_after_restore
+- recipients << @pi_before_restore if @pi_before_restore
+- unique_recipients = recipients.uniq(&:id).map { |recipient| display_name(recipient) }.compact.uniq
+%p
+  = "Dear #{unique_recipients.join(' & ')}:"
 %p
   The Primary PI of the Research Master ID (RMID) record has been restored to the original RMID PI. Please see below the detailed information.
 
@@ -37,7 +37,7 @@
     %th
       Previous Primary PI
     %th
-      Updated Primary PI
+      Restored Primary PI
     %th
       Creator
     %th
@@ -48,9 +48,9 @@
     %td
       = @rm.short_title
     %td
-      = display_name(@original_pi)
+      = display_name(@pi_before_restore)
     %td
-      = display_name(@current_pi)
+      = display_name(@pi_after_restore)
     %td
       = display_name(@rm.creator)
     %td

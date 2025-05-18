@@ -86,8 +86,8 @@ task update_from_eirb_db: :environment do
     ResearchMaster.where(id: no_longer_linked_to_validated_eirb_study).each do |rm|
       next unless rm.original_pi_id.present? && rm.pi_id != rm.original_pi_id
 
-      current_pi = User.find_by(id: rm.pi_id)
-      original_pi = User.find_by(id: rm.original_pi_id)
+      pi_before_restore = User.find_by(id: rm.pi_id)
+      pi_after_restore = User.find_by(id: rm.original_pi_id)
       creator = User.find_by(id: rm.creator_id)
 
       rm.previous_pi_id = rm.pi_id
@@ -97,9 +97,9 @@ task update_from_eirb_db: :environment do
       if rm.save(validate: false)
         log "--- *Restored original PI for RMID #{rm.id} (Previous PI: #{rm.previous_pi_id}, New PI: #{rm.pi_id})*"
 
-        if current_pi && original_pi && creator
+        if pi_before_restore && pi_after_restore && creator
           begin
-            PiMailer.notify_pis_on_restore(rm, current_pi, original_pi, creator).deliver_now
+            PiMailer.notify_pis_on_restore(rm, pi_before_restore, pi_after_restore, creator).deliver_now
           rescue => e
             log "--- *Error sending PI mailer: #{e.message}*"
           end
