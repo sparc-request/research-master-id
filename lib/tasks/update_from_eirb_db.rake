@@ -173,7 +173,10 @@ task update_from_eirb_db: :environment do
         end
       end
 
-      no_longer_linked_to_validated_eirb_study = ResearchMaster.where.not(id: existing_eirb_associated_and_validated_rmids).where.not(eirb_protocol_id: nil).pluck(:id)
+      no_longer_linked_to_validated_eirb_study = ResearchMaster
+        .where(eirb_validated: true)
+        .where.not(id: existing_eirb_associated_and_validated_rmids)
+        .where.not(eirb_protocol_id: nil).pluck(:id)
       if no_longer_linked_to_validated_eirb_study.any?
         restore_original_pi(no_longer_linked_to_validated_eirb_study)
       end
