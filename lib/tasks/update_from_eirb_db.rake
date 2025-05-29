@@ -64,19 +64,23 @@ task update_from_eirb_db: :environment do
       end
 
       if saved
+        existing_pi = User.find_by(id: rm.previous_pi_id)
+        new_pi = User.find_by(id: rm.pi_id)
+        log "--- *PI Updated to eIRB PI for RMID #{rm.id} (Previous PI: #{existing_pi.first_name} #{existing_pi.last_name}, New PI: #{new_pi.first_name} #{new_pi.last_name})*"
         begin
-          existing = User.find_by(id: rm.previous_pi_id)
-          current  = User.find_by(id: rm.pi_id)
-          creator  = User.find_by(id: rm.creator_id)
-          if existing && current && creator
+          creator = User.find_by(id: rm.creator_id)
+          if existing_pi && new_pi && creator
             if ENV['SUPPRESS_PI_MAILER'] != 'true'
-              PiMailer.notify_pis(rm, existing, current, creator).deliver_now
+              PiMailer.notify_pis(rm, existing_pi, new_pi, creator).deliver_now
             end
           end
         rescue => e
           log "--- *Error sending PI mailer: #{e.message}*"
         end
         return true
+      else
+        log "--- *PI Update failed for RMID #{rm.id}*"
+        log rm.errors.full_messages.join(', ')
       end
     end
     return false
