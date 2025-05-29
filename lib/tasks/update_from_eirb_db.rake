@@ -99,7 +99,9 @@ task update_from_eirb_db: :environment do
       rm.pi_change_date = DateTime.current
 
       if rm.save(validate: false)
-        log "--- *Restored original PI for RMID #{rm.id} (Previous PI: #{rm.previous_pi_id}, New PI: #{rm.pi_id})*"
+        before_name = pi_before_restore ? "#{pi_before_restore.first_name} #{pi_before_restore.last_name}" : "ID #{rm.previous_pi_id}"
+        after_name = pi_after_restore ? "#{pi_after_restore.first_name} #{pi_after_restore.last_name}" : "ID #{rm.pi_id}"
+        log "--- *Restoring original PI for RMID #{rm.id} (Previous PI: #{before_name}, New PI: #{after_name})*"
 
         if pi_before_restore && pi_after_restore && creator
           begin
