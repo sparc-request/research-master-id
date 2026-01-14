@@ -4,7 +4,8 @@ class UpdateFromEirbDbSpecHelper
   def update_rm(remote_study, local_protocol)
     if (rm = $research_masters.detect{ |rm| rm.id == remote_study['rmid'].to_i }) && (remote_study['project_status'] != 'Withdrawn')
       rm.eirb_protocol_id       = local_protocol.id
-      rm.eirb_association_date  = DateTime.current unless rm.eirb_association_date
+      rm.eirb_association_date  = DateTime.current
+      rm.eirb_original_association_date = DateTime.current unless rm.eirb_original_association_date
 
       if validated_state_checker($validated_states, remote_study['project_status'])
         rm.eirb_validated = true

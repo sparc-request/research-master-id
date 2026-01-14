@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_05_16_201549) do
+ActiveRecord::Schema.define(version: 2026_01_13_181008) do
 
   create_table "api_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
     t.string "access_token"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2025_05_16_201549) do
     t.string "sparc_pro_number"
     t.string "mit_award_number"
     t.string "sequence_number"
-    t.text "title", limit: 16777215
+    t.string "title"
     t.string "entity_award_number"
     t.string "coeus_protocol_number"
     t.datetime "created_at", null: false
@@ -137,7 +137,9 @@ ActiveRecord::Schema.define(version: 2025_05_16_201549) do
     t.integer "sparc_protocol_id"
     t.integer "eirb_protocol_id"
     t.datetime "eirb_association_date"
+    t.datetime "eirb_original_association_date"
     t.datetime "sparc_association_date"
+    t.datetime "sparc_original_association_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "research_type"

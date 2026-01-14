@@ -126,7 +126,8 @@ task update_from_sparc_db: :environment do
 
         if protocol.research_master_id.present? && rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
           rm.sparc_protocol_id      = existing_protocol.id
-          rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+          rm.sparc_association_date = DateTime.current
+          rm.sparc_original_association_date = DateTime.current unless rm.sparc_original_association_date
 
           rm.save(validate: false) if rm.changed?
         end
@@ -179,7 +180,8 @@ task update_from_sparc_db: :environment do
 
           if rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
             rm.sparc_protocol_id      = sparc_protocol.id
-            rm.sparc_association_date = DateTime.current unless rm.sparc_association_date
+            rm.sparc_association_date = DateTime.current
+            rm.sparc_original_association_date = DateTime.current unless rm.sparc_original_association_date
 
             rm.save(validate: false) if rm.changed?
           end
