@@ -14,7 +14,7 @@ class AddOriginalAssociationDatesToResearchMasters < ActiveRecord::Migration[5.2
         research_master.assign_attributes(sparc_original_association_date: research_master.sparc_association_date)
       end
 
-      research_master.save
+      research_master.save(validate: false)
     end
   end
 end
