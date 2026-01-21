@@ -17,7 +17,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" -health-interval=10s -health-timeout=5s -health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +29,12 @@ jobs:
           bundler-cache: true
 
       - name: Install FreeTDS
-        run: sudo apt-get update && sudo apt-get install -y freetds-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget build-essential libc6-dev
+          wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
+          cd /tmp && tar -xzvf freetds.tar.gz
+          cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install
 
       - name: Set up config files
         run: |
