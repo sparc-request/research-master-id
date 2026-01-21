@@ -22,12 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version-file: .ruby-version
-          bundler-cache: true
-
       - name: Install FreeTDS
         run: |
           sudo apt-get update
@@ -35,6 +29,12 @@ jobs:
           wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
           cd /tmp && tar -xzvf freetds.tar.gz
           cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.5
+          bundler-cache: true
 
       - name: Set up config files
         run: |
