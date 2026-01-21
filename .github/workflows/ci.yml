@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      TZ: America/New_York
+      MOZ_HEADLESS: 1
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" -health-interval=10s -health-timeout=5s -health-retries=3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '$(cat .ruby-version)'
+          bundler-cache: true
+
+      - name: Install FreeTDS
+        run: sudo apt-get update && sudo apt-get install -y freetds-dev
+
+      - name: Set up config files
+        run: |
+          cp config/database.yml.example config/database.yml
+          cp dotenv.example .env
+
+      - name: Create test db
+        run: mysql -h 127.0.0.1 -uroot -e 'create database rmid_test;'
+
+      - name: Load schema
+        run: bundle exec rake db:schema:load
+        env:
+          RAILS_ENV: test
+
+      - name: Precompile assets
+        run: bundle exec rake assets:precompile
+        env:
+          RAILS_ENV: test
+
+      - name: Run tests
+        run: |
+          bundle exec rspec spec/controllers
+          bundle exec rspec spec/mailers
+          bundle exec rspec spec/models
+          bundle exec rspec spec/requests
+          bundle exec rspec spec/system
