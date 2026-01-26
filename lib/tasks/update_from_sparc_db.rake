@@ -125,8 +125,9 @@ task update_from_sparc_db: :environment do
         end
 
         if protocol.research_master_id.present? && rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
+          sparc_protocol_changed = rm.sparc_protocol_id != existing_protocol.id
           rm.sparc_protocol_id      = existing_protocol.id
-          rm.sparc_association_date = DateTime.current
+          rm.sparc_association_date = DateTime.current if sparc_protocol_changed
           rm.sparc_original_association_date = DateTime.current unless rm.sparc_original_association_date
 
           rm.save(validate: false) if rm.changed?
@@ -179,8 +180,9 @@ task update_from_sparc_db: :environment do
           created_sparc_protocols.append(sparc_protocol.id) if sparc_protocol.save
 
           if rm = $research_masters.detect{ |rm| rm.id == protocol.research_master_id }
+            sparc_protocol_changed = rm.sparc_protocol_id != sparc_protocol.id
             rm.sparc_protocol_id      = sparc_protocol.id
-            rm.sparc_association_date = DateTime.current
+            rm.sparc_association_date = DateTime.current if sparc_protocol_changed
             rm.sparc_original_association_date = DateTime.current unless rm.sparc_original_association_date
 
             rm.save(validate: false) if rm.changed?
