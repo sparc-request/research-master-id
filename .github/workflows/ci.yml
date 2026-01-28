@@ -11,6 +11,7 @@ jobs:
       TZ: America/New_York
       MOZ_HEADLESS: 1
       HEADLESS: 1
+      LD_LIBRARY_PATH: /home/runner/freetds/lib
     services:
       mysql:
         image: mysql:5.7
@@ -25,9 +26,9 @@ jobs:
 
       - name: Cache FreeTDS
         id: cache-freetds
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: ~/freeteds
+          path: ~/freetds
           key: freetds-1.1.24-${{ runner.os }}
 
       - name: Install FreeTDS
@@ -37,7 +38,7 @@ jobs:
           sudo apt-get install -y wget build-essential libc6-dev
           wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
           cd /tmp && tar -xzvf freetds.tar.gz
-          cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install
+          cd freetds-1.1.24 && ./configure --prefix=$HOME/freetds --with-tdsver=7.3 && make -j$(nproc) && make install
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -45,8 +46,7 @@ jobs:
           ruby-version: 2.7.5
           bundler-cache: true
         env:
-          BUNDLE_BUILD_TINY_TDS: --with-freetds-dir=${{ github.workspace }}/../freetds
-          LD_LIBRARY_PATH: ${{ github.workspace }}/../freetds/lib
+          BUNDLE_BUILD__TINY_TDS: --with-freetds-dir=/home/runner/freetds
 
       - name: Set up config files
         run: |
