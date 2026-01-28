@@ -42,11 +42,15 @@ jobs:
           cp config/database.yml.example config/database.yml
           cp dotenv.example .env
 
-      - name: Create test db
-        run: mysql -h 127.0.0.1 -uroot -e 'create database rmid_test;'
+      # - name: Create test db
+      #   run: mysql -h 127.0.0.1 -uroot -e 'create database rmid_test;'
 
-      - name: Load schema
-        run: bundle exec rake db:schema:load
+      # - name: Load schema
+      #   run: bundle exec rake db:schema:load
+      #   env:
+      #     RAILS_ENV: test
+      - name: Set up test db
+        run: bundle exec rake db:test:prepare
         env:
           RAILS_ENV: test
 
