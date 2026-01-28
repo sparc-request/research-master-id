@@ -23,13 +23,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Cache FreeTDS
+        uses: actions/cache@v3
+        with:
+          path: /usr/local
+          key: freetds-1.1.24-${{ runner.os }}
+          restore-keys: |
+            freetds-1.1.24-
+
       - name: Install FreeTDS
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget build-essential libc6-dev
-          wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
-          cd /tmp && tar -xzvf freetds.tar.gz
-          cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install
+          if [ ! -f /usr/local/lib/libsybdb.so ]; then
+            sudo apt-get update
+            sudo apt-get install -y wget build-essential libc6-dev
+            wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
+            cd /tmp && tar -xzvf freetds.tar.gz
+            cd freetds-1.1.24 && ./configure --prefix=/usr/local --with-tdsver=7.3 && make && sudo make install
+          fi
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
