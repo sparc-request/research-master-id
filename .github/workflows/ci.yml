@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      TZ: America/New_York
+      MOZ_HEADLESS: 1
+      HEADLESS: 1
+      LD_LIBRARY_PATH: /home/runner/freetds/lib
+      BUNDLE_BUILD__TINY_TDS: --with-freetds-dir=/home/runner/freetds
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache FreeTDS
+        id: cache-freetds
+        uses: actions/cache@v4
+        with:
+          path: ~/freetds
+          key: freetds-1.1.24-${{ runner.os }}
+
+      - name: Install FreeTDS
+        if: steps.cache-freetds.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget build-essential libc6-dev
+          wget http://www.freetds.org/files/stable/freetds-1.1.24.tar.gz -O /tmp/freetds.tar.gz
+          cd /tmp && tar -xzvf freetds.tar.gz
+          cd freetds-1.1.24 && ./configure --prefix=$HOME/freetds --with-tdsver=7.3 && make -j$(nproc) && make install
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+        env:
+          BUNDLE_BUILD__TINY_TDS: --with-freetds-dir=/home/runner/freetds
+
+      - name: Set up config files
+        run: |
+          cp config/database.yml.example config/database.yml
+          cp dotenv.example .env
+
+      - name: Create test db
+        run: mysql -h 127.0.0.1 -uroot -e 'create database rmid_test;'
+
+      - name: Load schema
+        run: bundle exec rake db:schema:load
+        env:
+          RAILS_ENV: test
+
+      - name: Precompile assets
+        run: bundle exec rake assets:precompile
+        env:
+          RAILS_ENV: test
+
+      - name: Run tests
+        run: bundle exec rspec
