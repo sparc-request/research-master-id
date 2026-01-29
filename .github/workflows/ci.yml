@@ -16,6 +16,8 @@ jobs:
       MOZ_HEADLESS: 1
       HEADLESS: 1
       LD_LIBRARY_PATH: /home/runner/freetds/lib
+      BUNDLE_BUILD__TINY_TDS: --with-freetds-dir=/home/runner/freetds
+
     services:
       mysql:
         image: mysql:5.7
@@ -45,7 +47,7 @@ jobs:
           cd freetds-1.1.24 && ./configure --prefix=$HOME/freetds --with-tdsver=7.3 && make -j$(nproc) && make install
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@latest
         with:
           # ruby-version: 2.7.5
           ruby-version-file: .ruby-version
