@@ -71,9 +71,10 @@ jobs:
           RAILS_ENV: test
 
       - name: Run tests
-        run: |
-          bundle exec rspec spec/controllers
-          bundle exec rspec spec/mailers
-          bundle exec rspec spec/models
-          bundle exec rspec spec/requests
-          bundle exec rspec spec/system
+        # run: |
+          # bundle exec rspec spec/controllers
+          # bundle exec rspec spec/mailers
+          # bundle exec rspec spec/models
+          # bundle exec rspec spec/requests
+          # bundle exec rspec spec/system
+        run: bundle exec rspec
