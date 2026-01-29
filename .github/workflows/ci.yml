@@ -47,7 +47,7 @@ jobs:
           cd freetds-1.1.24 && ./configure --prefix=$HOME/freetds --with-tdsver=7.3 && make -j$(nproc) && make install
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@latest
+        uses: ruby/setup-ruby@v1
         with:
           # ruby-version: 2.7.5
           bundler-cache: true
