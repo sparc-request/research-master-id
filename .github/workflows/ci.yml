@@ -47,7 +47,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.5
+          # ruby-version: 2.7.5
+          ruby-version-file: .ruby-version
           bundler-cache: true
         env:
           BUNDLE_BUILD__TINY_TDS: --with-freetds-dir=/home/runner/freetds
@@ -71,10 +72,4 @@ jobs:
           RAILS_ENV: test
 
       - name: Run tests
-        # run: |
-          # bundle exec rspec spec/controllers
-          # bundle exec rspec spec/mailers
-          # bundle exec rspec spec/models
-          # bundle exec rspec spec/requests
-          # bundle exec rspec spec/system
         run: bundle exec rspec
