@@ -49,8 +49,11 @@
                   = @sparc_protocol.long_title
                 %td
                   = format_date(@research_master.sparc_association_date)
-                %td
-                  = @sparc_protocol.eirb_state
+                %td.text-left{ style: "vertical-align: top !important;" }
+                  - if @sparc_archived
+                    %span.text-danger Archived
+                  - else
+                    %span.text-success Active
             - unless @eirb_protocol.nil?
               %tr
                 %td

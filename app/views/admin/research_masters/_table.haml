@@ -26,6 +26,9 @@
           = f.search_field :combined_search_cont, class: 'form-control', placeholder: 'Search...'
         .form-group
           = f.submit 'Search', class: 'btn btn-primary'
+        .form-group
+          = link_to admin_research_masters_path(format: :csv, q: params[:q].try(:permit!)), class: 'btn btn-default', data: { toggle: 'tooltip', placement: 'top' }, title: 'Export data' do
+            %span.glyphicon.glyphicon-download-alt
 
   %table.table.table-striped.table-hover#research-master-records
     %thead

@@ -37,6 +37,7 @@ class Admin::ResearchMastersController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @research_masters }
+      format.csv { send_data @q.result.to_csv, filename: "research_masters-#{Date.today}.csv" }
     end
   end
 
@@ -50,6 +51,9 @@ class Admin::ResearchMastersController < ApplicationController
       end
     @coeus_records = research_master.coeus_protocols
     @cayuse_records = research_master.cayuse_protocols
+
+    @sparc_archived = @sparc_protocol&.sparc_id && Sparc::Protocol.find_by(id: @sparc_protocol.sparc_id)&.archived?
+
     respond_to do |format|
       format.js { render 'admin/research_masters/show' }
     end

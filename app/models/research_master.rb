@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ResearchMaster < ApplicationRecord
+  require 'csv'
   audited
 
   include DateFormatHelper
@@ -125,6 +126,25 @@ class ResearchMaster < ApplicationRecord
         Arel::Nodes::SqlLiteral.new("CAST(eirb_primary_pis.last_name AS CHAR)")
       ]
     )
+  end
+
+  def self.to_csv
+    headers = %w{RMID Short_Title PI_Name Creator_Name Created Updated EIRB_Validated}
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      all.includes(:pi, :creator).find_each do |rm|
+        csv << [
+          rm.id,
+          rm.short_title,
+          "#{rm.pi&.first_name} #{rm.pi&.last_name}",
+          rm.creator ? rm.creator.name : 'N/A',
+          rm.created_at.strftime("%m-%d-%Y"),
+          rm.updated_at.strftime("%m-%d-%Y"),
+          rm.eirb_validated? ? 'Yes' : 'No'
+        ]
+      end
+    end
   end
 
   def self.validated
