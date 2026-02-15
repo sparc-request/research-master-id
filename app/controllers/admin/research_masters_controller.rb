@@ -37,7 +37,7 @@ class Admin::ResearchMastersController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @research_masters }
-      format.csv { send_data @q.result.to_csv, filename: "research_masters-#{Date.today}.csv" }
+      format.csv { send_data @q.result.distinct.to_csv, filename: "research_masters-#{Date.today}.csv" }
     end
   end
 
@@ -49,8 +49,8 @@ class Admin::ResearchMastersController < ApplicationController
       if research_master.eirb_protocol_id?
         @eirb_protocol = Protocol.find(research_master.eirb_protocol_id)
       end
-    @coeus_records = research_master.coeus_protocols
-    @cayuse_records = research_master.cayuse_protocols
+    @coeus_records = research_master.coeus_protocols.uniq(&:mit_award_number)
+    @cayuse_records = research_master.cayuse_protocols.distinct
 
     @sparc_archived = @sparc_protocol&.sparc_id && Sparc::Protocol.find_by(id: @sparc_protocol.sparc_id)&.archived?
 
