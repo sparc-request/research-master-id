@@ -129,7 +129,7 @@ class ResearchMaster < ApplicationRecord
   end
 
   def self.to_csv
-    headers = ["RMID", "RMID Short Title", "RMID PI", "RMID Creator", "RMID Created", "RMID Updated", "eIRB Validated State", "SPARCID", "SPARC Status", "eIRB #", "eIRB State", "COEUS#", "CAYUSE#"]
+    headers = ["RMID", "RMID Short Title", "RMID PI", "RMID Creator", "RMID Created", "RMID Updated", "eIRB Validated State", "SPARC ID", "SPARC Status", "eIRB #", "eIRB State", "COEUS #", "CAYUSE #"]
     CSV.generate(headers: true) do |csv|
       csv << headers
 
