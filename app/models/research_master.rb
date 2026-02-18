@@ -129,11 +129,16 @@ class ResearchMaster < ApplicationRecord
   end
 
   def self.to_csv
-    headers = %w{RMID Short_Title PI_Name Creator_Name Created Updated EIRB_Validated}
+    headers = ["RMID", "RMID Short Title", "RMID PI", "RMID Creator", "RMID Created", "RMID Updated", "eIRB Validated State", "SPARC ID", "SPARC Status", "eIRB #", "eIRB State", "COEUS #", "CAYUSE #"]
     CSV.generate(headers: true) do |csv|
       csv << headers
 
-      all.includes(:pi, :creator).find_each do |rm|
+      all.includes(:pi, :creator, :sparc_protocol, :eirb_protocol, :coeus_protocols, :cayuse_protocols).find_each do |rm|
+        sparc_id = rm.sparc_protocol&.sparc_id
+        sparc_status = if sparc_id
+                         Sparc::Protocol.find_by(id: sparc_id)&.archived? ? 'Archived' : 'Active'
+                       end
+
         csv << [
           rm.id,
           rm.short_title,
@@ -141,7 +146,13 @@ class ResearchMaster < ApplicationRecord
           rm.creator ? rm.creator.name : 'N/A',
           rm.created_at.strftime("%m-%d-%Y"),
           rm.updated_at.strftime("%m-%d-%Y"),
-          rm.eirb_validated? ? 'Yes' : 'No'
+          rm.eirb_validated? ? 'Yes' : 'No',
+          sparc_id,
+          sparc_status,
+          rm.eirb_protocol&.eirb_id,
+          rm.eirb_protocol&.eirb_state,
+          rm.coeus_protocols.map(&:mit_award_number).uniq.join(' | '),
+          rm.cayuse_protocols.map(&:cayuse_project_number).uniq.join(' | ')
         ]
       end
     end
