@@ -14,6 +14,8 @@ class UpdateFromEirbDbSpecHelper
         rm.long_title     = remote_study['title']
 
         update_pi(rm, remote_study, local_protocol)
+      else
+        rm.eirb_validated = false
       end
 
       if rm.changed?
@@ -125,11 +127,20 @@ RSpec.describe 'update_rm method' do
     end
   end
   context 'when the eirb study has a project_status not in $validated_states' do
+    let!(:rm) { create(:research_master, pi: pi, eirb_validated: true) }
+
     before do
       def task_helper.validated_state_checker(*args)
         false
       end
     end
+
+    it 'updates eirb_validated to false' do
+      task_helper.update_rm(study, protocol)
+      expect(rm.eirb_protocol_id).to eq(protocol.id)
+      expect(rm.eirb_validated).to be false
+    end
+
     it 'it does not update the rm attrs' do
       task_helper.update_rm(study, protocol)
 

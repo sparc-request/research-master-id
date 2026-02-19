@@ -131,6 +131,8 @@ task update_from_eirb_db: :environment do
         rm.long_title     = remote_study['title']
 
         update_pi(rm, remote_study, local_protocol)
+      else
+        rm.eirb_validated = false
       end
 
       if rm.changed?
