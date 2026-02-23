@@ -128,6 +128,14 @@ class ResearchMaster < ApplicationRecord
     )
   end
 
+  # Allow "External IRB Review Archive" studies to be edited (RMID-326)
+  def eirb_synced_and_locked?
+    return false unless eirb_validated?
+
+    local_protocol = Protocol.find_by(id: eirb_protocol_id)
+    local_protocol.present? && local_protocol.eirb_state != 'External IRB Review Archive'
+  end
+
   def self.to_csv
     headers = ["RMID", "RMID Short Title", "RMID PI", "RMID Creator", "RMID Created", "RMID Updated", "eIRB Validated State", "SPARC ID", "SPARC Status", "eIRB #", "eIRB State", "COEUS #", "CAYUSE #"]
     CSV.generate(headers: true) do |csv|

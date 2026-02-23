@@ -24,7 +24,7 @@
   %td{ data: { id: research_master.id } }
     = display_all_system_colors(research_master)
   %td{ data: { id: research_master.id } }
-    - if research_master.eirb_validated?
+    - if research_master.eirb_synced_and_locked?
       %h6.text-success
         Updated to corresponding eIRB Protocol Short Title
       = research_master.short_title
@@ -32,7 +32,7 @@
       = research_master.short_title
     = eirb_closed_out_message(research_master)
   %td{ data: { id: research_master.id } }
-    - if research_master.eirb_validated?
+    - if research_master.eirb_synced_and_locked?
       = "#{research_master.pi.first_name} #{research_master.pi.last_name}"
       %h6.text-success
         Updated to eIRB PI
