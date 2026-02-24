@@ -127,10 +127,13 @@ task update_from_eirb_db: :environment do
 
       if validated_state_checker($validated_states, remote_study['project_status'])
         rm.eirb_validated = true
-        rm.short_title    = remote_study['short_title']
-        rm.long_title     = remote_study['title']
 
-        update_pi(rm, remote_study, local_protocol)
+        unless remote_study['project_status'] == 'External IRB Review Archive' # Skip update if eirb study in archived state (RMID-326)
+          rm.short_title    = remote_study['short_title']
+          rm.long_title     = remote_study['title']
+
+          update_pi(rm, remote_study, local_protocol)
+        end
       else
         rm.eirb_validated = false
       end
@@ -185,20 +188,27 @@ task update_from_eirb_db: :environment do
         end
       end
 
+      # Leave assocaitions with "External IRB Review Archive" state studies intact (RMID-326)
+      archived_protocol_ids = Protocol.where(eirb_state: 'External IRB Review Archive').select(:id)
+
       no_longer_linked_to_validated_eirb_study = ResearchMaster
         .where(eirb_validated: true)
         .where.not(id: existing_eirb_associated_and_validated_rmids)
-        .where.not(eirb_protocol_id: nil).pluck(:id)
+        .where.not(eirb_protocol_id: nil)
+        .where.not(eirb_protocol_id: archived_protocol_ids).pluck(:id)
+
       if no_longer_linked_to_validated_eirb_study.any?
         restore_original_pi(no_longer_linked_to_validated_eirb_study)
       end
 
       ResearchMaster.where.not(id: existing_eirb_associated_rmids)
                     .where.not(eirb_protocol_id: nil)
+                    .where.not(eirb_protocol_id: archived_protocol_ids)
                     .update_all(eirb_protocol_id: nil)
 
       ResearchMaster.where(eirb_validated: true)
                     .where.not(id: existing_eirb_associated_and_validated_rmids)
+                    .where.not(eirb_protocol_id: archived_protocol_ids)
                     .update_all(eirb_validated: false)
 
       log "--- *Beginning EIRB data import...*"
