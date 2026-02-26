@@ -191,10 +191,7 @@ task update_from_eirb_db: :environment do
           non_validated.min_by { |s| s['updated_at'] || Time.now }
         end
       end
-
       eirb_studies = deduped + studies_without_rmid
-
-
 
       finish        = Time.now
       log "--- *Done!* (#{(finish - start).to_i} Seconds)"
