@@ -74,8 +74,8 @@ task link_archived_eirb_studies: :environment do
     rm.assign_attributes(
       eirb_protocol_id: protocol.id,
       eirb_validated: true,
-      eirb_association_date: Date.new(2025, 7, 30),
-      eirb_original_association_date: rm.eirb_original_association_date || Date.new(2025, 7, 30)
+      eirb_association_date: DateTime.current,
+      eirb_original_association_date: rm.eirb_original_association_date || DateTime.current
     )
 
     if rm.save(validate: false)
