@@ -42,7 +42,7 @@ task update_from_eirb_db: :environment do
   end
 
   def valid_int?(val)
-    val.to_i <= 2147483647 # max value for signed INT
+    val.to_i > 0 && val.to_i <= 2147483647 # max value for signed INT
   end
 
   def update_pi(rm, study, protocol)
@@ -134,6 +134,8 @@ task update_from_eirb_db: :environment do
 
           update_pi(rm, remote_study, local_protocol)
         end
+      else
+        rm.eirb_validated = false
       end
 
       if rm.changed?
@@ -172,6 +174,25 @@ task update_from_eirb_db: :environment do
 
       start         = Time.now
       eirb_studies = EirbStudy.is_musc.filter_out_preserve_state.filter_invalid_pro_numbers
+
+      # Group studies by rmid and select a single study per rmid to process (RMID-321)
+      studies_with_rmid, studies_without_rmid = eirb_studies.partition { |s| s['rmid'].present? && valid_int?(s['rmid'].to_i) }
+      deduped = studies_with_rmid.group_by { |s| s['rmid'].to_i }.map do |rmid, studies|
+        next studies.first if studies.size == 1
+
+        active_studies = studies.reject { |s| s['project_status'] == 'Withdrawn' }
+        active_studies = studies if active_studies.empty?
+
+        validated, non_validated = active_studies.partition { |s| validated_state_checker($validated_states, s['project_status']) }
+
+        if validated.any?
+          validated.first
+        else
+          non_validated.min_by { |s| s['updated_at'] || Time.now }
+        end
+      end
+      eirb_studies = deduped + studies_without_rmid
+
       finish        = Time.now
       log "--- *Done!* (#{(finish - start).to_i} Seconds)"
 
