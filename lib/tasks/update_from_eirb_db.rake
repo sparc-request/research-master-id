@@ -207,14 +207,21 @@ task update_from_eirb_db: :environment do
         end
       end
 
-      # Leave assocaitions with "External IRB Review Archive" state studies intact (RMID-326)
-      archived_protocol_ids = Protocol.where(eirb_state: 'External IRB Review Archive').select(:id)
+      # Preserve rm link for studies in 'External IRB Review Archive' status that are no longer in the eirb db view (RMID-326)
+      archived_pro_numbers_in_view = eirb_studies
+        .select { |s| s['project_status'] == 'External IRB Review Archive' }
+        .map { |s| s['pro_number'] }
+
+      protected_archived_protocol_ids = Protocol
+        .where(eirb_state: 'External IRB Review Archive')
+        .where.not(eirb_id: archived_pro_numbers_in_view)
+        .select(:id)
 
       no_longer_linked_to_validated_eirb_study = ResearchMaster
         .where(eirb_validated: true)
         .where.not(id: existing_eirb_associated_and_validated_rmids)
         .where.not(eirb_protocol_id: nil)
-        .where.not(eirb_protocol_id: archived_protocol_ids).pluck(:id)
+        .where.not(eirb_protocol_id: protected_archived_protocol_ids).pluck(:id)
 
       if no_longer_linked_to_validated_eirb_study.any?
         restore_original_pi(no_longer_linked_to_validated_eirb_study)
@@ -222,12 +229,12 @@ task update_from_eirb_db: :environment do
 
       ResearchMaster.where.not(id: existing_eirb_associated_rmids)
                     .where.not(eirb_protocol_id: nil)
-                    .where.not(eirb_protocol_id: archived_protocol_ids)
+                    .where.not(eirb_protocol_id: protected_archived_protocol_ids)
                     .update_all(eirb_protocol_id: nil)
 
       ResearchMaster.where(eirb_validated: true)
                     .where.not(id: existing_eirb_associated_and_validated_rmids)
-                    .where.not(eirb_protocol_id: archived_protocol_ids)
+                    .where("eirb_protocol_id IS NULL OR eirb_protocol_id NOT IN (?)", protected_archived_protocol_ids.map(&:id))
                     .update_all(eirb_validated: false)
 
       log "--- *Beginning EIRB data import...*"
