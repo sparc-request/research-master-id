@@ -210,7 +210,6 @@ task update_from_eirb_db: :environment do
       existing_eirb_associated_and_validated_rmids = []
       eirb_studies.each do |study|
         next unless study['rmid'].present? && valid_int?(study['rmid'].to_i)
-
         existing_eirb_associated_rmids << study['rmid'].to_i
 
         if study['project_status'] != 'Withdrawn' && validated_state_checker($validated_states, study['project_status'])
