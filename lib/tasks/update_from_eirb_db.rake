@@ -119,6 +119,16 @@ task update_from_eirb_db: :environment do
   def update_rm(remote_study, local_protocol)
     if (rm = $research_masters.detect{ |rm| rm.id == remote_study['rmid'].to_i }) && (remote_study['project_status'] != 'Withdrawn')
 
+      # If the eirb study changed rmid, we need to remove the old association(s)
+      $research_masters.each do |stale_rm|
+        next if stale_rm.id == rm.id
+        next unless stale_rm.eirb_protocol_id == local_protocol.id
+
+        stale_rm.eirb_protocol_id = nil
+        stale_rm.eirb_validated = false
+        stale_rm.save(validate: false)
+      end
+
       eirb_protocol_changed = rm.eirb_protocol_id != local_protocol.id
 
       rm.eirb_protocol_id       = local_protocol.id
@@ -200,6 +210,7 @@ task update_from_eirb_db: :environment do
       existing_eirb_associated_and_validated_rmids = []
       eirb_studies.each do |study|
         next unless study['rmid'].present? && valid_int?(study['rmid'].to_i)
+
         existing_eirb_associated_rmids << study['rmid'].to_i
 
         if study['project_status'] != 'Withdrawn' && validated_state_checker($validated_states, study['project_status'])
