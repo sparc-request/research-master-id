@@ -2,7 +2,6 @@ task link_archived_eirb_studies: :environment do
   associations = {
     1135 => "Pro00025910",
     1133 => "Pro00026432",
-    1074 => "Pro00027311",
     567  => "Pro00027370",
     1088 => "Pro00027552",
     685  => "Pro00035838",
