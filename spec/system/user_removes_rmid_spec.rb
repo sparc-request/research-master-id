@@ -31,7 +31,7 @@ RSpec.describe 'Removing an RMID', js: true do
 
     describe 'as an admin user' do
       it "should be removed" do
-        User.first.update_attributes(admin: true)
+        User.first.update(admin: true)
         visit root_path
         wait_for_ajax
 
@@ -42,7 +42,7 @@ RSpec.describe 'Removing an RMID', js: true do
     describe 'as the creator' do
 
       it "should not be removed" do
-        @research_master.update_attributes(creator_id: @user.id)
+        @research_master.update(creator_id: @user.id)
         visit root_path
         wait_for_ajax
 
@@ -52,7 +52,7 @@ RSpec.describe 'Removing an RMID', js: true do
 
     describe 'as the pi' do
       it "should not be removed" do
-        @research_master.update_attributes(pi_id: @user.id)
+        @research_master.update(pi_id: @user.id)
         visit root_path
         wait_for_ajax
 
@@ -80,7 +80,7 @@ RSpec.describe 'Removing an RMID', js: true do
 
     describe 'as the pi' do
       it "should be removed" do
-        @research_master.update_attributes(pi_id: @user.id)
+        @research_master.update(pi_id: @user.id)
         visit root_path
         wait_for_ajax
 

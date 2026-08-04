@@ -62,7 +62,7 @@ task clean_up_protocol_data: :environment do
       protocol = find_protocol(study.eirb_id, 'pro_number', eirb_studies)
       pi = User.find_by_email(protocol['pi_email'])
       unless pi == nil
-        study.update_attributes(primary_pi_id: pi.id)
+        study.update(primary_pi_id: pi.id)
       end
     else
       deleted_protocols << [study.id, study.type, study.long_title, study.eirb_id]
@@ -79,7 +79,7 @@ task clean_up_protocol_data: :environment do
       protocol = find_protocol(study.sparc_id, 'id', sparc_protocols)
       pi = User.find_by_email(protocol['email'])
       unless pi == nil
-        study.update_attributes(primary_pi_id: pi.id) 
+        study.update(primary_pi_id: pi.id) 
       end
     else
       deleted_protocols << [study.id, study.type, study.long_title, study.sparc_id]

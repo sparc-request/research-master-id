@@ -24,7 +24,7 @@ task populate_historic_departments: :environment do
 
     if user
       unless user.current_interfolio_user?
-        user.update_attributes(department: row['DEPARTMENT'])
+        user.update(department: row['DEPARTMENT'])
       end
     end
   end

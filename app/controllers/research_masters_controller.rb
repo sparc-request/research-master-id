@@ -135,7 +135,7 @@ class ResearchMastersController < ApplicationController
     if email.present?
       user = User.create_with(password: password, password_confirmation: password).
         find_or_create_by(email: email)
-      user.update_attributes(name: name, net_id: netid, department: department, first_name: first_name, last_name: last_name, middle_initial: middle_initial, pvid: pvid)
+      user.update(name: name, net_id: netid, department: department, first_name: first_name, last_name: last_name, middle_initial: middle_initial, pvid: pvid)
       user
     end
   end

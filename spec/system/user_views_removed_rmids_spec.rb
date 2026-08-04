@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'removing an RMID then viewing it', js: true do
   it 'should see the removed RMID listed on the removed RMIDs page' do
     create_and_sign_in_user
-    User.first.update_attributes(admin: true)
+    User.first.update(admin: true)
     @research_master = create(:research_master)
 
     visit root_path

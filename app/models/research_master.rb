@@ -170,6 +170,14 @@ class ResearchMaster < ApplicationRecord
     where(eirb_validated: true)
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["associated_protocols", "combined_search", "created_at", "creator_id", "creator_sort_name", "eirb_association_date", "eirb_original_association_date", "eirb_protocol_id", "eirb_validated", "funding_source", "id", "long_title", "original_pi_id", "pi_change_date", "pi_id", "pi_last_name", "pi_sort_name", "previous_pi_id", "research_type", "short_title", "sparc_association_date", "sparc_original_association_date", "sparc_protocol_id", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["pi", "creator"] # Add any other associations you search through here
+  end
+
   def has_attached_data?
     eirb_validated? or sparc_protocol_id? or coeus_protocols.any? or cayuse_protocols.any?
   end

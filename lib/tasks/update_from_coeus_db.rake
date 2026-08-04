@@ -84,7 +84,7 @@ task update_from_coeus_db: :environment do
 
       existing_coeus_award_details.each do |ad|
         existing_protocol = coeus_protocols.detect{ |p| p.mit_award_number == ad.MIT_AWARD_NUMBER }
-        existing_protocol.update_attributes(coeus_project_id: ad.ACCOUNT_NUMBER)
+        existing_protocol.update(coeus_project_id: ad.ACCOUNT_NUMBER)
 
         if ad.RMID_NO.present? && rm = $research_masters.detect{ |rm| rm.id == ad.RMID_NO }
           unless $rmc_relations.any?{ |rmcr| rmcr.protocol_id == existing_protocol.id && rmcr.research_master_id == rm.id }

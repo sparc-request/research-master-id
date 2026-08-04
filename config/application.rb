@@ -19,8 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 require_relative 'boot'
-
 require 'rails/all'
+
+module ActiveJob
+  module QueueAdapters
+    AbstractAdapter = Class.new unless defined?(AbstractAdapter)
+  end
+end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -41,6 +46,15 @@ module ResearchMasterId
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
+
+    config.active_record.yaml_column_permitted_classes = [
+      Symbol, 
+      Date, 
+      Time, 
+      ActiveSupport::TimeWithZone, 
+      ActiveSupport::TimeZone, 
+      ActiveSupport::HashWithIndifferentAccess
+    ]
   end
 end
 
