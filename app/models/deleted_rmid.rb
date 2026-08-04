@@ -39,6 +39,18 @@ class DeletedRmid < ApplicationRecord
     parent.table[:research_type]
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "created_at", "creator_id", "eirb_protocol_id", "explanation", "id", 
+      "long_title", "original_id", "pi_id", "reason", "research_type", 
+      "short_title", "sparc_protocol_id", "updated_at", "user_id"
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["creator", "pi", "user"] # Allowlist the associations referenced in your search field
+  end
+
   # ransacker :created_at, formatter: proc { |string| Date.parse(string).strftime("%a, %d %b %Y") } do |parent|
   #   parent.table[:created_at]
   #   Arel.sql("CONVERT(`#{self.table_name}`.`created_at`, CHAR(8))")
