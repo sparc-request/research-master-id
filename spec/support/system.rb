@@ -24,6 +24,27 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by(ENV['HEADLESS'] ? :selenium_headless : :selenium)
+    if ENV['SELENIUM_URL'].present?
+      # DOCKER EXECUTION: Route traffic to the standalone selenium container
+      Capybara.app_host = ENV['CAPYBARA_APP_HOST']
+      
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('--headless') if ENV['HEADLESS'].present?
+      options.add_argument('--no-sandbox')
+      options.add_argument('--disable-dev-shm-usage')
+
+      driven_by(:selenium, using: :chrome, options: {
+        browser: :remote,
+        url: ENV['SELENIUM_URL'],
+        capabilities: [options]
+      })
+    else
+      # LOCAL OR GITHUB ACTIONS EXECUTION: Use the native machine driver
+      if ENV['CI'].present? || ENV['HEADLESS'].present?
+        driven_by :selenium_chrome_headless
+      else
+        driven_by :selenium_chrome
+      end
+    end
   end
 end

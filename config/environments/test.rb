@@ -27,10 +27,9 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
-  # Do not eager load code on boot. This avoids loading your whole application
-  # just for the purpose of running a single test. If you are using a tool that
-  # preloads Rails for running tests, you may have to set it to true.
-  config.eager_load = false
+  # RAILS 6 UPDATE: Do not eager load code on boot, UNLESS running in CI.
+  # This catches production-only boot errors during your GitHub Actions pipeline.
+  config.eager_load = ENV["CI"].present?
 
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
@@ -41,6 +40,7 @@ Rails.application.configure do
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
+  config.cache_store = :null_store
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
@@ -56,6 +56,15 @@ Rails.application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
+  config.active_support.disallowed_deprecation_warnings = []
+
+  # RAILS 6 UPDATE: Disable host authorization in the test environment so
+  # Docker containers (like Selenium) can communicate using internal Docker DNS 
+  # (e.g., http://rmid_web:3002) without being blocked by Rails.
+  config.hosts.clear
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true

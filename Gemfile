@@ -41,7 +41,7 @@ gem 'activerecord-sqlserver-adapter', '~> 6.1.0'
 
 group :development, :test do
   gem 'byebug'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 5.0'
   gem 'factory_bot_rails'
   gem 'puma', '~> 5.0'
 end
@@ -60,7 +60,6 @@ group :test do
   gem 'shoulda-matchers', '~> 4.0'
   gem 'site_prism'
   gem 'selenium-webdriver', '~> 4.9.0'
-  gem 'webdrivers'
   gem 'rails-controller-testing'
 end
 
