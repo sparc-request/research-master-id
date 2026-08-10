@@ -26,8 +26,6 @@ RSpec.describe ResearchMastersController, type: :controller do
     let!(:creator) { create(:user) }
 
     before do
-      # Fast SQL deletion to clear seed/fixture data without triggering ActiveRecord callbacks
-      ResearchMaster.delete_all
       sign_in user
     end
 

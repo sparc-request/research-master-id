@@ -27,8 +27,6 @@ RSpec.describe Admin::ResearchMastersController, type: :controller do
     let(:user) { create(:user, admin: is_admin) }
 
     before do
-      # Clear existing data to prevent test pollution from fixtures, seeds, or previous suites
-      ResearchMaster.delete_all
       sign_in user
     end
 

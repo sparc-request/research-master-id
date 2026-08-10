@@ -20,25 +20,28 @@
 
 require 'rails_helper'
 
-describe DatabaseSearch do
+RSpec.describe DatabaseSearch, type: :model do
+  describe '#user_query' do
+    # Hoist the subject being tested
+    let(:database_search) { DatabaseSearch.new }
 
-  describe 'user_query' do
-    it 'should return a users info' do
-      user = create(:user, name: 'Will Holt', net_id: 'whi26', email: 'will@musc.edu')
-      database_search = DatabaseSearch.new
+    context 'when a matching user exists' do
+      # Use let! so the user is created in the DB before the query runs
+      let!(:user) { create(:user, name: 'Will Holt', net_id: 'whi26', email: 'will@musc.edu') }
 
-      result = database_search.user_query('Will')
-
-      expect(result).to include({:email=>"will@musc.edu", :name=>"Will Holt", :netid=>"whi26"})
+      it 'returns the users info' do
+        result = database_search.user_query('Will')
+        expect(result).to include({ email: "will@musc.edu", name: "Will Holt", netid: "whi26" })
+      end
     end
 
-    it 'should not return a non-matching users info' do
-      user = create(:user, name: 'Will Holt')
-      database_search = DatabaseSearch.new
+    context 'when a matching user does not exist' do
+      let!(:user) { create(:user, name: 'Will Holt') }
 
-      result = database_search.user_query('cates')
-
-      expect(result).not_to include({name: 'Will Holt'})
+      it 'does not return non-matching users info' do
+        result = database_search.user_query('cates')
+        expect(result).not_to include({ name: 'Will Holt' })
+      end
     end
   end
 end
