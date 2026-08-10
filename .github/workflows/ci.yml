@@ -65,11 +65,15 @@ jobs:
         run: bundle exec rake db:schema:load
         env:
           RAILS_ENV: test
+          DB_HOST: 127.0.0.1
 
       - name: Precompile assets
         run: bundle exec rake assets:precompile
         env:
           RAILS_ENV: test
+          DB_HOST: 127.0.0.1
 
       - name: Run tests
         run: bundle exec rspec
+        env:
+          DB_HOST: 127.0.0.1
