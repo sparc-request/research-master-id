@@ -25,18 +25,25 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system, js: true) do
     if ENV['SELENIUM_URL'].present?
-      # DOCKER EXECUTION: Route traffic to the standalone selenium container
-      Capybara.app_host = ENV['CAPYBARA_APP_HOST']
+      
+      # Tell Capybara's internal test server to listen on all interfaces (0.0.0.0)
+      Capybara.server_host = '0.0.0.0'
+      # Assign a specific port for the test server so it doesn't hit dev on 3002
+      Capybara.server_port = 4000
+      # Route Selenium to hit the Capybara test server!
+      Capybara.app_host = "http://rmid_web:#{Capybara.server_port}"
       
       options = Selenium::WebDriver::Chrome::Options.new
       options.add_argument('--headless') if ENV['HEADLESS'].present?
       options.add_argument('--no-sandbox')
       options.add_argument('--disable-dev-shm-usage')
+      options.add_argument('--disable-gpu') 
+      options.add_argument('--window-size=1920,1080')
 
       driven_by(:selenium, using: :chrome, options: {
         browser: :remote,
         url: ENV['SELENIUM_URL'],
-        capabilities: [options]
+        options: options 
       })
     else
       # LOCAL OR GITHUB ACTIONS EXECUTION: Use the native machine driver

@@ -20,24 +20,21 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Developer should proceed to API portal', js: true do
-  before :each do
+RSpec.describe 'Developer API Portal', type: :system, js: true do
+  before do
     create_and_sign_in_user
-    user = User.first
-    user.update_attribute(:developer, true)
+    User.first.update!(developer: true)
   end
 
-  scenario 'successfully' do
+  it 'successfully navigates to the API portal' do
     visit root_path
-
     click_link 'API'
 
     expect(page).to have_css('a', text: 'Generate API Key')
   end
 
-  scenario 'get a new api key' do
+  it 'generates a new api key' do
     visit root_path
-
     click_link 'API'
     click_link 'Generate API Key'
 
