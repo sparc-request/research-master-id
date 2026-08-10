@@ -20,88 +20,72 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User should be able to create a new research master record', js: true do
-
-  describe 'creating new reserch master record' do
-
-    it 'should not allow submit when PI is missing' do
-      create_and_sign_in_user
-
-      find('.create-research-master').click
-      wait_for_ajax
-      fill_in 'research_master_pi_name', with: ''
-      fill_in 'pi_department', with: 'My Pills'
-      fill_in 'research_master_long_title', with: 'Long John'
-      fill_in 'research_master_short_title', with: 'Shortstop'
-
-      expect(page).to have_button('Submit', disabled: true)
-    end
-
-    it 'should allow department to be blank' do
-      create_and_sign_in_user
-
-      find('.create-research-master').click
-      wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'Julia'
-      fill_in 'pi_department', with: ''
-      fill_in 'research_master_long_title', with: 'Long John'
-      fill_in 'research_master_short_title', with: 'Shortstop'
-      click_button 'Submit'
-      wait_for_ajax
-
-      expect(page).not_to have_css('div.form-group.has-error')
-    end
-
-    it 'should render form errors about long title' do
-      create_and_sign_in_user
-
-      find('.create-research-master').click
-      wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'Julia'
-      fill_in 'pi_department', with: 'my pills'
-      fill_in 'research_master_long_title', with: ''
-      fill_in 'research_master_short_title', with: 'Shortstop'
-      click_button 'Submit'
-      wait_for_ajax
-
-      expect(page).to have_css('div.form-group.has-error')
-      expect(page).to have_css('span.help-block', text: "Can't be blank")
-    end
-
-    it 'should render form errors about short title' do
-      create_and_sign_in_user
-
-      find('.create-research-master').click
-      wait_for_ajax
-      fill_in 'research_master_pi_name', with: 'Julia'
-      fill_in 'pi_department', with: 'my pills'
-      fill_in 'research_master_long_title', with: 'long john'
-      fill_in 'research_master_short_title', with: ''
-      click_button 'Submit'
-      wait_for_ajax
-
-      expect(page).to have_css('div.form-group.has-error')
-      expect(page).to have_css('span.help-block', text: "Can't be blank")
-    end
-
-    # TODO: This test doesn't actually pass for real, we need to refactor how the api's are connected to work on this (pi search doesn't work, throws error)
-    # it 'should not render form errors when all fields are filled out' do
-    #   create_and_sign_in_user
-
-    #   find('.create-research-master').click
-    #   wait_for_ajax
-    #   fill_in 'research_master_pi_name', with: 'Julia'
-    #   fill_in 'pi_department', with: 'my pills'
-    #   fill_in 'research_master_long_title', with: 'long john'
-    #   fill_in 'research_master_short_title', with: 'short'
-    #   choose 'research_master_funding_source_internal'
-    #   select "Basic Science Research", :from => "research_master_research_type"
-
-    #   click_button 'Submit'
-    #   wait_for_ajax
-
-    #   expect(page).not_to have_css('div.form-group.has-error')
-    # end
+RSpec.describe 'Creating a new research master record', type: :system, js: true do
+  before do
+    create_and_sign_in_user
+    visit root_path
+    
+    # Capybara will automatically wait for this button to be ready and clickable
+    find('.create-research-master').click
   end
+
+  it 'does not allow submit when PI is missing' do
+    # Capybara automatically waits for the form to appear before filling these in
+    fill_in 'research_master_pi_name', with: ''
+    fill_in 'pi_department', with: 'My Pills'
+    fill_in 'research_master_long_title', with: 'Long John'
+    fill_in 'research_master_short_title', with: 'Shortstop'
+
+    expect(page).to have_button('Submit', disabled: true)
+  end
+
+  it 'allows department to be blank' do
+    fill_in 'research_master_pi_name', with: 'Julia'
+    fill_in 'pi_department', with: ''
+    fill_in 'research_master_long_title', with: 'Long John'
+    fill_in 'research_master_short_title', with: 'Shortstop'
+    
+    click_button 'Submit'
+
+    expect(page).not_to have_css('div.form-group.has-error')
+  end
+
+  it 'renders form errors about long title' do
+    fill_in 'research_master_pi_name', with: 'Julia'
+    fill_in 'pi_department', with: 'my pills'
+    fill_in 'research_master_long_title', with: ''
+    fill_in 'research_master_short_title', with: 'Shortstop'
+    
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
+
+  it 'renders form errors about short title' do
+    fill_in 'research_master_pi_name', with: 'Julia'
+    fill_in 'pi_department', with: 'my pills'
+    fill_in 'research_master_long_title', with: 'long john'
+    fill_in 'research_master_short_title', with: ''
+    
+    click_button 'Submit'
+
+    expect(page).to have_css('div.form-group.has-error')
+    expect(page).to have_css('span.help-block', text: "Can't be blank")
+  end
+
+  # TODO: This test doesn't actually pass for real, we need to refactor how the api's are connected to work on this (pi search doesn't work, throws error)
+  # it 'does not render form errors when all fields are filled out' do
+  #   fill_in 'research_master_pi_name', with: 'Julia'
+  #   fill_in 'pi_department', with: 'my pills'
+  #   fill_in 'research_master_long_title', with: 'long john'
+  #   fill_in 'research_master_short_title', with: 'short'
+  #   choose 'research_master_funding_source_internal'
+  #   select "Basic Science Research", from: "research_master_research_type"
+  #
+  #   click_button 'Submit'
+  #
+  #   expect(page).not_to have_css('div.form-group.has-error')
+  # end
 end
 

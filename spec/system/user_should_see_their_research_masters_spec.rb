@@ -20,14 +20,19 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User should see their research masters', js:true do
-  scenario 'successfully' do
+RSpec.describe 'Viewing research master records', type: :system, js: true do
+  let(:user) { User.first }
+  let(:research_master) { create(:research_master, creator: user) }
+
+  before do
     create_and_sign_in_user
-
-    research_master = create(:research_master, creator: User.first)
-
+    
+    # Trigger the let block to instantiate the record in the DB after user creation
+    research_master
     visit root_path
+  end
 
-    expect(page).to have_content research_master.short_title
+  it 'displays the short title of the users research master' do
+    expect(page).to have_content(research_master.short_title)
   end
 end
