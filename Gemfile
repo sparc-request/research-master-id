@@ -62,7 +62,7 @@ group :test do
   gem 'shoulda-matchers', '~> 4.0'
   gem 'site_prism'
   gem 'selenium-webdriver', '~> 4.9.0'
-  gem 'rails-controller-testing'
+  gem 'rails-controller-testing', '~> 1.0.5'
   gem 'capybara', '>= 3.39'
 end
 
