@@ -20,56 +20,59 @@
 
 require 'rails_helper'
 
-describe ResearchMasterNotifier do
-  before { ActionMailer::Base.deliveries = [] }
+RSpec.describe ResearchMasterNotifier, type: :model do
+  before do
+    ActionMailer::Base.deliveries.clear
+  end
 
   describe '#send_mail' do
-    it 'should still send an email if rm_pi is nil' do
-      user = create(:user)
-      rm_id = create(:research_master,
-                     long_title: 'long',
-                     short_title: 'short',
-                     funding_source: 'funding',
-                     creator: user
-                    )
-      owner_email = user.email
-      rm_notifier = ResearchMasterNotifier.new(nil, owner_email, rm_id)
+    let(:user) { create(:user) }
+    let(:owner_email) { user.email }
+    
+    # The variable we pass into the Notifier
+    let(:rm_pi) { nil } 
+    
+    # By default, let FactoryBot generate a valid PI in the background so it saves successfully
+    let(:rm) do 
+      create(:research_master,
+             long_title: 'long',
+             short_title: 'short',
+             funding_source: 'funding',
+             creator: user)
+    end
+    
+    let(:rm_notifier) { ResearchMasterNotifier.new(rm_pi, owner_email, rm) }
 
-      rm_notifier.send_mail
-
-      expect(ActionMailer::Base.deliveries.count).to eq(1)
+    context 'when rm_pi is nil' do
+      it 'still sends one email' do
+        expect { rm_notifier.send_mail }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
     end
 
-    it 'should still send an email if user email is nil' do
-      user = create(:user)
-      rm_id = create(:research_master,
-                     long_title: 'long',
-                     short_title: 'short',
-                     funding_source: 'funding',
-                     creator: user
-                    )
-      rm_notifier = ResearchMasterNotifier.new(nil, nil, rm_id)
+    context 'when user email is nil' do
+      let(:owner_email) { nil }
 
-      rm_notifier.send_mail
-
-      expect(ActionMailer::Base.deliveries.count).to eq(1)
+      it 'still sends one email' do
+        expect { rm_notifier.send_mail }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
     end
 
-    it 'should send two emails if different' do
-      user = create(:user)
-      pi = create(:user)
-      rm_id = create(:research_master,
-                     long_title: 'long',
-                     short_title: 'short',
-                     funding_source: 'funding',
-                     creator: user,
-                     pi: pi)
-      owner_email = user.email
-      rm_notifier = ResearchMasterNotifier.new(pi, owner_email, rm_id)
+    context 'when owner and pi are different users' do
+      let(:rm_pi) { create(:user) }
+      
+      # Override the factory here to explicitly link the database record to our rm_pi user
+      let(:rm) do 
+        create(:research_master,
+               long_title: 'long',
+               short_title: 'short',
+               funding_source: 'funding',
+               creator: user,
+               pi: rm_pi)
+      end
 
-      rm_notifier.send_mail
-
-      expect(ActionMailer::Base.deliveries.count).to eq(2)
+      it 'sends two emails' do
+        expect { rm_notifier.send_mail }.to change { ActionMailer::Base.deliveries.count }.by(2)
+      end
     end
   end
 end

@@ -25,46 +25,56 @@ RSpec.describe User, type: :model do
 
   describe 'ransacker :combined_search' do
     context 'search by email' do
-      it 'should find partial match' do
-        user = create(:user, email: 'aa@bb.cc')
+      let!(:user) { create(:user, email: 'aa@bb.cc') }
+
+      it 'finds a partial match' do
         result = User.ransack(combined_search_cont: '@bb').result
-        expect(result).to include(user)
+        expect(result.to_a).to include(user)
       end
     end
+
     context 'search by latest sign in date' do
-      it 'should find partial match' do
-        user = create(:user, current_sign_in_at: "2020-01-01")
+      let!(:user) { create(:user, current_sign_in_at: '2020-01-01') }
+
+      it 'finds a partial match' do
         result = User.ransack(combined_search_cont: '2020').result
-        expect(result).to include(user)
+        expect(result.to_a).to include(user)
       end
     end
+
     context 'date reformatting' do
-      it 'should reformat date to match db' do
+      let!(:user) { create(:user, current_sign_in_at: '2020-01-01') }
+      let(:date_search) { '1/1/20' }
+      let(:reformat) { User.reformat_to_match_db(date_search) }
+
+      it 'reformats date to match db' do
         expect(User.reformat_to_match_db('01/01/2020')).to eq('2020-01-01')
       end
-      it 'should find match after reformatting' do
-        user = create(:user, current_sign_in_at: "2020-01-01")
-        date_search = '1/1/20'
-        reformat = User.reformat_to_match_db(date_search)
+
+      it 'finds match after reformatting' do
         result = User.ransack(combined_search_cont: reformat).result
-        expect(result).to include(user)
+        expect(result.to_a).to include(user)
       end
     end
+
     context 'when searching for a user by name' do
-      it 'should return expected results' do
-        user = create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'jd@cc.cc')
+      let!(:user) { create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'jd@cc.cc') }
+
+      it 'returns expected results' do
         result = User.ransack(combined_search_cont: 'Jane').result
-        expect(result).to include(user)
+        expect(result.to_a).to include(user)
       end
     end
-    describe "sort by name" do
-      context "same last name" do
-        it "should sort by last name then first name" do
-          user = create(:user, name: 'Alicia Doe', first_name: 'Alicia', last_name: 'Doe', email: 'ad@ad.ad')
-          user1 = create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'dd@dd.dd')
-          user2 = create(:user, name: 'Zoe Doe', first_name: 'Zoe', last_name: 'Doe', email: 'zd@zd.zd')
+
+    describe 'sort by name' do
+      context 'same last name' do
+        let!(:alicia) { create(:user, name: 'Alicia Doe', first_name: 'Alicia', last_name: 'Doe', email: 'ad@ad.ad') }
+        let!(:jane) { create(:user, name: 'Jane Doe', first_name: 'Jane', last_name: 'Doe', email: 'dd@dd.dd') }
+        let!(:zoe) { create(:user, name: 'Zoe Doe', first_name: 'Zoe', last_name: 'Doe', email: 'zd@zd.zd') }
+
+        it 'sorts by last name then first name' do
           users = User.ransack(sort_name: 'asc').result
-          expect(users).to eq([user, user1, user2])
+          expect(users.to_a).to eq([alicia, jane, zoe])
         end
       end
     end

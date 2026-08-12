@@ -20,50 +20,54 @@
 
 require 'rails_helper'
 
-describe Api::ApiKeysController, type: :controller do
-  describe '#new' do
-    it 'should only allow developers' do
-      user = create(:user)
-      sign_in user
+RSpec.describe Api::ApiKeysController, type: :controller do
+  # Hoisted setup variables
+  let(:is_developer) { false }
+  let(:user) { create(:user, developer: is_developer) }
 
-      get :new
+  before do
+    sign_in user
+  end
 
-      expect(response).to have_http_status 302
+  describe 'GET #new' do
+    context 'when user is not a developer' do
+      # is_developer defaults to false
+      it 'redirects the user' do
+        get :new
+        expect(response).to have_http_status(302)
+      end
     end
 
-    it 'should only allow developers' do
-      user = create(:user, developer: true)
-      sign_in user
+    context 'when user is a developer' do
+      # Override the default
+      let(:is_developer) { true }
 
-      get :new
-
-      expect(response).to have_http_status 200
+      it 'allows access' do
+        get :new
+        expect(response).to have_http_status(200)
+      end
     end
   end
-  describe '#create' do
 
-    it 'should only allow developers' do
-      user = create(:user)
-      sign_in user
-
-      post :create
-
-      expect(response).to have_http_status 302
+  describe 'POST #create' do
+    context 'when user is not a developer' do
+      it 'redirects the user' do
+        post :create
+        expect(response).to have_http_status(302)
+      end
     end
 
-    it 'should only allow developers' do
-      user = create(:user, developer: true)
-      sign_in user
+    context 'when user is a developer' do
+      let(:is_developer) { true }
 
-      post :create, xhr: true
+      it 'allows access' do
+        post :create, xhr: true
+        expect(response).to have_http_status(200)
+      end
 
-      expect(response).to have_http_status 200
-    end
-    it 'should only allow developers' do
-      user = create(:user, developer: true)
-      sign_in user
-
-      expect{post :create, xhr: true}.to change(ApiKey, :count).by(1)
+      it 'creates a new ApiKey record' do
+        expect { post :create, xhr: true }.to change(ApiKey, :count).by(1)
+      end
     end
   end
 end

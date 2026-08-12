@@ -29,7 +29,7 @@ task update_user_prism_boolean: :environment do
       interfolio_user = interfolio_users.select {|user| user["netid"] == research_master_user.net_id }.first
 
       if interfolio_user
-        research_master_user.update_attributes(current_interfolio_user: true)
+        research_master_user.update(current_interfolio_user: true)
       end
     end
   else

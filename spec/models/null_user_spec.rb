@@ -20,24 +20,19 @@
 
 require 'rails_helper'
 
-describe NullUser do
+RSpec.describe NullUser, type: :model do
+  # Hoist the object being tested to the top level for all specs to share
+  let(:null_user) { NullUser.new }
+
   describe '#name' do
-    it 'should return not available' do
-      null_user = NullUser.new
-
-      result = null_user.name
-
-      expect(result).to eq 'Not Available'
+    it 'returns Not Available' do
+      expect(null_user.name).to eq 'Not Available'
     end
   end
 
   describe '#email' do
-    it 'should return not available' do
-      null_user = NullUser.new
-
-      result = null_user.email
-
-      expect(result).to eq 'Not Available'
+    it 'returns Not Available' do
+      expect(null_user.email).to eq 'Not Available'
     end
   end
 end

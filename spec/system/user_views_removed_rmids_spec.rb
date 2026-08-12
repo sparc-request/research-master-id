@@ -20,28 +20,42 @@
 
 require 'rails_helper'
 
-RSpec.describe 'removing an RMID then viewing it', js: true do
-  it 'should see the removed RMID listed on the removed RMIDs page' do
+RSpec.describe 'Viewing removed RMIDs', type: :system, js: true do
+  let(:user) { User.first }
+  let(:research_master) { create(:research_master) }
+
+  before do
+    # 1. Create and sign in the user (This user becomes User.first)
     create_and_sign_in_user
-    User.first.update_attributes(admin: true)
-    @research_master = create(:research_master)
+    
+    # 2. Grant them admin rights
+    user.update!(admin: true)
+    
+    # 3. NOW create the research master so the factory doesn't steal User.first!
+    research_master 
+  end
 
+  it 'lists the removed RMID on the deleted RMIDs page' do
     visit root_path
-    wait_for_ajax
 
+    # Trigger the deletion modal
     find('.research-master-delete').click
-    wait_for_ajax
 
-    select "Duplicate Entry", :from => "reason"
+    # Fill out and submit the modal
+    select 'Duplicate Entry', from: 'reason'
     find('input.reason_submit').click
-    wait_for_ajax
 
+    # Confirm the sweetalert
     find('button.confirm').click
-    wait_for_ajax
 
+    # CRITICAL: Force Capybara to wait for the AJAX delete to finish
+    # before navigating away from the current page!
+    expect(page).not_to have_content(research_master.short_title)
+
+    # Now it is safe to navigate to the deleted records page
     visit deleted_rmids_path
-    wait_for_ajax
 
-    expect(page).to have_content(@research_master.short_title)
+    # Verify it successfully landed in the deleted list
+    expect(page).to have_content(research_master.short_title)
   end
 end

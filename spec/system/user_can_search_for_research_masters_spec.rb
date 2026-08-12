@@ -20,31 +20,32 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User should be able to search for an existing RMID record', js: true do
+RSpec.describe 'Research Master Search', type: :system, js: true do
+  # Lazy-load these variables so they don't execute until explicitly called
+  let(:user) { User.first }
+  let(:research_master) { create(:research_master, creator: user) }
 
-  describe 'searching for rmid record' do
+  before do
+    create_and_sign_in_user
+    
+    # Trigger the let block now that the user exists in the test database
+    research_master 
+    visit root_path
+  end
 
-    before :each do
-      create_and_sign_in_user
-      @research_master = create(:research_master, creator: User.first)
-      visit root_path
-      wait_for_ajax
-    end
+  it 'does not show records when there are no valid results' do
+    fill_in 'q_short_title_cont', with: 'Some Absolute Nonsense'
+    find('form#research_master_search input.btn.btn-success').click
 
-    it 'should not show records when there are no valid results' do
-      fill_in 'q_short_title_cont', with: "Some Absolute Nonsense"
-      find('form#research_master_search input.btn.btn-success').click
-      wait_for_ajax
+    # Capybara natively waits for the AJAX response to remove this content
+    expect(page).not_to have_content(research_master.short_title)
+  end
 
-      expect(page).not_to have_content(@research_master.short_title)
-    end
+  it 'shows the searched for rmid' do
+    fill_in 'q_short_title_cont', with: research_master.short_title
+    find('form#research_master_search input.btn.btn-success').click
 
-    it 'should show the searched for rmid' do
-      fill_in 'q_short_title_cont', with: @research_master.short_title
-      find('form#research_master_search input.btn.btn-success').click
-      wait_for_ajax
-
-      expect(page).to have_content(@research_master.short_title)
-    end
+    # Capybara natively waits for the AJAX response to display this content
+    expect(page).to have_content(research_master.short_title)
   end
 end

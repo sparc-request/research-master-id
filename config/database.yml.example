@@ -23,42 +23,23 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: root
-  socket: /tmp/mysql.sock
-
-development:
-  <<: *default
-  database: research-master-id_development
-
-# configured for GHA CI
-test:
-  adapter: mysql2
-  database: rmid_test
-  encoding: utf8
-  username: root
-  host: 127.0.0.1
-  pool: 5
   timeout: 5000
+  username: <%= ENV.fetch('DATABASE_USERNAME', 'root') %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  # 'localhost' routes to a socket connection for standard local devs.
+  # CI and Docker will override this via ENV to force TCP.
+  host: <%= ENV.fetch('DATABASE_HOST', 'localhost') %>
   variables:
     sql_mode: TRADITIONAL
 
-production:
+development:
   <<: *default
-  database: research-master-id_production
-  username: research-master-id
-  password: <%= ENV['RESEARCH-MASTER-ID_DATABASE_PASSWORD'] %>
+  # Checks generic ENV for Docker, then defaults to standard local naming. 
+  database: <%= ENV.fetch('DATABASE_NAME', 'rmid_development') %>
 
-
-#Docker Dev Environment
-# default: &default
-#   adapter: mysql2
-#   encoding: utf8
-#   pool: 5
-#   timeout: 5000
-#   username: <%= ENV['DATABASE_USERNAME'] %>
-#   password: <%= ENV['DATABASE_PASSWORD'] %>
-#   host: <%= ENV['DATABASE_HOST'] %>
-#
-# development:
-#   <<: *default
-#   database: <%= ENV['DATABASE_NAME'] %>
+test:
+  <<: *default
+  # Prioritize the isolated test host container, fallback to dev host, then local
+  host: <%= ENV.fetch('TEST_DATABASE_HOST', ENV.fetch('DATABASE_HOST', 'localhost')) %>
+  # Checks generic ENV for Docker/CI, then defaults to standard local naming.
+  database: <%= ENV.fetch('TEST_DATABASE_NAME', 'rmid_test') %>

@@ -20,95 +20,103 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Removing an RMID', js: true do
+RSpec.describe 'Removing an RMID', type: :system, js: true do
+  let(:user) { User.first }
+
+  # Define the helper inside the block so it doesn't pollute the global test scope
+  def remove_and_test_for(rm)
+    find('.research-master-delete').click
+
+    select 'Duplicate Entry', from: 'reason'
+    find('input.reason_submit').click
+
+    expect(page).to have_content('Research Master record has been deleted')
+    find('button.confirm').click
+    
+    # Capybara will natively wait for the modal to close and the DOM to update
+    expect(page).not_to have_content(rm.short_title)
+  end
 
   describe 'with attached data' do
-    before :each do
+    let(:research_master) { create(:research_master, eirb_validated: true) }
+
+    before do
       create_and_sign_in_user
-      @user = User.first
-      @research_master = create(:research_master, eirb_validated: true)
+      research_master # Trigger the let block to instantiate the record in the DB
     end
 
-    describe 'as an admin user' do
-      it "should be removed" do
-        User.first.update_attributes(admin: true)
+    context 'as an admin user' do
+      before do
+        user.update!(admin: true)
         visit root_path
-        wait_for_ajax
+      end
 
-        remove_and_test_for_rmid
+      it 'removes the record' do
+        remove_and_test_for(research_master)
       end
     end
 
-    describe 'as the creator' do
-
-      it "should not be removed" do
-        @research_master.update_attributes(creator_id: @user.id)
+    context 'as the creator' do
+      before do
+        research_master.update!(creator_id: user.id)
         visit root_path
-        wait_for_ajax
+      end
 
+      it 'disables the remove button' do
         expect(page).to have_css('.research-master-delete.disabled')
       end
     end
 
-    describe 'as the pi' do
-      it "should not be removed" do
-        @research_master.update_attributes(pi_id: @user.id)
+    context 'as the pi' do
+      before do
+        research_master.update!(pi_id: user.id)
         visit root_path
-        wait_for_ajax
+      end
 
+      it 'disables the remove button' do
         expect(page).to have_css('.research-master-delete.disabled')
       end
     end
   end
 
   describe 'without attached data' do
-    before :each do
+    let(:research_master) { create(:research_master, eirb_validated: false) }
+
+    before do
       create_and_sign_in_user
-      @user = User.first
-      @research_master = create(:research_master)
+      research_master # Trigger the let block to instantiate the record in the DB
     end
 
-    describe 'as the creator' do
-      it "should be removed" do
-        @research_master.update_attribute(:creator_id, @user.id)
+    context 'as the creator' do
+      before do
+        research_master.update!(creator_id: user.id)
         visit root_path
-        wait_for_ajax
+      end
 
-        remove_and_test_for_rmid
+      it 'removes the record' do
+        remove_and_test_for(research_master)
       end
     end
 
-    describe 'as the pi' do
-      it "should be removed" do
-        @research_master.update_attributes(pi_id: @user.id)
+    context 'as the pi' do
+      before do
+        research_master.update!(pi_id: user.id)
         visit root_path
-        wait_for_ajax
+      end
 
-        remove_and_test_for_rmid
+      it 'removes the record' do
+        remove_and_test_for(research_master)
       end
     end
 
-    describe 'as a regular user' do
-      it "should not be removed" do
+    context 'as a regular user' do
+      before do
         visit root_path
-        wait_for_ajax
+      end
 
+      it 'disables the remove button' do
         expect(page).to have_css('.research-master-delete.disabled')
       end
     end
   end
-end
-
-def remove_and_test_for_rmid
-  find('.research-master-delete').click
-  wait_for_ajax
-
-  select "Duplicate Entry", :from => "reason"
-  find('input.reason_submit').click
-  wait_for_ajax
-
-  expect(page).to have_content("Research Master record has been deleted")
-  find('button.confirm').click
-  wait_for_ajax
-  expect(page).not_to have_content(@research_master.short_title)
 end

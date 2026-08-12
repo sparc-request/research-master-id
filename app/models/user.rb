@@ -71,6 +71,18 @@ class User < ApplicationRecord
                                              last_name: user[:last_name], middle_initial: user[:middle_initial], pvid: user[:pvid])
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "name", "email", "first_name", "last_name", "net_id", "department", 
+      "created_at", "current_sign_in_at", "middle_initial", "pvid", "id",
+      "sort_name", "combined_search" # <-- Your custom ransackers!
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["deleted_rmids", "protocols", "research_masters"]
+  end
+
   def research_masters
     ResearchMaster.where("creator_id = ? OR pi_id = ?", self.id, self.id)
   end

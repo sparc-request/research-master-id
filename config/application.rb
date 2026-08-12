@@ -19,8 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 require_relative 'boot'
+# require 'rails/all'
 
-require 'rails/all'
+# RMID does not require ActiveStorage for file attacmhments. To avoid cluttering the DB schema, CI/production build
+# errors, and booting unused engines that consume memory, the list of required frameworks is spelled out below in
+# lieu of using "require 'rails/all'"
+
+require 'rails'
+require 'active_model/railtie'
+require 'active_job/railtie'
+require 'active_record/railtie'
+# require 'active_storage/engine' # DISABLED
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
+require 'action_view/railtie'
+require 'action_cable/engine'
+require 'sprockets/railtie'
+
+module ActiveJob
+  module QueueAdapters
+    AbstractAdapter = Class.new unless defined?(AbstractAdapter)
+  end
+end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -41,6 +61,15 @@ module ResearchMasterId
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
+
+    config.active_record.yaml_column_permitted_classes = [
+      Symbol, 
+      Date, 
+      Time, 
+      ActiveSupport::TimeWithZone, 
+      ActiveSupport::TimeZone, 
+      ActiveSupport::HashWithIndifferentAccess
+    ]
   end
 end
 

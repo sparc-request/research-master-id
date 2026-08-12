@@ -1,17 +1,17 @@
 source 'https://rubygems.org'
 
-gem "audited", "~> 4.6"
-gem 'rails', '~> 5.1', '>= 5.1.5'
+gem "audited", "~> 5.6"
+gem 'rails', '6.1.7.6'
 gem 'mysql2'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 6.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
+gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'haml-rails', '~> 2.0'
 gem 'devise'
-gem 'dotenv-rails'
+gem 'dotenv-rails', '~> 2.8'
 gem 'faker'
 gem 'launchy'
 gem 'pry'
@@ -20,16 +20,15 @@ gem 'httparty', '~> 0.13.7'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'whenever', '~> 1.0.0'
 gem 'net-ldap', '~> 0.16.0'
-gem 'dotenv'
-gem 'sprockets', '~> 3.7', '>= 3.7.1'
-gem 'exception_notification', '~> 4.1', '>= 4.1.4'
+gem 'sprockets', '~> 4.0'
+gem 'exception_notification', '~> 4.6'
 gem 'slack-notifier', '~> 2.3'
 gem 'listen', '~> 3.1', '>= 3.1.5'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
-gem 'cancancan', '~> 2.0'
+gem 'cancancan'
 gem 'kaminari', '~> 1.2'
-gem 'delayed_job_active_record'
+gem 'delayed_job_active_record', '~> 4.1', '>= 4.1.7'
 gem 'daemons', '~> 1.2', '>= 1.2.4'
 gem "letter_opener", :group => :development
 gem "progress_bar"
@@ -38,17 +37,17 @@ gem 'net-scp'
 gem 'msteams-ruby-client'
 
 gem 'tiny_tds'
-gem 'activerecord-sqlserver-adapter', '~> 5.2.1'
+gem 'activerecord-sqlserver-adapter', '~> 6.1.0'
 
 group :development, :test do
   gem 'byebug'
-  gem 'rspec-rails'
-  gem 'factory_girl_rails', '~> 4.9.0'
-  gem 'puma', '~> 3.12'
+  gem 'rspec-rails', '~> 5.0'
+  gem 'factory_bot_rails'
+  gem 'puma', '~> 5.0'
 end
 
 group :development do
-  gem 'web-console', '~> 3.3', '>= 3.3.1'
+  gem 'web-console', '>= 4.1.0'
   gem 'capistrano'
   gem 'capistrano-rvm'
   gem 'capistrano-rails'
@@ -58,10 +57,9 @@ group :development do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 3.1'
+  gem 'shoulda-matchers', '~> 4.0'
   gem 'site_prism'
   gem 'selenium-webdriver', '~> 4.9.0'
-  gem 'webdrivers'
   gem 'rails-controller-testing'
 end
 

@@ -20,31 +20,42 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User should see correct navbar links', js: true do
+RSpec.describe 'Navbar Links', type: :system, js: true do
+  let(:user) { User.first }
 
-  scenario 'developer' do
+  before do
     create_and_sign_in_user
-    user = User.first
-    user.update_attribute(:developer, true)
-
-    visit root_path
-
-    expect(page).to have_css('a', text: 'API')
   end
 
-  scenario 'user' do
-    create_and_sign_in_user
+  context 'when the user is a developer' do
+    before do
+      user.update!(developer: true)
+      visit root_path
+    end
 
-    visit root_path
-
-    expect(page).not_to have_css('a', text: 'API')
+    it 'shows the API link' do
+      expect(page).to have_css('a', text: 'API')
+    end
   end
 
-  scenario 'admin' do
-    create_and_sign_in_user
-    user = User.first
-    user.update_attribute(:admin, true)
-    visit root_path
-    expect(page).to have_css('a', text: 'RMID Admin')
+  context 'when the user is a standard user' do
+    before do
+      visit root_path
+    end
+
+    it 'does not show the API link' do
+      expect(page).not_to have_css('a', text: 'API')
+    end
+  end
+
+  context 'when the user is an admin' do
+    before do
+      user.update!(admin: true)
+      visit root_path
+    end
+
+    it 'shows the RMID Admin link' do
+      expect(page).to have_css('a', text: 'RMID Admin')
+    end
   end
 end

@@ -26,6 +26,14 @@ class Identity < ApplicationRecord
     joins(:project_roles).where(project_roles: { role: 'primary-pi' }).distinct
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["first_name", "last_name", "id"] # Add any other schema columns you search here
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["project_roles"]
+  end
+
   def full_name
     "#{last_name.humanize}, #{first_name.humanize}"
   end

@@ -37,7 +37,7 @@ class AddingAttributesToUsersTable < ActiveRecord::Migration[5.1]
         bad_results << user.id
       else
         user_data = results.first
-        user.update_attributes(
+        user.update(
           name: user_data[:name],
           first_name: user_data[:first_name],
           last_name: user_data[:last_name],

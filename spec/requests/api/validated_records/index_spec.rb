@@ -20,19 +20,29 @@
 
 require 'rails_helper'
 
-describe '#index', type: :request do
-  it 'should return validated rm records' do
-    protocol = create(:protocol, eirb_id: 'Pro#123456')
-    create_list(:research_master, 10)
-    rm = create(:research_master,
-                eirb_validated: true,
-                eirb_protocol_id: protocol.id)
-    api_key = create(:api_key)
+RSpec.describe 'API::ValidatedRecords', type: :request do
+  describe 'GET /api/validated_records' do
+    # Hoist the setup variables
+    let(:api_key) { create(:api_key) }
+    let(:protocol) { create(:protocol, eirb_id: 'Pro#123456') }
+    
+    # Pre-populate 10 unvalidated records that should NOT be returned
+    let!(:unvalidated_rms) { create_list(:research_master, 10) }
+    
+    # The one validated record that SHOULD be returned, created before the request via let!
+    let!(:rm) do
+      create(:research_master,
+             eirb_validated: true,
+             eirb_protocol_id: protocol.id)
+    end
 
-    get "/api/validated_records.json", params: {},
-      headers: { Authorization: "Token token=#{api_key.access_token}" }
+    it 'returns only validated research master records' do
+      get "/api/validated_records.json", 
+          params: {},
+          headers: { Authorization: "Token token=#{api_key.access_token}" }
 
-    expect(json.length).to eq(1)
-    expect(json.first['id']).to eq rm.id
+      expect(json.length).to eq(1)
+      expect(json.first['id']).to eq(rm.id)
+    end
   end
 end

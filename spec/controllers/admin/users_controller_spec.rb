@@ -22,18 +22,27 @@ require 'rails_helper'
 
 RSpec.describe Admin::UsersController, type: :controller do
   describe 'GET #index' do
+    # Hoisted setup variables
+    let(:is_admin) { false }
+    let(:user) { create(:user, admin: is_admin) }
+
+    before do
+      sign_in user
+    end
+
     context 'when user is not an admin' do
+      # is_admin defaults to false from the top level
       it 'redirects to the sign-in/main page' do
-        user = create(:user)
-        sign_in user
         get :index
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+    
     context 'when user is an admin' do
+      # Override the default to test the admin path
+      let(:is_admin) { true }
+
       it 'allows access to /admin/users' do
-        user = create(:user, admin: true)
-        sign_in user
         get :index
         expect(response).to be_successful
       end
