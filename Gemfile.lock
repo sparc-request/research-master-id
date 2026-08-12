@@ -189,8 +189,9 @@ GEM
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     iconv (1.0.8)
-    jbuilder (2.9.1)
-      activesupport (>= 4.2.0)
+    jbuilder (2.13.0)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     jquery-rails (4.3.4)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
@@ -240,7 +241,9 @@ GEM
     net-imap (0.4.25)
       date
       net-protocol
-    net-ldap (0.16.0)
+    net-ldap (0.20.0)
+      base64
+      ostruct
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
@@ -261,6 +264,7 @@ GEM
       omniauth (>= 1.0.0)
     options (2.3.2)
     orm_adapter (0.5.0)
+    ostruct (0.6.3)
     prism (1.9.0)
     progress_bar (1.3.0)
       highline (>= 1.6, < 3)
@@ -435,7 +439,7 @@ DEPENDENCIES
   coffee-rails (~> 5.0)
   daemons (~> 1.2, >= 1.2.4)
   delayed_job_active_record (~> 4.1, >= 4.1.7)
-  devise
+  devise (~> 4.9)
   dotenv-rails (~> 2.8)
   ed25519
   exception_notification (~> 4.6)
@@ -444,7 +448,7 @@ DEPENDENCIES
   ffi (>= 1.17.0)
   haml-rails (~> 2.0)
   httparty (~> 0.21.0)
-  jbuilder (~> 2.0)
+  jbuilder (~> 2.11)
   jquery-rails
   json (~> 2.7)
   kaminari (~> 1.2)
@@ -453,7 +457,7 @@ DEPENDENCIES
   listen (~> 3.1, >= 3.1.5)
   msteams-ruby-client
   mysql2
-  net-ldap (~> 0.16.0)
+  net-ldap (~> 0.17)
   net-scp
   net-ssh
   omniauth-shibboleth (~> 1.2, >= 1.2.1)
@@ -471,7 +475,7 @@ DEPENDENCIES
   selenium-webdriver (~> 4.9.0)
   shoulda-matchers (~> 4.0)
   site_prism
-  slack-notifier (~> 2.3)
+  slack-notifier (~> 2.4)
   spring
   sprockets (~> 4.0)
   tiny_tds

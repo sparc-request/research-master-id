@@ -71,7 +71,7 @@ class LdapSearch
     filter = fields.map { |f| Net::LDAP::Filter.eq(f, name + "*") }.inject(:|)
 
     ldaps.each do |key,ldap|
-      ldap.search(:base => ldap.base, :filter => filter) do |entry|
+      ldap.search({ base: ldap.base, filter: filter }) do |entry|
         next if active_only && key == 'musc' && (entry[:muscactiveaccount].include?('FALSE') || entry[:mail].blank?)  # skip inactive accounts or ones without an e-mail address
         entry_info = { name: nil, first_name: entry[:givenname].first, last_name: entry[:sn].first, middle_initial: nil, email: nil, netid: nil, pvid: entry[:muscpvid].first, active: true, affiliate: false}
 
