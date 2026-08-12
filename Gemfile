@@ -45,7 +45,7 @@ group :development, :test do
   gem 'byebug'
   gem 'rspec-rails', '~> 5.0'
   gem 'factory_bot_rails'
-  gem 'puma', '~> 5.0'
+  gem 'puma', '~> 6.4'
 end
 
 group :development do
@@ -63,6 +63,7 @@ group :test do
   gem 'site_prism'
   gem 'selenium-webdriver', '~> 4.9.0'
   gem 'rails-controller-testing'
+  gem 'capybara', '>= 3.39'
 end
 
 ### custom gem for data sanitization ###
