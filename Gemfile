@@ -7,22 +7,22 @@ gem 'sass-rails', '~> 6.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 5.0'
 gem 'jquery-rails'
-gem 'jbuilder', '~> 2.0'
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'jbuilder', '~> 2.11'
+gem 'sdoc', group: :doc
 gem 'haml-rails', '~> 2.0'
-gem 'devise'
+gem 'devise', '~> 4.9'
 gem 'dotenv-rails', '~> 2.8'
 gem 'faker'
 gem 'launchy'
-gem 'pry'
+gem 'pry', '~> 0.14.2'
 gem 'ransack'
-gem 'httparty', '~> 0.13.7'
+gem 'httparty', '~> 0.21.0'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'whenever', '~> 1.0.0'
-gem 'net-ldap', '~> 0.16.0'
+gem 'net-ldap', '~> 0.17'
 gem 'sprockets', '~> 4.0'
 gem 'exception_notification', '~> 4.6'
-gem 'slack-notifier', '~> 2.3'
+gem 'slack-notifier', '~> 2.4'
 gem 'listen', '~> 3.1', '>= 3.1.5'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'omniauth-shibboleth', '~> 1.2', '>= 1.2.1'
@@ -35,6 +35,8 @@ gem "progress_bar"
 gem 'net-ssh'
 gem 'net-scp'
 gem 'msteams-ruby-client'
+gem 'ffi', '>= 1.17.0'
+gem 'json', '~> 2.7'
 
 gem 'tiny_tds'
 gem 'activerecord-sqlserver-adapter', '~> 6.1.0'
@@ -43,7 +45,7 @@ group :development, :test do
   gem 'byebug'
   gem 'rspec-rails', '~> 5.0'
   gem 'factory_bot_rails'
-  gem 'puma', '~> 5.0'
+  gem 'puma', '~> 6.4'
 end
 
 group :development do
@@ -60,7 +62,8 @@ group :test do
   gem 'shoulda-matchers', '~> 4.0'
   gem 'site_prism'
   gem 'selenium-webdriver', '~> 4.9.0'
-  gem 'rails-controller-testing'
+  gem 'rails-controller-testing', '~> 1.0.5'
+  gem 'capybara', '>= 3.39'
 end
 
 ### custom gem for data sanitization ###

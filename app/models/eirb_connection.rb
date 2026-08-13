@@ -21,7 +21,7 @@
 class EirbConnection < ActiveRecord::Base
   path = File.join(Rails.root, "config", "eirb_db.yml")
   EIRB_DB =
-    if File.exists?(path)
+    if File.exist?(path)
       yaml = Pathname.new(path)
       YAML.load(ERB.new(yaml.read).result)[Rails.env.to_s]
     else
