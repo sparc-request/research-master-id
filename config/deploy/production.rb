@@ -89,4 +89,5 @@ set :passenger_restart_with_touch, true
 #   }
 set :ssh_options, {
   forward_agent: false,
+  encryption: %w(aes256-ctr aes192-ctr aes128-ctr)
 }
