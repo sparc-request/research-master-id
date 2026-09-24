@@ -42,7 +42,6 @@ gem 'tiny_tds'
 gem 'activerecord-sqlserver-adapter', '~> 6.1.0'
 
 group :development, :test do
-  gem 'byebug'
   gem 'rspec-rails', '~> 5.0'
   gem 'factory_bot_rails'
   gem 'puma', '~> 6.4'

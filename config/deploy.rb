@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 # config valid only for current version of Capistrano
-lock '3.11.0'
+lock '3.20.1'
 
 set :application, 'research-master-id'
-set :repo_url, 'git@github.com:HSSC/research-master-id.git'
+set :repo_url, 'git@github.com:sparc-request/research-master-id.git'
 
 set :stages, ['staging', 'production']
 set :default_stage, 'staging'
@@ -49,7 +49,7 @@ set :log_level, :debug
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/eirb_db.yml', 'config/secrets.yml', 'config/shards.yml', '.env', 'config/sparc_db.yml', 'config/epds_db.yml')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/eirb_db.yml', 'config/secrets.yml', '.env', 'config/sparc_db.yml', 'config/epds_db.yml')
 
 # Default value for linked_dirs is []
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system')
